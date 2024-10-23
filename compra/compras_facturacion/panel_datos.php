@@ -91,12 +91,12 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         <div class="card">
             <div class="card-body">
                 <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
-                        class="fas fa-plus-circle"></i> Pedidos</button>
+                        class="fas fa-plus-circle"></i> Ordenes</button>
                 <button class="btn btn-primary text-white"
                     onclick="modalConsolidacion(<?php echo $compras[0]['id_cc']; ?>);" id="btn-modal-secund-cerrar"><i
                         class="fas fa-table-tree"></i> Consolidacion</button>
                 <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i
-                        class="fas fa-regular fa-file-pdf"></i> Reportes</button>
+                        class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
 
             </div>
         </div>

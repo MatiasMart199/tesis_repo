@@ -1,20 +1,22 @@
 <?php
-$id_cpre = $_POST['id_cpre'];
+//$id_corden = $_POST['id_corden'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos WHERE  estado = 'CONFIRMADO' order by id_cpre;"));
+
+//CONSULTA DE LA VISTA DE LOS DETALLES DEL MOVIMIENTO ANTERIOR
+$consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE  estado = 'CONFIRMADO' order by id_corden;"));
 ?>
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="card card-primary">
             <div class="card-header text-center text-white">
-                PRESUPUESTOS CONFIRMADOS
+                ORDENES CONFIRMADOS
             </div>
-            <input type="hidden" value="<?php echo $presupuestos[0]['id_cpre']; ?>" id="id_cpre">
+            <input type="hidden" value="<?php echo $consultas_bd[0]['id_corden']; ?>" id="id_corden">
             <div class="card-body contenido-principal">
                 <!--CONTENIDO PRINCIPAL-->
 
@@ -25,18 +27,18 @@ $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuest
 
                 echo '<div class="card-body">';
 
-                foreach ($presupuestos as $p) {
+                foreach ($consultas_bd as $p) {
                     echo '<div class="custom-container">';
-                    echo '<label class="custom-container__label">#' . $p['id_cpre'] . ' Nº-----( ' . $p['fecha'] . ' )</label>';
-                    echo '<button class="btn btn-success" onclick="agregar_orden_presupuesto(' . $p['id_cpre'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
+                    echo '<label class="custom-container__label">#' . $p['id_corden'] . ' Nº-----( ' . $p['fecha'] . ' )</label>';
+                    echo '<button class="btn btn-success" onclick="agregar_orden_presupuesto(' . $p['id_corden'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                     echo '</div>';
-                    //echo '<input type="hidden" value="echo '.$p[0]['id_cpre'].'" id="id_cpre">';
+                    //echo '<input type="hidden" value="echo '.$p[0]['id_corden'].'" id="id_corden">';
                     // Construye la fila de encabezado de la tabla una sola vez
-                    $presupuestos_consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_consolidacion WHERE id_cpre = " . $p['id_cpre'] . " ORDER BY precio ASC;"));
+                    $consultas_consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_consolidacion WHERE id_corden = " . $p['id_corden'] . " ORDER BY precio ASC;"));
 
-                    echo '<input type="hidden" value="' . $p['id_cpre'] . '" id="id_cpedido">';
+                    echo '<input type="hidden" value="' . $p['id_corden'] . '" id="id_cpedido">';
                     echo '<table class="table table-bordered">';
-                    if (!empty($presupuestos_consolidacion)) {
+                    if (!empty($consultas_consolidacion)) {
                         echo '<thead>';
                         echo '<tr>';
                         echo '<th>Producto</th>';
@@ -50,14 +52,14 @@ $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuest
                         
                         echo '<tbody>';
                         $total = 0;
-                        foreach ($presupuestos_consolidacion as $d) {
+                        foreach ($consultas_consolidacion as $d) {
 
-                            $total = $total + ($d['precio'] * $d['cantidad']);
+                            $total = $total + ($d['precio'] * $d['sum']);
                             echo '<tr>';
                             echo '<td>' . $d['item_descrip'] . ' - ' . $d['mar_descrip'] . '</td>';
-                            echo '<td>' . $d['cantidad'] . '</td>';
+                            echo '<td>' . $d['sum'] . '</td>';
                             echo '<td>' . $d['precio'] . '</td>';
-                            echo '<td>' . ($d['precio'] * $d['cantidad']) . '</td>';
+                            echo '<td>' . ($d['precio'] * $d['sum']) . '</td>';
                             // echo '<td>';
                 
                             // echo '</td>';

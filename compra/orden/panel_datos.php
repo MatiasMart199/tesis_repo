@@ -90,7 +90,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
         <div class="card">
             <div class="card-body">
                 <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
-                        class="fas fa-plus-circle"></i> Pedidos</button>
+                        class="fas fa-plus-circle"></i> Presupuestos</button>
                 <button class="btn btn-primary text-white"
                     onclick="modalConsolidacion(<?php echo $ordenes[0]['id_corden']; ?>);" id="btn-modal-secund-cerrar"><i
                         class="fas fa-table-tree"></i> Consolidacion</button>
