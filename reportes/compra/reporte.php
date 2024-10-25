@@ -1,5 +1,6 @@
 <?php
-require_once '../../tcpdf/tcpdf.php';
+//require_once '../../tcpdf/tcpdf.php';
+require_once '../../TCPDF_v2/tcpdf.php';
 include '../../Conexion.php';
 include '../../session.php';
 $id_cp = $_GET['id_cp'];
