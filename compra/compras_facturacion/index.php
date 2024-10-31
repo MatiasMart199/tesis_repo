@@ -6,6 +6,7 @@ $_SESSION['id_pagina'] = '2';
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -52,10 +53,10 @@ $_SESSION['id_pagina'] = '2';
           <div class="card-header p-0">
             <ul class="nav nav-pills ml-auto p-2">
               <li class="nav-item"><a class="nav-link active" href="#panel-ordenes" id="btn-panel-ordenes"
-                  data-toggle="tab">Ordenes</a></li>
+                  data-toggle="tab">Compras</a></li>
               <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos"
                   data-toggle="tab">Datos</a></li>
-                  <!-- <li class="nav-item"><a class="nav-link" href="#panel-pedidos" id="btn-panel-pedidos"
+              <!-- <li class="nav-item"><a class="nav-link" href="#panel-pedidos" id="btn-panel-pedidos"
                   data-toggle="tab">Pedidos</a></li> -->
             </ul>
           </div>
@@ -68,8 +69,8 @@ $_SESSION['id_pagina'] = '2';
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una Compra...</label>
               </div>
               <!-- <div class="tab-pane" id="panel-pedidos">
-                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un pedido...</label> -->
-              </div>
+                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un pedido...</label> 
+                  </div>-->
             </div>
           </div>
         </div>
@@ -92,7 +93,9 @@ $_SESSION['id_pagina'] = '2';
   </div>
   <script src="/tesis/estilo/plugins/jquery/jquery.min.js"></script>
   <script src="/tesis/estilo/plugins/jquery-ui/jquery-ui.min.js"></script>
-  <script> $.widget.bridge('uibutton', $.ui.button) </script>
+  <script>
+    $.widget.bridge('uibutton', $.ui.button)
+  </script>
   <script src="/tesis/estilo/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="/tesis/estilo/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <script src="/tesis/estilo/dist/js/adminlte.js"></script>
@@ -107,6 +110,7 @@ $_SESSION['id_pagina'] = '2';
   <script src="/tesis/estilo/descarga/tabla4.min.js"></script>
   <?php include("../../mensaje.php"); ?>
   <script src="funciones.js"></script>
+
 </body>
 
 </html>

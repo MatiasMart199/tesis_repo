@@ -70,7 +70,7 @@ $consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_consolida
                                             <td> <?= $d['item_descrip'] . " - " . $d['mar_descrip'] . " - " . $d['tip_item_descrip']; ?> </td>
                                             <!-- <td> <?php //echo $d['mar_descrip']; ?> </td> -->
                                             <!-- <td> <?php //echo $d['tip_item_descrip']; ?> </td> -->
-                                            <td> <?= number_format($d['precio'], 0, ",", "."); ?> </td>
+                                            <td><?= number_format($d['precio'], 0, ",", "."); ?> </td>
                                             <td><?= number_format($exento, 0, ",", ".");?></td>
                                             <td><?= number_format($grav5, 0, ",", ".");?></td>
                                             <td><?= number_format($grav10, 0, ",", ".");?></td>

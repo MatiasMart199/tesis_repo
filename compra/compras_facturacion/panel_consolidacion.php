@@ -64,7 +64,7 @@ conponents
 
                                             if($iva == 2){
                                             $totalGrav10 = $precioTotal;
-                                            $totalIva10 = $precioTotal / 21;
+                                            $totalIva10 = $precioTotal / 11;
                                             $sumaGrav10[] = $totalGrav5 + $totalGrav10 + $totalExenta;
 
                                             } elseif($iva == 1){
@@ -142,8 +142,14 @@ conponents
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button class="btn btn-danger" data-dismiss="modal" id="btn-modal-secund-cerrar">
-                        <i class="fa fa-ban"></i> Cancelar</button>
+                        <i class="fa fa-ban"></i> Cancelar
+                    </button>
                 </div>
+                <input type="number" name="total_pagar" id="total_pagar" value="<?= $totalPagar ?>" hidden="">
+                <input type="number" name="total_iva5" id="total_iva5" value="<?= $totalIva5 ?>" hidden="">
+                <input type="number" name="total_iva10" id="total_iva10" value="<?= $totalIva10 ?>" hidden="">
+                <input type="number" name="total_exenta" id="total_exenta" value="<?= $totalExenta ?>" hidden="">
+                <input type="date" name="fecha_cuenta" id="fecha_cuenta" value="<?= date('Y-m-d'); ?>"   hidden="">
             </div>
         </div>
     </div>

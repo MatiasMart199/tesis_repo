@@ -203,9 +203,39 @@ if (!empty($permisos)) {
                             </ul>
                         </li>
                     </ul>
+
+                    <!-- Submenú: SEGURIDAD -->
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fa fa-tags"></i>
+                                <p>
+                                    SEGURIDAD
+                                    <i class="right fas fa-angle-down"></i>
+                                </p>
+                            </a>
+                            <!-- Submenú dentro de VENTAS -->
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/tesis/referenciales/accesos/" class="nav-link">
+                                        <i class="nav-icon fas fa-circle"></i>
+                                        <p>Accesos</p>
+                                    </a>
+                                </li>
+                                <!-- <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-circle"></i>
+                                        <p>Opción 2 de VENTAS</p>
+                                    </a>
+                                </li> -->
+                            </ul>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Mensaje de módulos no encontrados -->
+
+                
                 
             </ul>
 

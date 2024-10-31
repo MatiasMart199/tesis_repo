@@ -4,6 +4,7 @@ $(function(){
     panel_datos(-1);
 });
 
+
 function refrescar_select(){
     $(".select2").select2();
     $(".select2").attr("style", "width: 100%;");
@@ -33,6 +34,7 @@ function panel_compras(){
     }).done(function(resultado){
         $("#panel-ordenes").html(resultado);
         formato_tabla("#tabla_panel_compras", 5);
+        //tipoFactura.addEventListener("change", validarTipoFactura);
     });
 }
 
@@ -47,6 +49,7 @@ function panel_datos(id_cc){
         $("#panel-datos").html(resultado);
         panel_ordenes();
         refrescar_select();
+        //tipoFactura.addEventListener("change", validarTipoFactura);
     });
 }
 
@@ -161,6 +164,12 @@ function eliminar_presupuesto_pedido(id_item){
     grabar();
 }
 
+function generarLibroCuenta(id_cc){
+    $("#id_cc").val(id_cc);
+    $("#operacion").val(12);
+    grabar();
+}
+
 function cancelar(){
     panel_datos(-1);
     $("#btn-panel-ordenes").click();
@@ -170,21 +179,31 @@ function cancelar(){
 function grabar(){
     var operacion = $("#operacion").val();
     var id_cc = '0';
-    var ord_fecha = '2023-03-03';
-    var ord_intervalo = '2023-03-03';
-    var ord_tipo_factura = 'CONTADO';
-    var ord_cuota = '0';
-    var id_proveedor = '0';
-    var id_item = '0';
-    var cantidad = '0';
-    var precio = '0';
-    var id_cpre = '0';
+    var cc_fecha = '2023-03-03';
+    var cc_intervalo = '';
+    var cc_nro_factura = '0';
+    var cc_timbrado = '0';
+    var cc_tipo_factura = '0';
+    var cc_cuota = '0';
+    var iva5 = 0;
+    var iva10 = 0;
+    var exenta = 0;
+    var monto = 0;
+    var saldo = 0;
+    var id_proveedor = 0;
+    var id_deposito = 0;
+    var id_item = 0;
+    var cantidad = 0;
+    var precio = 0;
+    var id_corden = 0;
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
         id_cc = $("#id_cc").val();
-        ord_fecha = $("#ord_fecha").val();
-        ord_intervalo = $("#ord_intervalo").val();
-        ord_tipo_factura = $("#ord_tipo_factura").val();
-        ord_cuota = $("#ord_cuota").val();
+        cc_fecha = $("#cc_fecha").val();
+        cc_intervalo = $("#cc_intervalo").val();
+        cc_nro_factura = $("#cc_nro_factura").val();
+        cc_timbrado = $("#cc_timbrado").val();
+        cc_tipo_factura = $("#cc_tipo_factura").val();
+        cc_cuota = $("#cc_cuota").val();
         id_proveedor = $("#id_proveedor").val();
     }
     if(operacion == '5'){
@@ -192,6 +211,7 @@ function grabar(){
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         precio = $("#agregar_precio").val();
+        id_deposito = $("#id_deposito").val();
     }
     if(operacion == '6'){
         id_cc = $("#id_cc").val();
@@ -205,38 +225,60 @@ function grabar(){
     }
     if(operacion == '8'){
         id_cc = $("#id_cc").val();
-        id_cpre = $("#id_cpre").val();
+        id_corden = $("#id_corden").val();
+        id_deposito = $("#id_deposito").val();
     }
     if(operacion == '9'){
         id_cc = $("#id_cc").val();
-        id_cpre = $("#id_cpre").val();
+        id_corden = $("#id_corden").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $().val("#modificar_precio");
     }
     if(operacion == '10'){
-        id_cpre = $("#id_cpre").val();
+        id_cc = $("#id_cc").val();
+        id_corden = $("#id_corden").val();
         id_item = $("#eliminar_id_item").val();
     }
     if(operacion == '11'){
         id_cc = $("#id_cc").val();
-        id_cpre = $("#id_cpre").val();
+        id_corden = $("#id_corden").val();
         id_item = $("#eliminar_id_item").val();
+    }
+    if(operacion == '12'){// INSERTAR LIBRO DE COMPRAS Y CUENTA A PAGAR
+        id_cc = $("#id_cc").val();
+        id_corden = $("#id_corden").val();
+        cc_fecha = $("#fecha_cuenta").val();
+        id_item = $("#eliminar_id_item").val();
+        iva5 = $("#total_iva5").val();
+        iva10 = $("#total_iva10").val();
+        exenta = $("#total_exenta").val();
+        monto = $("#total_pagar").val();
+        saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
+        
     }
     $.ajax({
         url: "grabar.php",
         type: "POST",
         data:{
-            id_cc: id_cc,
-            ord_fecha: ord_fecha,
-            ord_intervalo: ord_intervalo,
-            ord_tipo_factura: ord_tipo_factura,
-            ord_cuota: ord_cuota,
-            id_proveedor: id_proveedor,
-            id_item: id_item,
-            cantidad: cantidad,
-            precio: precio,
-            id_cpre: id_cpre,
+            id_cc:id_cc,
+            cc_fecha:cc_fecha,
+            cc_intervalo:cc_intervalo,
+            cc_nro_factura:cc_nro_factura,
+            cc_timbrado:cc_timbrado,
+            cc_tipo_factura:cc_tipo_factura,
+            cc_cuota:cc_cuota,
+            iva5:iva5,
+            iva10:iva10,
+            exenta:exenta,
+            monto:monto,
+            saldo:saldo,
+            id_proveedor:id_proveedor,
+            id_deposito:id_deposito,
+            id_item:id_item,
+            cantidad:cantidad,
+            precio:precio,
+            id_corden:id_corden,
             operacion: operacion
         }
     }).done(function(resultado){
@@ -245,7 +287,7 @@ function grabar(){
         }
         postgrabar(operacion);
     }).fail(function(a,b,c){
-        console.log('Error:', c);
+        console.log('Error:',a,b, c);
     });
 }
 
@@ -255,7 +297,7 @@ function postgrabar(operacion){
         panel_datos(-2);
         //$('#btn-panel-pedidos').click ();
     }
-    if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
+    if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11' || operacion == '12'){
         panel_datos($("#id_cc").val());
         if(operacion == '6'){
             $("#btn-panel-modificar-cerrar").click();
@@ -269,3 +311,22 @@ function postgrabar(operacion){
     
     }
 }
+
+function validarTipoFactura(){
+ $(document).ready(function() {
+    $('#cc_tipo_factura').change(function() {
+        const tipoFactura = $(this).val(); // Obtenemos el valor del tipo de factura
+
+        if (tipoFactura === 'CREDITO') {
+            $('#cc_cuota').prop('disabled', false); // Habilita el campo cuota
+            $('#cc_intervalo').prop('disabled', false); // Habilita el campo
+        } else {
+            $('#cc_cuota').prop('disabled', true).val(''); // Deshabilita y limpia el campo cuota
+            $('#cc_intervalo').prop('disabled', true).val('');
+        }
+    });
+});
+
+}
+            
+

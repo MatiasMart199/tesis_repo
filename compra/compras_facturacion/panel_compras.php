@@ -34,7 +34,7 @@ $compras = pg_fetch_all($query);
             <td><?php //echo $p['emp_denominacion'];?></td> -->
             <td><?php echo $p['suc_nombre'];?></td>
             <td><?php echo $p['fecha'];?></td>
-            <td><?php echo $p['fecha_intervalo'];?></td>
+            <td><?php echo $p['cc_intervalo'];?></td>
             <td><?php echo $p['proveedor'];?></td>
             <td><?php echo $p['cc_cuota'];?></td>
             <td><?php echo $p['cc_tipo_factura'];?></td>
