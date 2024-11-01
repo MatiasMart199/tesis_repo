@@ -52,7 +52,7 @@ $_SESSION['id_pagina'] = '2';
         <div class="card">
           <div class="card-header p-0">
             <ul class="nav nav-pills ml-auto p-2">
-              <li class="nav-item"><a class="nav-link active" href="#panel-ordenes" id="btn-panel-ordenes"
+              <li class="nav-item"><a class="nav-link active" href="#panel-compras" id="btn-panel-compras"
                   data-toggle="tab">Compras</a></li>
               <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos"
                   data-toggle="tab">Datos</a></li>
@@ -62,7 +62,7 @@ $_SESSION['id_pagina'] = '2';
           </div>
           <div class="card-body">
             <div class="tab-content">
-              <div class="tab-pane active" id="panel-ordenes">
+              <div class="tab-pane active" id="panel-compras">
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Cargando...</label>
               </div>
               <div class="tab-pane" id="panel-datos">
@@ -108,7 +108,8 @@ $_SESSION['id_pagina'] = '2';
   <script src="/tesis/estilo/descarga/tabla2.min.js"></script>
   <script src="/tesis/estilo/descarga/tabla3.min.js"></script>
   <script src="/tesis/estilo/descarga/tabla4.min.js"></script>
-  <?php include("../../mensaje.php"); ?>
+  <?php //include("../../mensaje.php"); ?>
+  <?php require_once "{$_SERVER['DOCUMENT_ROOT']}/tesis/mensaje.php"; ?>
   <script src="funciones.js"></script>
 
 </body>

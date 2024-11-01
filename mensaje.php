@@ -1,4 +1,5 @@
-<!-- <script>
+<script>
+
     // function verificar_mensaje(resultado) {
     //     const Toast = Swal.mixin({
     //         toast: true,
@@ -14,11 +15,27 @@
     //         title: response.message.replace(/_\/_/g, ' ')
     //     });
     // }
-</script> -->
 
 
-<!-- EL MENSAJE A PRODUCCION --------------------------------------------------->
-<script>
+    // function verificar_mensaje_prueba(resultado) {
+    //     const Toast = Swal.mixin({
+    //         toast: true,
+    //         position: 'top-end',
+    //         showConfirmButton: false,
+    //         timer: 3000
+    //     });
+
+    //     //var response = JSON.parse(resultado);
+
+    //     Toast.fire({
+    //         type: resultado.success ? 'success' : 'error',
+    //         title: resultado.message.replace(/_\/_/g, ' ')
+    //     });
+    // }
+
+
+/**************************************EL MENSAJE A PRODUCCION******************/ 
+
     function verificar_mensaje(resultado) {
     var operacion = $("#operacion").val();
     var response = JSON.parse(resultado);
@@ -40,10 +57,10 @@
         }
     });
 }
-</script>
 
 
-<!-- <script>
+
+
 //     function verificar_mensaje(resultado) {
 //     var operacion = $("#operacion").val();
 //     var response = JSON.parse(resultado);
@@ -55,59 +72,60 @@
 //         //timer: 5000
 //     });
 // }
-</script> -->
 
-<!-- ----------------------------------------------------------------- -->
-<!-- <script>
-    function verificar_mensaje(resultado) {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
 
-        let response;
-        try {
-            response = JSON.parse(resultado);
-        } catch (e) {
-            console.error("Error al parsear JSON: ", e);
-            console.error("Respuesta del servidor: ", resultado);
+/*********************************************************************************************************/ 
 
-            Toast.fire({
-                icon: 'error',  // Cambiado 'type' por 'icon'
-                title: 'Respuesta inválida del servidor'
-            });
-            return;
-        }
+    // function verificar_mensaje(resultado) {
+    //     const Toast = Swal.mixin({
+    //         toast: true,
+    //         position: 'top-end',
+    //         showConfirmButton: false,
+    //         timer: 3000
+    //     });
 
-        Toast.fire({
-            icon: response.success ? 'success' : 'error',  // Cambiado 'type' por 'icon'
-            title: response.message.replace(/_\/_/g, ' ')
-        });
-    }
-</script> -->
+    //     let response;
+    //     try {
+    //         response = JSON.parse(resultado);
+    //     } catch (e) {
+    //         console.error("Error al parsear JSON: ", e);
+    //         console.error("Respuesta del servidor: ", resultado);
 
-<!-- ------------------------------------------------------------------------------------------ -->
-<!-- <script>
-    function verificar_mensaje(resultado) {
-  const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000
-  });
+    //         Toast.fire({
+    //             icon: 'error',  // Cambiado 'type' por 'icon'
+    //             title: 'Respuesta inválida del servidor'
+    //         });
+    //         return;
+    //     }
 
-  try {
-    // Attempt to parse JSON, handling potential errors
-    var response = JSON.parse(resultado);
-    Toast.fire({
-      type: response.success ? 'success' : 'error',
-      title: response.message.replace(/_\/_/g, ' ')
-    });
-  } catch (error) {
-    console.error("Error parsing JSON:", error);
-    // Handle parsing error gracefully (e.g., display a generic error message)
-  }
-}
-</script>  -->
+    //     Toast.fire({
+    //         icon: response.success ? 'success' : 'error',  // Cambiado 'type' por 'icon'
+    //         title: response.message.replace(/_\/_/g, ' ')
+    //     });
+    // }
+
+
+/*********************************************************************************************************/
+
+//     function verificar_mensaje(resultado) {
+//   const Toast = Swal.mixin({
+//     toast: true,
+//     position: 'top-end',
+//     showConfirmButton: false,
+//     timer: 3000
+//   });
+
+//   try {
+//     // Attempt to parse JSON, handling potential errors
+//     var response = JSON.parse(resultado);
+//     Toast.fire({
+//       type: response.success ? 'success' : 'error',
+//       title: response.message.replace(/_\/_/g, ' ')
+//     });
+//   } catch (error) {
+//     console.error("Error parsing JSON:", error);
+//     // Handle parsing error gracefully (e.g., display a generic error message)
+//   }
+// }
+
+</script>

@@ -17,7 +17,7 @@ $proveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE e
 $listProveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE estado = 'ACTIVO' AND id_proveedor NOT IN (SELECT id_proveedor FROM v_compras_cab WHERE id_cc = $id_cc) ORDER BY proveedor, per_ruc;"));
 
 // Fetching a list of active deposits
-$depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
+
 
 if ($id_cc == '-1') { //CUANDO SE RESETEA
 ?>
@@ -43,20 +43,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Depositos</label>
-                        <select class="select2" id="id_deposito">
-                            <!-- <option selected="true" disabled="disabled"></option> -->
-                            <option selected="true" disabled="disabled">SELECCIONE EL DEPOSITO</option>
-                            <?php foreach ($depositos as $pr) { ?>
-                                <option value="<?php echo $pr['id_sucursal']; ?>">
-                                    <?= $pr['dep_descrip']; ?>
-                                </option>
-                            <?php }; ?>
-                        </select>
-                    </div>
-                </div>
+            
 
 
 
@@ -108,14 +95,14 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-1">
                     <div class="form-group">
                         <label>Intervalo</label>
-                        <input type="number" value="<?= $compras[0]['cc_intervalo'] ?>" class="form-control" id="cc_intervalo" disabled>
+                        <input type="number" value="0" class="form-control" id="cc_intervalo" disabled>
                     </div>
                 </div>
 
                 <div class="col-md-1 mb-2">
                     <div class="form-group">
                         <label>Cuota</label>
-                        <input type="number" value="" class="form-control" id="cc_cuota" disabled>
+                        <input type="number" value="0" class="form-control" id="cc_cuota" disabled>
                     </div>
                 </div>
 
@@ -150,7 +137,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         $ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE  estado = 'CONFIRMADO';"));
         //$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_consolidacion WHERE  id_cc = $id_cc;"));
 
-        $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_detalles WHERE id_cc = $id_cc;"));
     }
     $compras_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_detalles WHERE id_cc = $id_cc ORDER BY item_descrip, mar_descrip;"));
     $compras_ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_factu where id_cc = $id_cc ORDER BY  item_descrip, mar_descrip;"));
@@ -186,7 +172,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $compras[0]['id_cc']; ?>" id="id_cc">
-                <input type="hidden" value="<?php echo $ordenes[0]['id_corden']; ?>" id="id_cpre">
+                <input type="hidden" value="<?php echo $ordenes[0]['id_corden']; ?>" id="id_corden">
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
 
@@ -199,20 +185,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label>Depositos</label>
-                            <select class="select2" id="id_deposito" disabled>
-                                <!-- <option selected="true" disabled="disabled"></option> -->
-                                <option selected="true" disabled="disabled" value="<?= $detalles[0]['id_sucursal'] ?>"><?= $detalles[0]['dep_descrip']; ?></option>
-                                <?php foreach ($depositos as $pr) { ?>
-                                    <option value="<?php echo $pr['id_sucursal']; ?>">
-                                        <?= $pr['dep_descrip']; ?>
-                                    </option>
-                                <?php }; ?>
-                            </select>
-                        </div>
-                    </div>
+                    
 
 
                     <div class="col-md-4">
@@ -359,7 +332,8 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($compras[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") ORDER BY item_descrip;"));
+            $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -367,22 +341,22 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     Agregar Producto
                 </div>
                 <div class="card-body">
-                    <?php if (!empty($articulos)) { ?>
+                    <?php if (!empty($articulos) && !empty($depositos)) { ?>
 
-                        <div class="col-md-2">
+                        
                             <div class="form-group">
                                 <label>Depositos</label>
-                                <select class="select2" id="id_deposito">
+                                <select class="select2" id="ag_id_deposito">
                                     <!-- <option selected="true" disabled="disabled"></option> -->
                         
                                     <?php foreach ($depositos as $pr) { ?>
-                                        <option value="<?php echo $pr['id_sucursal']; ?>">
+                                        <option value="<?= $pr['id_sucursal']; ?>">
                                             <?= $pr['dep_descrip']; ?>
                                         </option>
                                     <?php }; ?>
                                 </select>
                             </div>
-                        </div>
+                        
 
                         <div class="form-group">
                             <label>Producto</label>
@@ -398,12 +372,13 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                             <label>Cantidad</label>
                             <input type="number" value="1" class="form-control" id="agregar_cantidad">
                         </div>
+
                         <div class="form-group">
                             <label>Precio</label>
                             <input type="number" value="" class="form-control" id="agregar_precio">
                         </div>
 
-                        <input type="number" value="1" id="id_deposito" hidden>
+                        <!-- <input type="number" value="1" id="id_deposito" hidden> -->
 
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
@@ -439,7 +414,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                             <?php $total = 0;
                             foreach ($compras_ordenes as $d) {
                                 $total = $total + ($d['precio'] * $d['cantidad']) ?>
-                                <input type="hidden" value="<?php echo $d['id_cp']; ?>" id="id_cped_item">
+                                <input type="hidden" value="<?php echo $d['id_corden']; ?>" id="id_cped_item">
                                 <tr>
                                     <td>
                                         <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
