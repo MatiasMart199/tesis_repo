@@ -10,6 +10,19 @@ function refrescar_select() {
     $(".select2").attr("style", "width: 100%;");
 }
 
+
+function verificar_mensaje_intern(resultado) {
+    var operacion = $("#operacion").val();
+    //var response = JSON.parse(resultado);
+
+
+    swal.fire({
+        text: resultado.success ? resultado.message.replace("NOTICE: ", "") : resultado.message.replace("ERROR: ", ""),
+        type: resultado.success ? 'success' : 'error',
+        //timer: 5000
+    });
+}
+
 function formato_tabla(tabla, item_cantidad) {
     $(tabla).DataTable({
         "lengthChange": false,
@@ -164,8 +177,7 @@ function eliminar_presupuesto_pedido(id_item) {
     grabar();
 }
 
-function generarLibroCuenta(id_cc) {
-    $("#id_cc").val(id_cc);
+function generarLibroCuenta() {
     $("#operacion").val(12);
     grabar();
 }
@@ -205,6 +217,17 @@ function grabar() {
         cc_tipo_factura = $("#cc_tipo_factura").val();
         cc_cuota = $("#cc_cuota").val();
         id_proveedor = $("#id_proveedor").val();
+
+        console.log("id_cc " + id_cc);
+        console.log("cc_fecha " + cc_fecha);
+        console.log("cc_intervalo " + cc_intervalo);
+        console.log("cc_nro_factura " + cc_nro_factura);
+        console.log("cc_timbrado " + cc_timbrado);
+        console.log("cc_tipo_factura " + cc_tipo_factura);
+        console.log("cc_cuota " + cc_cuota);
+        console.log("id_proveedor " + id_proveedor);
+        
+
     }
     if (operacion == '5') {
         id_cc = $("#id_cc").val();
@@ -227,7 +250,7 @@ function grabar() {
     if (operacion == '8') {
         id_cc = $("#id_cc").val();
         id_corden = $("#id_corden").val();
-        id_deposito = $("#id_deposito").val();
+        //id_deposito = $("#id_deposito").val();
     }
     if (operacion == '9') {
         id_cc = $("#id_cc").val();
@@ -248,15 +271,13 @@ function grabar() {
     }
     if (operacion == '12') {// INSERTAR LIBRO DE COMPRAS Y CUENTA A PAGAR
         id_cc = $("#id_cc").val();
-        id_corden = $("#id_corden").val();
-        cc_fecha = $("#fecha_cuenta").val();
-        id_item = $("#eliminar_id_item").val();
+        cc_fecha = $("#cc_fecha").val();
         iva5 = $("#total_iva5").val();
         iva10 = $("#total_iva10").val();
         exenta = $("#total_exenta").val();
         monto = $("#total_pagar").val();
         saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
-
+        
     }
     $.ajax({
         url: "grabar.php",
@@ -284,10 +305,13 @@ function grabar() {
         }
     }).done(function (resultado) {
         console.log(resultado); // Agregado para verificar la respuesta del servidor
-        if (verificar_mensaje(resultado)) {
-            postgrabar(operacion);
+        //let result = JSON.parse(resultado);
+        if (verificar_mensaje_intern(resultado)) {
+            
         }
+        postgrabar(operacion);
     }).fail(function (a, b, c) {
+        //console.error(b);
         console.error("Error:", a, b, c); // Error detallado
     });
 }

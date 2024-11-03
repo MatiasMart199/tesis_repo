@@ -5,6 +5,7 @@ require_once "{$_SERVER['DOCUMENT_ROOT']}/tesis/Conexion.php";
 require_once "{$_SERVER['DOCUMENT_ROOT']}/tesis/session.php";
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
+
 $id_cc = $_POST['id_cc'];
 $cc_fecha = $_POST['cc_fecha'];
 $cc_intervalo = $_POST['cc_intervalo'];
@@ -27,56 +28,31 @@ $precio = $_POST['precio'];
 $id_corden = $_POST['id_corden'];
 $usuario = $_SESSION['usu_login'];
 $operacion = $_POST['operacion'];
-// $grabar = pg_query($conn, "SELECT sp_compras(
-//                                     $id_cc,
-//                                     '$cc_fecha',
-//                                     $cc_intervalo,
-//                                     '$cc_nro_factura',
-//                                     '$cc_timbrado',
-//                                     '$cc_tipo_factura',
-//                                     $cc_cuota,
-//                                     $iva5,
-//                                     $iva10,
-//                                     $exenta,
-//                                     $monto,
-//                                     $saldo,
-//                                     $id_sucursal,
-//                                     $id_deposito,
-//                                     $id_funcionario ,
-//                                     $id_proveedor,
-//                                     $id_item,
-//                                     $cantidad,
-//                                     $precio,
-//                                     $id_corden,
-//                                     '$usuario',
-//                                     $operacion)");
 
-                            
-$grabar = pg_query($conn, "SELECT public.sp_compras(
-    cast($id_cc as int4),                       
-    cast('$cc_fecha' as date),                  
-    cast($cc_intervalo as int4),                
-    cast('$cc_nro_factura' as varchar),         
-    cast('$cc_timbrado' as varchar),            
-    cast('$cc_tipo_factura' as varchar),        
-    cast($cc_cuota as int4),                    
-    cast($iva5 as numeric),                     
-    cast($iva10 as numeric),                    
-    cast($exenta as numeric),                   
-    cast($monto as numeric),                    
-    cast($saldo as numeric),                    
-    cast($id_sucursal as int4),                 
-    cast($id_deposito as int4),                 
-    cast($id_funcionario as int4),              
-    cast($id_proveedor as int4),                
-    cast($id_item as int4),                     
-    cast($cantidad as int4),                    
-    cast($precio as int4),                      
-    cast($id_corden as int4),                   
-    cast('$usuario' as varchar),                
-    cast($operacion as int4)                    
-);");
-echo $grabar;
+$grabar = pg_query($conn, "SELECT sp_compras(
+    $id_cc,
+    '$cc_fecha',
+    $cc_intervalo,
+    '$cc_nro_factura',
+    '$cc_timbrado',
+    '$cc_tipo_factura',
+    $cc_cuota,
+    $iva5,
+    $iva10,
+    $exenta,
+    $monto,
+    $saldo,
+    $id_sucursal,
+    $id_deposito,
+    $id_funcionario ,
+    $id_proveedor,
+    $id_item,
+    $cantidad,
+    $precio,
+    $id_corden,
+    '$usuario',
+    $operacion);");
+    
 $response = array();
 if ($grabar) {
     $response['success'] = true;
@@ -85,7 +61,8 @@ if ($grabar) {
     $response['success'] = false;
     $response['message'] = pg_last_error($conn);
 }
-echo json_encode($response);
+$resul = json_encode($response);
+echo $resul;
 /*
 SELECT public.sp_compras(
     cast(1 as int4),                             -- id_cc

@@ -8,11 +8,11 @@
     //         timer: 3000
     //     });
 
-    //     var response = JSON.parse(resultado);
+    //     //var response = JSON.parse(resultado);
 
     //     Toast.fire({
-    //         type: response.success ? 'success' : 'error',
-    //         title: response.message.replace(/_\/_/g, ' ')
+    //         type: resultado.success ? 'success' : 'error',
+    //         title: resultado.message.replace(/_\/_/g, ' ')
     //     });
     // }
 

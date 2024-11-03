@@ -16,9 +16,15 @@ $proveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE e
 // Fetching a list of active providers not associated with the current purchase
 $listProveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE estado = 'ACTIVO' AND id_proveedor NOT IN (SELECT id_proveedor FROM v_compras_cab WHERE id_cc = $id_cc) ORDER BY proveedor, per_ruc;"));
 
-// Fetching a list of active deposits
 
-
+        // Initialize arrays to store total IVA 10%, 5%, and Exentos
+        // and total to pay
+        $totalIva10 = array(0); // Total IVA 10%
+        $totalIva5 = array(0); // Total IVA 5%
+        $totalExenta = array(0); // Total Exentos
+        $totalPagar = array(0); // Total to pay
+      
+        $impuestos = "";
 if ($id_cc == '-1') { //CUANDO SE RESETEA
 ?>
     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un presupuesto</label>
@@ -64,7 +70,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 
                 <div class="col-md-4">
                     <label>Fecha</label>
-                    <input type="date" value="<?= date('Y-m-d'); ?>" class="form-control" id="cc_fecha">
+                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cc_fecha">
                 </div>
 
                 <div class="col-md-3">
@@ -133,6 +139,8 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $compras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_cab WHERE id_cc = $id_cc;"));
 
+        $impuestos = pg_fetch_all(pg_query($conn, "SELECT id_cc, totalgrav10, totaliva10, totalgrav5, totaliva5, totalexenta FROM v_cal_impuesto_compra WHERE id_cc = $id_cc;"));
+
         //TRAE LA VISTA DEL MOVIMIENTO CORRELACIONADO A ES MOVIMIENTO DE COMPRA
         $ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE  estado = 'CONFIRMADO';"));
         //$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_consolidacion WHERE  id_cc = $id_cc;"));
@@ -148,7 +156,33 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         //     $disabled = 'disabled';
         // }
     }
+    $totalIva10 = [];
+$totalIva5 = [];
+$totalExenta = [];
+$totaGrav = [];
+$totalIva = [];
 
+// Procesar los impuestos
+if ($impuestos) {
+    foreach ($impuestos as $imp) {
+        $totalIva10[] = isset($imp['totaliva10']) ? $imp['totaliva10'] : 0;
+        $totalIva5[] = isset($imp['totaliva5']) ? $imp['totaliva5'] : 0;
+        $totalExenta[] = isset($imp['totalexenta']) ? $imp['totalexenta'] : 0;
+        $totalGrav10[] = isset($imp['totalgrav10']) ? $imp['totalgrav10'] : 0;
+        $totalGrav5[] = isset($imp['totalgrav5']) ? $imp['totalgrav5'] : 0;
+
+        // Sumar los impuestos calculados
+        $totaGrav[] = end($totalGrav10) + end($totalGrav5) + end($totalExenta);
+        $totalIva[] = end($totalIva10) + end($totalIva5);
+    }
+}
+
+// Sumar totales
+$totalIva10 = array_sum($totalIva10);
+$totalIva5 = array_sum($totalIva5);
+$totalExenta = array_sum($totalExenta);
+$totalGrav = array_sum($totaGrav);
+$totalIva = array_sum($totalIva);
 ?>
     <div class="card">
         <div class="card-body">
@@ -171,6 +205,11 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 Datos de la Compra
             </div>
             <div class="card-body">
+                <input type="number" id="total_pagar" value="<?= $totalGrav ?>" hidden>
+                <input type="number" id="total_iva5" value="<?= $totalIva5 ?>" hidden>
+                <input type="number" id="total_iva10" value="<?= $totalIva10 ?>" hidden>
+                <input type="number" id="total_exenta" value="<?= $totalExenta ?>" hidden>
+
                 <input type="hidden" value="<?php echo $compras[0]['id_cc']; ?>" id="id_cc">
                 <input type="hidden" value="<?php echo $ordenes[0]['id_corden']; ?>" id="id_corden">
                 <input type="hidden" value="0" id="eliminar_id_item">
@@ -192,20 +231,21 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <label>Proveedor</label>
                             <select class="select2" id="id_proveedor">
-                                <option selected="true" disabled="disabled" value="<?= $proveedores[0]['id_proveedor'] ?>"><?= $proveedores[0]['proveedor'] . " " . $proveedores[0]['per_ruc']; ?></option>
+                                <option disabled="disabled" <?= empty($proveedores[0]['id_proveedor']) ? 'selected' : '' ?>>Seleccione un proveedor</option>
                                 <?php foreach ($listProveedores as $pr) { ?>
-                                    <option value="<?php echo $pr['id_proveedor']; ?>">
+                                    <option value="<?php echo $pr['id_proveedor']; ?>" <?= $pr['id_proveedor'] == $proveedores[0]['id_proveedor'] ? 'selected' : '' ?>>
                                         <?= $pr['proveedor'] . " " . $pr['per_ruc']; ?>
                                     </option>
-                                <?php }; ?>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
 
+
                     <div class="col-md-4 mb-4">
                         <div class="form-group">
                             <label>Fecha de Emision</label>
-                            <input type="date" value="<?= $compras[0]['cc_fecha'] ?>" class="form-control" id="ord_fecha">
+                            <input type="date" value="<?= $compras[0]['cc_fecha'] ?>" class="form-control" id="cc_fecha">
                         </div>
                     </div>
 
@@ -227,9 +267,9 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <label>Tipo de Factura</label>
                             <select class="form-control" id="cc_tipo_factura" style="width: 100%;">
-                                <option selected="true" disabled="disabled" value="<?= $compras[0]['cc_tipo_factura'] ?>"><?= $compras[0]['cc_tipo_factura'] ?></option>
-                                <option value="CONTADO">CONTADO</option>
-                                <option value="CREDITO">CRÉDITO</option>
+                                <option disabled="disabled" <?= empty($compras[0]['cc_tipo_factura']) ? 'selected' : '' ?>>Seleccione Tipo de Factura</option>
+                                <option value="CONTADO" <?= $compras[0]['cc_tipo_factura'] == 'CONTADO' ? 'selected' : '' ?>>CONTADO</option>
+                                <option value="CREDITO" <?= $compras[0]['cc_tipo_factura'] == 'CREDITO' ? 'selected' : '' ?>>CRÉDITO</option>
                             </select>
                         </div>
                     </div>
@@ -280,6 +320,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                             <tr>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
+                                <th>Stock</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
                                 <th>Acciones</th>
@@ -295,6 +336,9 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     </td>
                                     <td>
                                         <?php echo $d['cantidad']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $d['stock_cantidad']; ?>
                                     </td>
                                     <td>
                                         <?php echo $d['precio']; ?>
@@ -318,7 +362,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">Total</th>
+                                <th colspan="4">Total</th>
                                 <th>
                                     <?php echo number_format($total, 0, ",", "."); ?>
                                 </th>
@@ -404,6 +448,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         <tr>
                             <th>Producto</th>
                             <th>Cantidad</th>
+                            <th>Stock</th>
                             <th>Precio Unitario</th>
                             <th>Subtotal</th>
                             <th>Acciones</th>
@@ -421,6 +466,9 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     </td>
                                     <td>
                                         <?php echo $d['cantidad']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $d['stock_cantidad']; ?>
                                     </td>
                                     <td>
                                         <?php echo $d['precio']; ?>
@@ -446,7 +494,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">Total</th>
+                                <th colspan="4">Total</th>
                                 <th>
                                     <?php echo number_format($total, 0, ",", "."); ?>
                                 </th>

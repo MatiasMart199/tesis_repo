@@ -26,6 +26,7 @@ conponents
                                 <thead>
                                     <tr>
                                         <th>Cant</th>
+                                        <th>Stock</th>
                                         <th>Producto</th>
                                         <!-- <th>Marca</th>
                                         <th>Tipo</th> -->
@@ -52,7 +53,7 @@ conponents
                                     $sumaIva[] = 0;
                                     foreach ($consolidacion as $d) { 
                                         $precioUnitario = $d['precio'];
-                                        $cantidad = $d['stock_cantidad'];
+                                        $cantidad = $d['catidad'];    //$d['stock_cantidad'];
                                         $precioTotal = $precioUnitario * $cantidad;
                                         $iva = $d['id_tip_impuesto'];
 
@@ -84,7 +85,9 @@ conponents
                                     
                                     ?>
                                         <tr>
+                                            
                                             <td><?= $cantidad ?></td>
+                                            <td><?= $d['stock_cantidad'] ?></td>
                                             <td> <?= $d['item_descrip'] . " - " . $d['mar_descrip'] . " - " . $d['tip_item_descrip']; ?> </td>
                                             <!-- <td> <?php //echo $d['mar_descrip']; ?> </td> -->
                                             <!-- <td> <?php //echo $d['tip_item_descrip']; ?> </td> -->
@@ -108,7 +111,7 @@ conponents
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="3">Sub Total</th>
+                                        <th colspan="4">Sub Total</th>
                                         <!-- <th><? //number_format($subTotal, 0, ",", "."); ?> </th> -->
                                         <th><?= number_format($totalExenta, 0, ",", "."); ?> </th>
                                         <th><?= number_format($totalGrav5, 0, ",", "."); ?> </th>
@@ -116,18 +119,18 @@ conponents
                                     
                                     </tr>
                                     <tr>
-                                        <th colspan="3">Liquidacion de IVA</th>
+                                        <th colspan="4">Liquidacion de IVA</th>
 
                                         <th><?= number_format($totalExenta, 0, ",", ".") ?></th>
                                         <th><?= number_format($totalIva5, 0, ",", ".") ?></th>
                                         <th><?= number_format($totalIva10, 0, ",", ".") ?></th>
                                     </tr>
                                     <tr class="bg-orange">
-                                        <th colspan="5">Total IVA:</th>
+                                        <th colspan="6">Total IVA:</th>
                                         <th><?= number_format($totalIva, 0, ",", ".")?></th>
                                     </tr>
                                     <tr class="bg-red">
-                                        <th colspan="5">Total a pagar:</th>
+                                        <th colspan="6">Total a pagar:</th>
                                         <th><?= number_format($totalPagar, 0, ",", ".") ?></th>
                                     </tr>
                                 </tfoot>
@@ -145,11 +148,7 @@ conponents
                         <i class="fa fa-ban"></i> Cancelar
                     </button>
                 </div>
-                <input type="number" name="total_pagar" id="total_pagar" value="<?= $totalPagar ?>" hidden="">
-                <input type="number" name="total_iva5" id="total_iva5" value="<?= $totalIva5 ?>" hidden="">
-                <input type="number" name="total_iva10" id="total_iva10" value="<?= $totalIva10 ?>" hidden="">
-                <input type="number" name="total_exenta" id="total_exenta" value="<?= $totalExenta ?>" hidden="">
-                <input type="date" name="fecha_cuenta" id="fecha_cuenta" value="<?= date('Y-m-d'); ?>"   hidden="">
+                
             </div>
         </div>
     </div>

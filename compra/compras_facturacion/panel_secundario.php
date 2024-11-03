@@ -30,7 +30,7 @@ $consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WH
                 foreach ($consultas_bd as $p) {
                     echo '<div class="custom-container">';
                     echo '<label class="custom-container__label">#' . $p['id_corden'] . ' Nº-----( ' . $p['fecha'] . ' )</label>';
-                    echo '<button class="btn btn-success" onclick="agregar_orden_presupuesto(' . $p['id_corden'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
+                    echo '<button class="btn btn-success" onclick="agregar_compra_orden(' . $p['id_corden'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                     echo '</div>';
                     //echo '<input type="hidden" value="echo '.$p[0]['id_corden'].'" id="id_corden">';
                     // Construye la fila de encabezado de la tabla una sola vez
