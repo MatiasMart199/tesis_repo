@@ -58,6 +58,27 @@
     });
 }
 
+function verificar_mensajeSinJson(resultado) {
+    var operacion = $("#operacion").val();
+    var mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
+
+    swal.fire({
+        title: resultado.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
+        type: resultado.success ? 'success' : 'error',
+        
+    }, function (isConfirm) {
+        if (isConfirm) {
+            // Puedes hacer algo aquí si el usuario hace clic en "Sí"
+            // Por ejemplo, redirigir a otra página o realizar alguna acción adicional.
+            // resultado contiene la información que podrías necesitar.
+            console.log("Usuario hizo clic en Sí");
+        } else {
+            // Puedes hacer algo aquí si el usuario hace clic en "No"
+            console.log("Usuario hizo clic en No");
+        }
+    });
+}
+
 
 
 

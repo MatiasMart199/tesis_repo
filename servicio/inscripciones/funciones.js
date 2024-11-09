@@ -120,7 +120,7 @@ function grabar(){
     var operacion = $("#operacion").val();
     var id_inscrip = '0';
     var ins_aprobacion = '2021-01-01';
-    var ins_estad_salud= "--";
+    var ins_estad_salud= "0";
     var id_cliente = "0";
     var id_plan_servi  = '0';
     var dia  = '0';
@@ -129,6 +129,12 @@ function grabar(){
         id_cliente = $('#id_cliente').val();
         ins_aprobacion = $("#ins_aprobacion").val();
         ins_estad_salud = $('#ins_estad_salud').val();
+
+        console.log(id_inscrip);
+        console.log(id_cliente);
+        console.log(ins_aprobacion);
+        console.log(ins_estad_salud);
+        console.log(operacion);
 
     }
     if(operacion == '5'){
@@ -154,15 +160,18 @@ function grabar(){
             ins_aprobacion: ins_aprobacion,
             ins_estad_salud: ins_estad_salud,
             id_cliente: id_cliente,
-            id_plan_servi : id_plan_servi,
-            dia : dia ,
+            id_plan_servi: id_plan_servi,
+            dia: dia ,
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensaje(resultado)){
+        if(verificar_mensajeSinJson(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
+    }).fail(function (a, b, c) {
+        //console.error(b);
+        console.error("Error:", a, b, c); // Error detallado
     });
 }
 

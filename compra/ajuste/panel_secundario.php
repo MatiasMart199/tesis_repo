@@ -1,13 +1,11 @@
 <?php
-$id_inscrip = $_POST['id_inscrip'];
+$id_cpre = $_POST['id_cp'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE  estado = 'CONFIRMADO' order by id_inscrip;"));
-
-
+$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE  estado = 'CONFIRMADO' order by id_cp;"));
 ?>
 
 <div class="modal-dialog modal-lg">
@@ -26,22 +24,22 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripcione
 
                 echo '<div class="card-body">';
 
-                foreach ($cabecera as $c) {
+                foreach ($pedidos as $pedido) {
                     echo '<div class="custom-container">';
-                    echo '<label class="custom-container__label">#' . $c['id_inscrip'] . ' Nº-----( ' . $c['fecha'] . ' )</label>';
-                    echo '<button class="btn btn-success" onclick="agregar_membresia_inscripcion(' . $c['id_inscrip'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
+                    echo '<label class="custom-container__label">#' . $pedido['id_cp'] . ' Nº-----( ' . $pedido['fecha'] . ' )</label>';
+                    echo '<button class="btn btn-success" onclick="agregar_presupuesto_pedido(' . $pedido['id_cp'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                     echo '</div>';
 
                     // Construye la fila de encabezado de la tabla una sola vez
-                    $detalle = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones_detalle WHERE id_inscrip = " . $c['id_inscrip'] . " ORDER BY precio ASC;"));
+                    $pedidos_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra_detalles WHERE id_cp = " . $pedido['id_cp'] . " ORDER BY precio ASC;"));
 
-                    echo '<input type="hidden" value="' . $c['id_inscrip'] . '" id="id_inscrip">';
+                    echo '<input type="hidden" value="' . $pedido['id_cp'] . '" id="id_cpedido">';
                     echo '<table class="table table-bordered">';
-                    if (!empty($detalle)) {
+                    if (!empty($pedidos_detalles)) {
                         echo '<thead>';
                         echo '<tr>';
-                        echo '<th>Servicio</th>';
-                        echo '<th>Dias</th>';
+                        echo '<th>Producto</th>';
+                        echo '<th>Cantidad</th>';
                         echo '<th>Precio Unitario</th>';
                         echo '<th>Subtotal</th>';
                         //echo '<th>Acciones</th>';
@@ -51,14 +49,14 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripcione
                         
                         echo '<tbody>';
                         $total = 0;
-                        foreach ($detalle as $d) {
+                        foreach ($pedidos_detalles as $d) {
 
-                            $total = $total + ($d['precio'] * $d['dia']);
+                            $total = $total + ($d['precio'] * $d['cantidad']);
                             echo '<tr>';
-                            echo '<td>' . $d['ps_descrip']. '</td>';
-                            echo '<td>' . $d['dia'] . '</td>';
+                            echo '<td>' . $d['item_descrip'] . ' - ' . $d['mar_descrip'] . '</td>';
+                            echo '<td>' . $d['cantidad'] . '</td>';
                             echo '<td>' . $d['precio'] . '</td>';
-                            echo '<td>' . ($d['precio'] * $d['dia']) . '</td>';
+                            echo '<td>' . ($d['precio'] * $d['cantidad']) . '</td>';
                             // echo '<td>';
                 
                             // echo '</td>';
@@ -71,9 +69,9 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripcione
                         echo '<th colspan="3">Total</th>';
                         echo '<th>' . number_format($total, 0, ",", ".") . '</th>';
                         // echo '<th>';
-                        // if ($c['estado'] == 'CONFIRMADO') {
+                        // if ($pedido['estado'] == 'CONFIRMADO') {
                         //     echo '<div class="form-group">';
-                        //     echo '<button class="btn btn-success" onclick="agregar_membresia_inscripcion(' . $c['id_cp'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
+                        //     echo '<button class="btn btn-success" onclick="agregar_presupuesto_pedido(' . $pedido['id_cp'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                         //     echo '</div>';
                         // }
                         // echo '</th>';
@@ -90,8 +88,6 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripcione
 
                 echo '</div>';
                 echo '</div>';
-
-                pg_close($conn);
                 ?>
                 <div class="modal-footer justify-content-between">
                     <button class="btn btn-danger" data-dismiss="modal" id="btn-modal-secund-cerrar">

@@ -1,0 +1,251 @@
+Para añadir autenticación de dos factores (2FA) en tu login, vamos a hacer los siguientes cambios:
+
+Paso de Verificación del Usuario y Contraseña: Si el usuario y la contraseña son correctos, en lugar de redirigir directamente a la página principal (inicio.php), vamos a enviar un código temporal al usuario y redirigirlo a un formulario donde deberá ingresarlo.
+
+Formulario de Verificación del Código 2FA: Una vez el usuario ingresa el código enviado, el sistema verifica que sea correcto y que aún esté vigente. Si todo está bien, el usuario podrá ingresar.
+
+Paso 1: Modificar login.php para Enviar el Código de Verificación
+Primero, al validar correctamente el usuario y la contraseña, generaremos un código de verificación y lo guardaremos en la base de datos junto con una fecha de expiración.
+
+php
+Copiar código
+// login.php
+session_start();
+if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
+    require_once('Conexion.php');
+    $conexion = new Conexion();
+    $conn = $conexion->getConexion();
+    $usu = $_POST['usuario'];
+    $contra = $_POST['contrasena'];
+
+    $resul = pg_fetch_all(pg_query($conn, "SELECT * FROM usuarios WHERE usu_login = trim('$usu');"));
+    
+    if (empty($resul)) {    // SI NO EXISTE EL USUARIO
+        $_SESSION['mensaje'] = "NO EXISTE EL USUARIO";
+        header('Location: /tesis');
+    } else {
+        if ($resul[0]['usu_contrasena'] == md5($contra)) {
+            // Generar el código de verificación
+            $codigoVerificacion = rand(100000, 999999);
+            $expiracion = date("Y-m-d H:i:s", strtotime('+10 minutes'));
+
+            // Guardar el código y la expiración en la base de datos
+            $id_usuario = $resul[0]['id_usuario'];
+            $query = "UPDATE usuarios SET verification_code = $codigoVerificacion, code_expiration = '$expiracion' WHERE id_usuario = $id_usuario";
+            pg_query($conn, $query);
+
+            // Enviar el código al correo del usuario (aquí usarías una función de envío de correo)
+            mail($resul[0]['usu_email'], "Código de Verificación", "Tu código de verificación es: $codigoVerificacion");
+
+            // Guardar el ID del usuario en sesión y redirigir al formulario de código
+            $_SESSION['id_usuario'] = $id_usuario;
+            header('Location: /tesis/verify_code.php');
+        } else {
+            $_SESSION['mensaje'] = "LA CONTRASEÑA NO COINCIDE";
+            header('Location: /tesis');
+        }
+    }
+}
+Paso 2: Crear verify_code.php para la Entrada del Código
+Este archivo muestra un formulario en el que el usuario debe ingresar el código que ha recibido.
+
+html
+Copiar código
+<!-- verify_code.php -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificar Código</title>
+</head>
+<body>
+    <form action="check_code.php" method="post">
+        <label>Ingresa el código de verificación enviado a tu correo:</label>
+        <input type="text" name="codigo" required>
+        <button type="submit">Verificar</button>
+    </form>
+</body>
+</html>
+Paso 3: Validar el Código en check_code.php
+En este archivo, verificaremos que el código ingresado sea correcto y que aún no haya expirado. Si es correcto, el usuario es redirigido a la página principal.
+
+php
+Copiar código
+// check_code.php
+session_start();
+require_once('Conexion.php');
+$conexion = new Conexion();
+$conn = $conexion->getConexion();
+
+$id_usuario = $_SESSION['id_usuario'];
+$codigoIngresado = $_POST['codigo'];
+
+// Obtener el código de la base de datos
+$query = pg_query($conn, "SELECT verification_code, code_expiration FROM usuarios WHERE id_usuario = $id_usuario");
+$user = pg_fetch_assoc($query);
+
+if ($user) {
+    $currentDateTime = date("Y-m-d H:i:s");
+    
+    if ($user['verification_code'] == $codigoIngresado && $currentDateTime <= $user['code_expiration']) {
+        // Código válido
+        $_SESSION['codigo_verificado'] = true;
+
+        // Limpiar el código de verificación de la base de datos
+        pg_query($conn, "UPDATE usuarios SET verification_code = NULL, code_expiration = NULL WHERE id_usuario = $id_usuario");
+        
+        header("Location: /tesis/inicio.php");
+    } else {
+        // Código incorrecto o expirado
+        $_SESSION['mensaje'] = "Código incorrecto o expirado";
+        header("Location: /tesis/verify_code.php");
+    }
+} else {
+    echo "Error al verificar el código.";
+}
+Paso 4: Redirigir al Usuario Solo Si Ha Completado 2FA
+Finalmente, en la página principal (inicio.php), asegúrate de que el usuario solo pueda acceder si ha completado el 2FA.
+
+php
+Copiar código
+// inicio.php
+session_start();
+if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['codigo_verificado'])) {
+    header("Location: /tesis");
+    exit();
+}
+
+// Aquí va el contenido de la página principal
+Este flujo asegura que:
+
+El usuario no puede acceder sin autenticarse y proporcionar el código 2FA.
+El código es temporal y expira después de 10 minutos.
+Se elimina el código de la base de datos una vez que el usuario completa la autenticación 2FA exitosamente.
+
+
+
+
+
+Dijiste:
+y como podria hacer mas secillo utilizando triger y crear una tabla aparte para la a2f que este relacionado con la tabla usuario
+ChatGPT dijo:
+ChatGPT
+Podemos simplificar la autenticación de dos factores (2FA) utilizando una tabla separada para almacenar los códigos 2FA y activando un trigger que gestione la expiración de estos códigos después de un tiempo determinado. Esta arquitectura mantendrá el código de verificación separado de la tabla de usuarios, lo cual facilita la gestión de seguridad y el control de datos expirados.
+
+Paso 1: Crear una Tabla para 2FA
+Primero, crea una tabla llamada auth_2fa que almacene los códigos de verificación de cada usuario. Esta tabla tendrá una relación con la tabla usuarios y campos para el código, la expiración y la confirmación de uso.
+
+sql
+Copiar código
+CREATE TABLE auth_2fa (
+    id SERIAL PRIMARY KEY,
+    id_usuario INT REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    codigo INT NOT NULL,
+    fecha_expiracion TIMESTAMP NOT NULL,
+    usado BOOLEAN DEFAULT FALSE
+);
+id_usuario: relaciona el código de 2FA con el usuario.
+codigo: almacena el código de verificación.
+fecha_expiracion: indica cuándo expira el código.
+usado: registra si el código fue usado o no para que el trigger pueda gestionarlo.
+Paso 2: Crear un Trigger para Limpiar Códigos Expirados
+A continuación, creamos un trigger que marque los códigos como "usados" o los elimine cuando estén vencidos.
+
+sql
+Copiar código
+CREATE OR REPLACE FUNCTION expirar_codigos_2fa() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Si el código ha expirado, se marca como usado
+    IF NEW.fecha_expiracion < NOW() THEN
+        NEW.usado := TRUE;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verificar_expiracion
+BEFORE INSERT OR UPDATE ON auth_2fa
+FOR EACH ROW
+EXECUTE FUNCTION expirar_codigos_2fa();
+Con este trigger, cada vez que se inserta o actualiza un código en auth_2fa, se verifica si ha expirado. Si el código ha pasado su tiempo de expiración, se marca como "usado".
+
+Paso 3: Modificar login.php para Generar y Guardar el Código de Verificación
+Modificaremos login.php para que genere un código de 2FA cuando el usuario ingrese correctamente el usuario y la contraseña, y lo guarde en la tabla auth_2fa con una fecha de expiración.
+
+php
+Copiar código
+// login.php
+session_start();
+if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
+    require_once('Conexion.php');
+    $conexion = new Conexion();
+    $conn = $conexion->getConexion();
+    $usu = $_POST['usuario'];
+    $contra = $_POST['contrasena'];
+
+    $resul = pg_fetch_all(pg_query($conn, "SELECT * FROM usuarios WHERE usu_login = trim('$usu');"));
+    
+    if (empty($resul)) {
+        $_SESSION['mensaje'] = "NO EXISTE EL USUARIO";
+        header('Location: /tesis');
+    } else {
+        if ($resul[0]['usu_contrasena'] == md5($contra)) {
+            $_SESSION['id_usuario'] = $resul[0]['id_usuario'];
+
+            // Generar el código de verificación y fecha de expiración
+            $codigoVerificacion = rand(100000, 999999);
+            $expiracion = date("Y-m-d H:i:s", strtotime('+10 minutes'));
+
+            // Insertar el código en auth_2fa
+            $query = "INSERT INTO auth_2fa (id_usuario, codigo, fecha_expiracion) VALUES 
+                     ({$_SESSION['id_usuario']}, $codigoVerificacion, '$expiracion')";
+            pg_query($conn, $query);
+
+            // Enviar el código al correo del usuario (aquí usarías una función de envío de correo)
+            mail($resul[0]['usu_email'], "Código de Verificación", "Tu código de verificación es: $codigoVerificacion");
+
+            header('Location: /tesis/verify_code.php');
+        } else {
+            $_SESSION['mensaje'] = "LA CONTRASEÑA NO COINCIDE";
+            header('Location: /tesis');
+        }
+    }
+}
+Paso 4: Crear verify_code.php para Validar el Código
+Ahora verify_code.php verificará que el código ingresado coincida con el de auth_2fa, esté relacionado con el usuario y no haya expirado.
+
+php
+Copiar código
+// verify_code.php
+session_start();
+require_once('Conexion.php');
+$conexion = new Conexion();
+$conn = $conexion->getConexion();
+
+$id_usuario = $_SESSION['id_usuario'];
+$codigoIngresado = $_POST['codigo'];
+
+$query = "SELECT * FROM auth_2fa WHERE id_usuario = $id_usuario AND codigo = $codigoIngresado AND usado = FALSE";
+$resultado = pg_fetch_assoc(pg_query($conn, $query));
+
+if ($resultado) {
+    $fechaExpiracion = $resultado['fecha_expiracion'];
+
+    if (strtotime($fechaExpiracion) > time()) {
+        // Código válido y aún no expirado
+        pg_query($conn, "UPDATE auth_2fa SET usado = TRUE WHERE id = {$resultado['id']}");
+        $_SESSION['codigo_verificado'] = true;
+        header("Location: /tesis/inicio.php");
+    } else {
+        $_SESSION['mensaje'] = "Código expirado.";
+        header("Location: /tesis/verify_code.php");
+    }
+} else {
+    $_SESSION['mensaje'] = "Código incorrecto o ya usado.";
+    header("Location: /tesis/verify_code.php");
+}
+Resumen de la Arquitectura de Autenticación
+Inicio de Sesión: El usuario ingresa su usuario y contraseña. Si son correctos, se genera un código 2FA.
+Almacenamiento y Envío del Código: El código y su tiempo de expiración se almacenan en auth_2fa, y el código se envía al usuario.
+Validación del Código: El usuario ingresa el código en verify_code.php. El código es validado y, si es correcto, se marca como usado.
+Gestión de Códigos Expirados: El trigger marca automáticamente los códigos como "usados" cuando han expirado, evitando que puedan ser reutilizados.

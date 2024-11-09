@@ -58,32 +58,8 @@ if (isset($_SESSION['mensaje'])) {
 		<div class="card card-info">
 			<div class="card-body">
 				<p></p>
-				<form action="login.php" method="post">
-					<div class="input-group mb-3">
-						<div class="input-group-prepend">
-							<span class="input-group-text">
-								<i class="far fa-user"></i>
-							</span>
-						</div>
-						<input type="text" required="" name="usuario" class="form-control" placeholder="Usuario"
-							autofocus="">
-					</div>
-					<div class="input-group mb-3">
-						<div class="input-group-prepend">
-							<span class="input-group-text">
-								<i class="fas fa-key"></i>
-							</span>
-						</div>
-						<input type="password" required="" name="contrasena" class="form-control"
-							placeholder="Contraseña">
-					</div>
-					<div class="row">
-						<button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
-					</div>
-				</form>
-
 				<!-- AUTENTICACION DE 2 FACTOR -->
-				<!-- <form action="login.php" method="post">
+				<form action="login.php" method="post">
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text">
@@ -96,7 +72,7 @@ if (isset($_SESSION['mensaje'])) {
 					<div class="row">
 						<button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
 					</div>
-				</form> -->
+				</form>
 
 			</div>
 		</div>

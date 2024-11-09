@@ -72,7 +72,7 @@ if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
         if ($resul[0]['usu_contrasena'] == md5($contra)) {
             $_SESSION['id_usuario'] = $resul[0]['id_usuario'];
             //header('Location: /tesis/inicio.php');
-            header('Location: /tesis/autentificacion/index.php');
+            header('Location: /tesis/inicio.php');
 
         } else { // SI LA CONTRASEÑA NO COINCIDE
             $_SESSION['mensaje'] = "LA CONTRASEÑA NO COINCIDE";

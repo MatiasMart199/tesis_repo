@@ -1,9 +1,7 @@
 
 $(function(){
-    panel_membresia();
+    panel_presupuestos();
     panel_datos(-1);
-    
-    
 });
 
 function refrescar_select(){
@@ -29,39 +27,40 @@ function formato_tabla(tabla, item_cantidad){
     });
 }
 
-function panel_membresia(){
+function panel_presupuestos(){
     $.ajax({
-        url:"panel_membresia.php"
+        url:"panel_presupuestos.php"
     }).done(function(resultado){
-        $("#panel-membresias").html(resultado);
+        $("#panel-presupuestos").html(resultado);
         formato_tabla("#tabla_panel_presupuestos", 5);
     });
 }
 
-function panel_datos(id_mem){
+function panel_datos(id_cpre){
     $.ajax({
         url:"panel_datos.php",
         type:"POST",
         data:{
-            id_mem: id_mem
+            id_cpre: id_cpre
         }
     }).done(function(resultado){
         $("#panel-datos").html(resultado);
+        panel_pedidos();
         refrescar_select();
     });
 }
 
-// function panel_pedidos(){
-//     $.ajax({
-//         url:"panel_presupuestos.php"
-//     }).done(function(resultado){
-//         $("#panel-presupuestos").html(resultado);
-//         formato_tabla("#tabla_panel_presupuestos", 5);
-//     });
-// }
+function panel_pedidos(){
+    $.ajax({
+        url:"panel_presupuestos.php"
+    }).done(function(resultado){
+        $("#panel-presupuestos").html(resultado);
+        formato_tabla("#tabla_panel_presupuestos", 5);
+    });
+}
 
-function datos(id_mem){
-    panel_datos(id_mem);
+function datos(id_cpre){
+    panel_datos(id_cpre);
     $("#btn-panel-datos").click();
 }
 
@@ -71,12 +70,12 @@ function agregar(){
 }
 
 function modificar_detalle(id_item){
-    var id_mem = $("#id_mem").val();
+    var id_cpre = $("#id_cpre").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
-            id_mem: id_mem,
+            id_cpre: id_cpre,
             id_item: id_item
         }
     }).done(function(resultado){
@@ -98,12 +97,12 @@ function modalSecund(){
     });
 }
 
-function modalConsolidacion(id_mem){
+function modalConsolidacion(id_cpre){
     $.ajax({
         type:"POST",
         url:"./panel_consolidacion.php",
         data:{
-            id_mem: id_mem
+            id_cpre: id_cpre
         }
      // ejecuta el llamado
     }).done(function(resultado){
@@ -112,6 +111,12 @@ function modalConsolidacion(id_mem){
     });
 }
 
+function agregar_presupuesto_pedido(id_cp){
+    $("#id_cp").val(id_cp);
+    $("#operacion").val(8);
+    grabar();
+    $("html, body").animate({ scrollTop: 0}, "slow");
+}
 
 function agregar_grabar(){
     $("#operacion").val(1);
@@ -143,118 +148,114 @@ function modificar_detalle_grabar(){
     grabar();
 }
 
-function eliminar_detalle(id_plan_servi){
-    $("#eliminar_id_plan_servi").val(id_plan_servi);
+function eliminar_detalle(id_item){
+    $("#eliminar_id_item").val(id_item);
     $("#operacion").val(7);
     grabar();
 }
 
-function agregar_membresia_inscripcion(id_inscrip){
-    $("#id_inscrip").val(id_inscrip);
-    $("#operacion").val(8);
-    grabar();
-    $("html, body").animate({ scrollTop: 0}, "slow");
-}
-
-function eliminar_membresia_inscripcion(id_plan_servi){
-    $("#eliminar_id_plan_servi").val(id_plan_servi);
+function eliminar_presupuesto_pedido(id_item){
+    $("#eliminar_id_item").val(id_item);
     $("#operacion").val(11);
     grabar();
 }
 
 function cancelar(){
     panel_datos(-1);
-    $("#btn-panel-membresia").click();
+    $("#btn-panel-presupuestos").click();
     mensaje("CANCELADO","error");
 }
 
 function grabar(){
     var operacion = $("#operacion").val();
-    var id_mem = '0';
-    var mem_fecha = '2023-03-03';
-    var mem_vence = '2023-03-03';
-    var mem_observacion = '0';
-    var id_cliente = '0';
-    var id_plan_servi = '0';
-    var dias = '0';
+    var id_cpre = '0';
+    var cpre_fecha = '2023-03-03';
+    var cpre_validez = '2023-03-03';
+    var cpre_numero = '0';
+    var cpre_observacion = '0';
+    var id_proveedor = '0';
+    var id_item = '0';
+    var cantidad = '0';
     var precio = '0';
-    var id_inscrip = '0';
+    var id_cp = '0';
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
-        id_mem = $("#id_mem").val();
-        mem_fecha = $("#mem_fecha").val();
-        mem_vence = $("#mem_vence").val();
-        mem_observacion = $("#mem_observacion").val();
-        id_cliente = $("#id_cliente").val();
-        
+        id_cpre = $("#id_cpre").val();
+        cpre_fecha = $("#cpre_fecha").val();
+        cpre_validez = $("#cpre_validez").val();
+        cpre_numero = $("#cpre_numero").val();
+        cpre_observacion = $("#cpre_observacion").val();
+        id_proveedor = $("#id_proveedor").val();
     }
     if(operacion == '5'){
-        id_mem = $("#id_mem").val();
-        id_plan_servi = $("#agregar_id_plan_servi").val();
-        dias = $("#agregar_dias").val();
+        id_cpre = $("#id_cpre").val();
+        id_item = $("#agregar_id_item").val();
+        cantidad = $("#agregar_cantidad").val();
         precio = $("#agregar_precio").val();
     }
     if(operacion == '6'){
-        id_mem = $("#id_mem").val();
-        id_plan_servi = $("#modificar_id_plan_servi").val();
-        dias = $("#modificar_dias").val();
+        id_cpre = $("#id_cpre").val();
+        id_item = $("#modificar_id_item").val();
+        cantidad = $("#modificar_cantidad").val();
         precio = $().val("#modificar_precio");
     }
     if(operacion == '7'){
-        id_mem = $("#id_mem").val();
-        id_plan_servi = $("#eliminar_id_plan_servi").val();
+        id_cpre = $("#id_cpre").val();
+        id_item = $("#eliminar_id_item").val();
     }
     if(operacion == '8'){
-        id_mem = $("#id_mem").val();
-        id_inscrip = $("#id_inscrip").val();
+        id_cpre = $("#id_cpre").val();
+        id_cp = $("#id_cp").val();
     }
     if(operacion == '9'){
-        id_mem = $("#id_mem").val();
-        id_inscrip = $("#id_inscrip").val();
-        id_plan_servi = $("#modificar_id_plan_servi").val();
-        dias = $("#modificar_cantidad").val();
-        precio = $("#modificar_precio").val();
+        id_cpre = $("#id_cpre").val();
+        id_cp = $("#id_cp").val();
+        id_item = $("#modificar_id_item").val();
+        cantidad = $("#modificar_cantidad").val();
+        precio = $().val("#modificar_precio");
     }
     if(operacion == '10'){
-        id_inscrip = $("#id_inscrip").val();
-        id_plan_servi = $("#id_plan_servi").val();
+        id_cp = $("#id_cp").val();
+        id_item = $("#eliminar_id_item").val();
     }
     if(operacion == '11'){
-        id_inscrip = $("#id_inscrip").val();
-        id_plan_servi = $("#eliminar_id_plan_servi").val();
+        id_cpre = $("#id_cpre").val();
+        id_cp = $("#id_cp").val();
+        id_item = $("#eliminar_id_item").val();
     }
     $.ajax({
         url: "grabar.php",
         type: "POST",
         data:{
-            id_mem: id_mem,
-            mem_fecha: mem_fecha,
-            mem_vence: mem_vence,
-            mem_observacion: mem_observacion,
-            id_cliente: id_cliente,
-            id_plan_servi: id_plan_servi,
-            dias: dias,
+            id_cpre: id_cpre,
+            cpre_fecha: cpre_fecha,
+            cpre_validez: cpre_validez,
+            cpre_numero: cpre_numero,
+            cpre_observacion: cpre_observacion,
+            id_proveedor: id_proveedor,
+            id_item: id_item,
+            cantidad: cantidad,
             precio: precio,
-            id_inscrip: id_inscrip,
+            id_cp: id_cp,
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensajeSinJson(resultado)){
+        if(verificar_mensaje(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
     }).fail(function(a,b,c){
-        console.error("Error:", a, b, c);
+        console.log('Error:', c);
     });
 }
 
 function postgrabar(operacion){
-    panel_membresia();
+    panel_presupuestos();
     if(operacion == '1'){
         panel_datos(-2);
         //$('#btn-panel-pedidos').click ();
     }
     if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
-        panel_datos($("#id_mem").val());
+        panel_datos($("#id_cpre").val());
         if(operacion == '6'){
             $("#btn-panel-modificar-cerrar").click();
         }
@@ -267,20 +268,3 @@ function postgrabar(operacion){
     
     }
 }
-
-function autoCompletePrecio(){
-    $(document).ready(function() {
-        $('#agregar_id_plan_servi').on('change', function() {
-            const selectOption = this.options[this.selectedIndex];
-            const precio = selectOption.getAttribute('data_precio');
-            document.getElementById('agregar_precio').value = precio;
-        });
-    });
-}
-
-    // document.getElementById('agregar_id_plan_servi').addEventListener('change', function() {
-    //     const selectOption = this.options[this.selectedIndex];
-    //     const precio = selectOption.getAttribute('data-precio');
-    //     document.getElementById('agregar_precio').value = precio;
-    // });    
-
