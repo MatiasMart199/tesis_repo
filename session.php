@@ -37,6 +37,8 @@ if (isset($_SESSION['id_usuario'])) {
     $_SESSION['pais_codigo']= $resul[0]['pais_codigo'];
     $_SESSION['ec_descrip']= $resul[0]['ec_descrip'];
     $_SESSION['gen_descrip']= $resul[0]['gen_descrip'];
+    $_SESSION['codigo']= $resul[0]['codigo'];
+    $_SESSION['fecha_expiracion']= $resul[0]['fecha_expiracion'];
 
     }else {
     header("Location: /tesis");

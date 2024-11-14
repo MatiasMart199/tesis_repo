@@ -1,4 +1,4 @@
-<?php 
+<?php
 // if(isset($_POST['usuario']) && isset($_POST['contrasena'])){
 //     echo"SE RECIBIERON LOS PARAMETROS";
 //     echo "<br><br>El usuario es: ".$_POST['usuario'];
@@ -19,7 +19,7 @@
 //     } else {
 //         echo "EXITE ESTE USUARIO EL USUARIO: $usu Y CONTRASEÑA $contra";
 //     }
-    
+
 // }else{
 //     header('Location: /conexionphp');
 // }
@@ -40,14 +40,14 @@
 //         if($resul[0]['usu_contrasena'] == md5($contra)){
 //             $_SESSION['id_usuario']= $resul[0]['id_usuario'];
 //             header('Location: /tesis/inicio.php');
-            
-            
+
+
 //         }else{ //SI LA CONTRASEÑA NO COINCIDE
 //             $_SESSION['mensaje']="LA CONTRASEÑA NO COINCIDE";
 //             header('Location: /tesis');
 //         }
 //     }
-    
+
 // }else{//SI NO LLEGA LOS PARAMETROS
 //     $_SESSION['mensaje']="NO LLEGA LOS PARAMETROS";
 //     header('Location: /tesis');
@@ -63,22 +63,30 @@ if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
     $contra = $_POST['contrasena'];
 
     $resul = pg_fetch_all(pg_query($conn, "SELECT * FROM usuarios WHERE usu_login = trim('$usu');"));
+
     if (empty($resul)) {    // SI NO EXISTE EL USUARIO
         $_SESSION['mensaje'] = "NO EXISTE EL USUARIO";
         header('Location: /tesis');
-
     } else {
         if ($resul[0]['usu_contrasena'] == md5($contra)) {
             $_SESSION['id_usuario'] = $resul[0]['id_usuario'];
-            header('Location: /tesis/inicio.php');
+            // Generar el código de verificación
+            $verificationCode = rand(100000, 999999);
+            $expirationTime = date("Y-m-d H:i:s", strtotime('+10 minutes'));
 
+            // Guardar código y expiración en la base de datos
+            $updateQuery = pg_fetch_all(pg_query($conn,"UPDATE auth_2fa 
+            SET codigo = $verificationCode, fecha_expiracion = '$expirationTime' WHERE id_usuario = {$_SESSION['id_usuario']};"));
+
+            // Enviar código al correo del usuario
+            mail($_SESSION['per_correo'], "Your Verification Code", "Your code is: $verificationCode");
+
+            // Redirigir a la página de verificación
+            //header('Location: /tesis/inicio.php');
+            header('Location: /tesis/autentificacion/index.php');
         } else { // SI LA CONTRASEÑA NO COINCIDE
             $_SESSION['mensaje'] = "LA CONTRASEÑA NO COINCIDE";
             header('Location: /tesis');
-
         }
     }
-} 
-
-
-?>
+}

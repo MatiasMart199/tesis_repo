@@ -98,12 +98,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <label>Intervalo</label>
-                        <input type="number" value="0" class="form-control" id="cc_intervalo" disabled>
-                    </div>
-                </div>
 
                 <div class="col-md-1 mb-2">
                     <div class="form-group">
@@ -111,7 +105,13 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         <input type="number" value="0" class="form-control" id="cc_cuota" disabled>
                     </div>
                 </div>
-
+                
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label>Intervalo</label>
+                        <input type="number" value="0" class="form-control" id="cc_intervalo" disabled>
+                    </div>
+                </div>
 
                 <!-- -------------------------------------------------------------------------------------------------------------- -->
                 <div class="row">
@@ -274,12 +274,6 @@ $totalIva = array_sum($totalIva);
                         </div>
                     </div>
 
-                    <div class="col-md-1">
-                        <div class="form-group">
-                            <label>Intervalo</label>
-                            <input type="number" value="<?= $compras[0]['cc_intervalo'] ?>" class="form-control" id="cc_intervalo" disabled>
-                        </div>
-                    </div>
 
                     <div class="col-md-1 mb-2">
                         <div class="form-group">
@@ -287,8 +281,13 @@ $totalIva = array_sum($totalIva);
                             <input type="number" value="<?= $compras[0]['cc_cuota'] ?>" class="form-control" id="cc_cuota" disabled>
                         </div>
                     </div>
-
-
+                    
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>Intervalo</label>
+                            <input type="number" value="<?= $compras[0]['cc_intervalo'] ?>" class="form-control" id="cc_intervalo" disabled>
+                        </div>
+                    </div>
 
                     <!-- <fieldset>
                             <legend>Is your cat an indoor or outdoor cat?</legend>

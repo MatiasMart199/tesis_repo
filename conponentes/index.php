@@ -1,8 +1,8 @@
 <?php
 session_start();
-if (isset($_SESSION['codigo'])) {
-	if (!($_SESSION['codigo'] == null || $_SESSION['codigo'] == '')) {
-		header('Location: /tesis/inicio.php');
+if (isset($_SESSION['id_usuario'])) {
+	if (!($_SESSION['id_usuario'] == null || $_SESSION['id_usuario'] == '')) {
+		header('Location: /tesis/autentificacion/index.php');
 	}
 }
 
@@ -14,8 +14,6 @@ if (isset($_SESSION['mensaje'])) {
 		$_SESSION['mensaje'] = '';
 	}
 }
-
-
 
 ?>
 <!DOCTYPE html>
@@ -60,21 +58,45 @@ if (isset($_SESSION['mensaje'])) {
 		<div class="card card-info">
 			<div class="card-body">
 				<p></p>
-				<!-- AUTENTICACION DE 2 FACTOR -->
-				<form action="\autentificacion\verificar.php" method="post">
+				<form action="login.php" method="post">
 					<div class="input-group mb-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text">
 								<i class="far fa-user"></i>
 							</span>
 						</div>
-						<input type="text" required="" name="codigo" class="form-control" placeholder="Codigo de Seguridad"
+						<input type="text" required="" name="usuario" class="form-control" placeholder="Usuario"
 							autofocus="">
+					</div>
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<i class="fas fa-key"></i>
+							</span>
+						</div>
+						<input type="password" required="" name="contrasena" class="form-control"
+							placeholder="Contraseña">
 					</div>
 					<div class="row">
 						<button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
 					</div>
 				</form>
+
+				<!-- AUTENTICACION DE 2 FACTOR -->
+				<!-- <form action="login.php" method="post">
+					<div class="input-group mb-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text">
+								<i class="far fa-user"></i>
+							</span>
+						</div>
+						<input type="text" required="" name="a2f" class="form-control" placeholder="Codigo de Seguridad"
+							autofocus="">
+					</div>
+					<div class="row">
+						<button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
+					</div>
+				</form> -->
 
 			</div>
 		</div>
