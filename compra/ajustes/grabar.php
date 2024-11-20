@@ -9,6 +9,7 @@ $id_caju = $_POST['id_caju'];
 $aju_fecha = $_POST['aju_fecha'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
+$aju_observacion = $_POST['aju_observacion'];
 $id_deposito = $_POST['id_deposito'];
 $id_motivo = $_POST['id_motivo'];
 $mot_tipo_ajuste = $_POST['mot_tipo_ajuste'];
@@ -22,6 +23,7 @@ $grabar = pg_query($conn, "SELECT sp_comp_ajustes(
                                             '$aju_fecha', 
                                             $id_sucursal, 
                                             $id_funcionario,
+                                            '$aju_observacion',
                                             $id_deposito,
                                             $id_motivo,
                                             UPPER('$mot_tipo_ajuste'),

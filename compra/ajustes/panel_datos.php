@@ -6,6 +6,7 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
+$sucursal=pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
 $comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_cc = (SELECT max(id_cc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
 
 if ($id_caju == '-1') { //CUANDO SE RESETEA
@@ -24,7 +25,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
             <div class="col-md-2">
                 <div class="form-group">
                     <label>Sucursal</label>
-                    <input type="text" value="<?= $comprasSucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                    <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
                 </div>
             </div>
 
@@ -32,6 +33,12 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                 <label>Fecha</label>
                 <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="aju_fecha" disabled>
             </div>
+
+            <div class="form-group">
+                <label>Observacón</label>
+                <textarea class="form-control" id="aju_observacion"></textarea>
+            </div>
+
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                 <button class="btn btn-success" onclick="agregar_grabar();"><i class="fa fa-save"></i> Grabar</button>
@@ -64,7 +71,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Sucursal</label>
-                        <input type="text" value="<?= $comprasSucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                        <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
                     </div>
                 </div>
 
@@ -72,6 +79,12 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                     <label>Fecha</label>
                     <input type="date" value="<?= $cabecera[0]['aju_fecha']; ?>" class="form-control" id="aju_fecha" disabled>
                 </div>
+
+                <div class="form-group">
+                    <label>Observacón</label>
+                    <textarea class="form-control" id="aju_observacion"><?= $cabecera[0]['aju_observacion']; ?></textarea>
+                </div>
+
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                     <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
@@ -88,7 +101,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <?php if (!empty($detalle)) { ?>
-                    <table class="table table-bordered"style= "font-size: 12px">
+                    <table class="table table-bordered" style="font-size: 12px">
                         <thead>
                             <tr>
                                 <th>Producto</th>
@@ -167,7 +180,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                 <div class="card-body">
                     <?php if (!empty($articulos)) { ?>
 
-                        
+
 
                         <div class="form-group">
                             <label>Depósito</label>

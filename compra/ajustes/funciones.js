@@ -127,6 +127,7 @@ function grabar() {
     var operacion = $("#operacion").val();
     var id_caju = '0';
     var aju_fecha = '2021-01-01';
+    var aju_observacion = '0';
     var id_deposito = '0';
     var id_motivo = '0';
     var mot_tipo_ajuste = '0';
@@ -136,6 +137,7 @@ function grabar() {
     if (operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4') {
         id_caju = $("#id_caju").val();
         aju_fecha = $("#aju_fecha").val();
+        aju_observacion = $("#aju_observacion").val();
     }
     if (operacion == '5') {
         id_caju = $("#id_caju").val();
@@ -163,6 +165,7 @@ function grabar() {
         data: {
             id_caju: id_caju,
             aju_fecha: aju_fecha,
+            aju_observacion: aju_observacion,
             id_deposito: id_deposito,
             id_motivo: id_motivo,
             mot_tipo_ajuste: mot_tipo_ajuste,

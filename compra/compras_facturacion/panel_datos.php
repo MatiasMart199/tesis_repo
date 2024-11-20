@@ -7,6 +7,8 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
+$sucursal=pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
+
 // Fetching the last purchase details for the current branch
 $comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_cc = (SELECT max(id_cc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
 
@@ -45,7 +47,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Sucursal</label>
-                        <input type="text" value="<?= $comprasSucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                        <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
                     </div>
                 </div>
 
@@ -220,7 +222,7 @@ $totalIva = array_sum($totalIva);
                     <div class="col-md-2">
                         <div class="form-group">
                             <label>Sucursal</label>
-                            <input type="text" value="<?= $compras[0]['suc_nombre']; ?>" class="form-control" disabled>
+                            <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
                         </div>
                     </div>
 
