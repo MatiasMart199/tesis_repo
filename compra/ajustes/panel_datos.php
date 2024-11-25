@@ -6,7 +6,7 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
-$sucursal=pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
+$sucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
 $comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_cc = (SELECT max(id_cc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
 
 if ($id_caju == '-1') { //CUANDO SE RESETEA
@@ -172,12 +172,26 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                     'item_descrip' => $a['item_descrip'] . " - " . $a['mar_descrip']
                 ];
             }
+
+            $tiposAjuste = pg_fetch_all(pg_query($conn, "
+                                                    SELECT DISTINCT mot_tipo_ajuste
+                                                    FROM motivo_ajustes
+                                                    WHERE estado = 'ACTIVO';
+                                                "));
+
+            // Obtener todos los motivos
+            $motivos = pg_fetch_all(pg_query($conn, "
+            SELECT id_motivo, mot_descrip, mot_tipo_ajuste
+            FROM motivo_ajustes
+            WHERE estado = 'ACTIVO';
+        "));
         ?>
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">
                     Agregar Producto
                 </div>
                 <div class="card-body">
+                <input type="number" value="" class="form-control" id="agregar_id_motivo" hidden>
                     <?php if (!empty($articulos)) { ?>
 
 
@@ -200,17 +214,20 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                             </select>
                         </div>
 
-
                         <div class="form-group">
-                            <label>Motivo</label>
-                            <input type="text" value="" class="form-control" id="agregar_mot_descrip">
+                            <label>Tipo de Ajuste</label>
+                            <select class="select2" id="agregar_mot_tipo_ajuste" onchange="filtrarMotivos()">
+                                <option selected="true">Seleccione el tipo de Ajuste</option>
+                                <?php foreach ($tiposAjuste as $m) { ?>
+                                    <option value="<?= $m['mot_tipo_ajuste'] ?>"><?= $m['mot_tipo_ajuste'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
 
                         <div class="form-group">
-                            <label>Tipo de Ajuste</label>
-                            <select class="select2" id="agregar_mot_tipo_ajuste">
-                                <option value="POSITIVO">POSITIVO</option>
-                                <option value="NEGATIVO">NEGATIVO</option>
+                            <label>Motivo</label>
+                            <select class="select2" id="agregar_mot_descrip" onchange="mostrarIdMotivo()">
+                            <option selected="true" disabled="disabled">Seleccione Producto</option>
                             </select>
                         </div>
 
@@ -233,25 +250,6 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
 <script>
     // Convertimos la lista de productos a un objeto JSON
     const productosPorDeposito = <?php echo json_encode($productosPorDeposito); ?>;
+    const motivos = <?= json_encode($motivos); ?>;
 
-    function actualizarProductos() {
-        // Obtener el depósito seleccionado
-        const depositoSeleccionado = document.getElementById('agregar_id_deposito').value;
-
-        // Obtener el elemento <select> de productos
-        const selectProductos = document.getElementById('agregar_id_item');
-
-        // Limpiar las opciones actuales
-        selectProductos.innerHTML = '<option selected="true" disabled="disabled">Seleccione Producto</option>';
-
-        // Agregar las opciones de productos correspondientes al depósito seleccionado
-        if (productosPorDeposito[depositoSeleccionado]) {
-            productosPorDeposito[depositoSeleccionado].forEach(producto => {
-                const option = document.createElement('option');
-                option.value = producto.id_item;
-                option.textContent = producto.item_descrip;
-                selectProductos.appendChild(option);
-            });
-        }
-    }
 </script>

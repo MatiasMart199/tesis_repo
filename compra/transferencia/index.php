@@ -1,7 +1,7 @@
 <?php
     include '../../Conexion.php';
     include '../../session.php';
-    $_SESSION['id_pagina'] = '8';
+    $_SESSION['id_pagina'] = '1';
     //include "../../permiso.php";
 ?>
 <!DOCTYPE html>
@@ -30,14 +30,14 @@
               <div class="container-fluid">
                 <div class="row mb-2">
                   <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Inscripción de Cliente</h1>
+                    <h1 class="m-0 text-dark">Nota de Remisión</h1>
                     <input type="hidden" id="operacion" value="0">
                     <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
                   </div>
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                       <li class="breadcrumb-item active">Compra</li>
-                      <li class="breadcrumb-item active">Inscripción</li>
+                      <li class="breadcrumb-item active">Transferencia</li>
                     </ol>
                   </div>
                 </div>
@@ -47,17 +47,17 @@
                 <div class="card">
                     <div class="card-header p-0">
                         <ul class="nav nav-pills ml-auto p-2">
-                            <li class="nav-item"><a class="nav-link active" href="#panel-pedidos" id="btn-panel-pedidos" data-toggle="tab">Pedidos</a></li>
+                            <li class="nav-item"><a class="nav-link active" href="#panel-transferencia" id="btn-panel-transferencia" data-toggle="tab">Transferencias</a></li>
                             <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos" data-toggle="tab">Datos</a></li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            <div class="tab-pane active" id="panel-pedidos">
+                            <div class="tab-pane active" id="panel-transferencia">
                                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Cargando...</label>
                             </div>
                             <div class="tab-pane" id="panel-datos">
-                                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una inscripción...</label>
+                                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una Transferencia...</label>
                             </div>
                         </div>
                     </div>

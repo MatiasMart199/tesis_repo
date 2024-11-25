@@ -144,6 +144,7 @@ function grabar() {
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         id_deposito = $("#agregar_id_deposito").val();
+        id_motivo = $("#agregar_mot_descrip").val();
         mot_descrip = $("#agregar_mot_descrip").val();
         mot_tipo_ajuste = $("#agregar_mot_tipo_ajuste").val();
         //item_precio = 0;$("#agregar_precio").val();
@@ -157,7 +158,7 @@ function grabar() {
         id_caju = $("#id_caju").val();
         id_item = $("#eliminar_id_item").val();
         id_motivo = $("#eliminar_id_motivo").val();
-        console.log(id_caju,id_item, id_motivo);
+        console.log(id_caju, id_item, id_motivo);
     }
     $.ajax({
         url: "grabar.php",
@@ -202,3 +203,46 @@ function postgrabar(operacion) {
     }
 }
 
+
+
+
+
+function filtrarMotivos() {
+    const tipoAjusteSeleccionado = document.getElementById('agregar_mot_tipo_ajuste').value;
+    const selectMotivo = document.getElementById('agregar_mot_descrip');
+
+    // Limpiar las opciones actuales
+    selectMotivo.innerHTML = '<option selected disabled>Seleccione Motivo</option>';
+
+    // Filtrar motivos según el tipo de ajuste seleccionado
+    motivos
+        .filter(motivo => motivo.mot_tipo_ajuste === tipoAjusteSeleccionado)
+        .forEach(motivo => {
+            const option = document.createElement('option');
+            option.value = motivo.id_motivo;
+            option.textContent = motivo.mot_descrip;
+            selectMotivo.appendChild(option);
+        });
+}
+
+
+function actualizarProductos() {
+    // Obtener el depósito seleccionado
+    const depositoSeleccionado = document.getElementById('agregar_id_deposito').value;
+
+    // Obtener el elemento <select> de productos
+    const selectProductos = document.getElementById('agregar_id_item');
+
+    // Limpiar las opciones actuales
+    selectProductos.innerHTML = '<option selected="true" disabled="disabled">Seleccione Producto</option>';
+
+    // Agregar las opciones de productos correspondientes al depósito seleccionado
+    if (productosPorDeposito[depositoSeleccionado]) {
+        productosPorDeposito[depositoSeleccionado].forEach(producto => {
+            const option = document.createElement('option');
+            option.value = producto.id_item;
+            option.textContent = producto.item_descrip;
+            selectProductos.appendChild(option);
+        });
+    }
+}

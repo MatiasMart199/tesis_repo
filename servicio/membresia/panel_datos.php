@@ -36,7 +36,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos de la membresia
+            Datos de la membresía
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_mem">
@@ -49,7 +49,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             </div>
 
             <div>
-                <label>Clientes Inscriptos</label>
+                <label>Clientes Inscritos</label>
                 <select class="select2" id="id_cliente">
                     <?php foreach ($cliente as $cl) { ?>
                         <option value="<?php echo $cl['id_cliente']; ?>"><?php echo $cl['cliente'] . " " . $cl['per_ci']; ?></option>
@@ -63,12 +63,12 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             </div>
 
             <div class="form-group">
-                <label>Vencimineto</label>
+                <label>Vencimiento</label>
                 <input type="date" value="" class="form-control" id="mem_vence">
             </div>
 
             <div class="form-group">
-                <label>Observacón</label>
+                <label>Observación</label>
                 <textarea class="form-control" id="mem_observacion"></textarea>
             </div>
             <div class="form-group">
@@ -105,7 +105,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-            Datos de la membresia
+            Datos de la membresía
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?= $membresias[0]['id_mem'] ?>" id="id_mem">
@@ -121,7 +121,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                 </div>
 
                 <div>
-                    <label>Clientes Inscriptos</label>
+                    <label>Clientes Inscritos</label>
                     <select class="select2" id="id_cliente" disabled>
                         <option selected="true" value="<?= $membresias[0]['id_cliente']; ?>"><?= $membresias[0]['cliente'] . " " . $membresias[0]['per_ci']; ?></option>
                     </select>
@@ -133,12 +133,12 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                 </div>
 
                 <div class="form-group">
-                    <label>Vencimineto</label>
+                    <label>Vencimiento</label>
                     <input type="date" value="<?= $membresias[0]['mem_vence'] ?>" class="form-control" id="mem_vence">
                 </div>
 
                 <div class="form-group">
-                    <label>Observacón</label>
+                    <label>Observación</label>
                     <textarea type="text" class="form-control" id="mem_observacion"><?=  $membresias[0]['mem_observacion'] ?></textarea>
                 </div>
                 <div class="form-group">
@@ -154,7 +154,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles de la membresia
+                Detalles de la membresía
             </div>
             <div class="card-body">
                 <?php if (!empty($membresias_detalles)) { ?>
@@ -242,7 +242,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PEDIDOS CONFIRMADOS -->
         <div class="card card-success col-12">
             <div class="card-header text-center elevation-3">
-                Detalles de las Inscripciones a Membresias
+                Detalles de las Inscripciones a Membresías
             </div>
             <div class="card-body">
 

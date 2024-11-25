@@ -17,7 +17,7 @@ $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones
             <th>Cliente</th>
             <th>Estado de salud</th>
             <th>Fecha</th>
-            <th>Fecha Confirmacion</th>
+            <th>Fecha Confirmación</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>

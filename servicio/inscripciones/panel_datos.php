@@ -25,7 +25,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos de la inscripcion
+            Datos de la inscripción
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_inscrip">
@@ -44,7 +44,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
             </div>
 
             <div class="form-group">
-                <label>Fecha de Aprobacion</label>
+                <label>Fecha de Aprobación</label>
                 <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="ins_aprobacion">
             </div>
             <div class="form-group">
@@ -73,7 +73,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-                Datos de la Inscripcion
+                Datos de la Inscripción
             </div>
             
             <div class="card-body">
@@ -92,7 +92,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                 </div>
 
                 <div class="form-group">
-                    <label>Fecha de Aprobacion</label>
+                    <label>Fecha de Aprobación</label>
                     <input type="date" value="<?= $pedidos[0]['ins_aprobacion']; ?>" class="form-control" id="ins_aprobacion">
                 </div>
                 <div class="form-group">
@@ -111,7 +111,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
         </div>
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles de la Inscripcion
+                Detalles de la Inscripción
             </div>
             <div class="card-body">
                 <?php if (!empty($pedidos_detalles)) { ?>
