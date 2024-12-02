@@ -1,30 +1,41 @@
 <?php 
-include '../Conexion.php';
-include '../session.php';
-$conexion = new Conexion();
-$conn = $conexion->getConexion();
+session_start();
+require_once '../Conexion.php';
 
-if (isset($_POST['codigo'])) {
-    $codigo = $_POST['codigo'];
-    $id_usuario = $_SESSION['id_usuario'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo'])) {
+    $codigo = trim($_POST['codigo']);
+    $idUsuario = $_SESSION['id_usuario'] ?? null;
 
-    $query = "SELECT * FROM auth_2fa WHERE id_usuario = $id_usuario AND codigo = $codigo";
-    $resultado = pg_fetch_assoc(pg_query($conn, $query));
-    if (!empty($resultado)) {
-        $fechaExpiracion = date("Y-m-d H:i:s");
+    if (!$idUsuario) {
+        $_SESSION['mensaje'] = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+        header('Location: /tesis/index.php');
+        exit();
+    }
 
-        if ($codigo == $resultado['codigo'] && $fechaExpiracion <= $resultado['fecha_expiracion']) {
-           pg_fetch_all(pg_query($conn,"UPDATE auth_2fa 
-            SET codigo = NULL, fecha_expiracion = NULL WHERE id_usuario = {$_SESSION['id_usuario']};"));
-            
-            header("Location: /tesis/inicio.php");
+    $conexion = new Conexion();
+    $conn = $conexion->getConexion();
+
+    // Verificar código en la base de datos
+    $query = "SELECT codigo, fecha_expiracion FROM auth_2fa WHERE id_usuario = $1 AND codigo = $2";
+    $result = pg_query_params($conn, $query, [$idUsuario, $codigo]);
+
+    if ($result && $data = pg_fetch_assoc($result)) {
+        $fechaActual = date('Y-m-d H:i:s');
+
+        if ($fechaActual <= $data['fecha_expiracion']) {
+            // Código válido: Limpiar el registro de 2FA
+            $updateQuery = "UPDATE auth_2fa SET codigo = NULL, fecha_expiracion = NULL WHERE id_usuario = $1";
+            pg_query_params($conn, $updateQuery, [$idUsuario]);
+
+            // Redirigir al inicio
+            header('Location: /tesis/inicio.php');
+            exit();
         } else {
-            $_SESSION['mensaje'] = "Código expirado.";
-            header("Location: /tesis/autentificacion");
+            $_SESSION['mensaje'] = "El código ha expirado.";
         }
     } else {
-        $_SESSION['mensaje'] = "Código incorrecto.";
-        header("Location: /tesis/autentificacion");
+        $_SESSION['mensaje'] = "El código es incorrecto.";
     }
+    header('Location: /tesis/autentificacion/index.php');
+    exit();
 }
-?>

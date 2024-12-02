@@ -5,7 +5,7 @@ include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$cliente = pg_fetch_all(pg_query($conn, "SELECT * from  v_clientes where estado = 'ACTIVO' order by cliente, per_ruc;"));
+$cliente = pg_fetch_all(pg_query($conn, "SELECT * from  v_clientes where id_cliente not in (select id_cliente from v_servicios_inscripciones) and estado = 'ACTIVO' order by cliente, per_ruc;"));
 
 function getFechaDays($fechaIni, $fechaFi)
 {
@@ -32,6 +32,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
             <div>
                 <label>Cliente</label>
                 <select class="select2" id="id_cliente">
+                    <option selected="true" disabled>Seleccione...</option>
                     <?php foreach ($cliente as $cl) { ?>
                         <option value="<?php echo $cl['id_cliente']; ?>"><?php echo $cl['cliente'] . " " . $cl['per_ruc']; ?></option>
                     <?php }; ?>

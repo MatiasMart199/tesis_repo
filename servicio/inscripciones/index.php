@@ -47,7 +47,7 @@
                 <div class="card">
                     <div class="card-header p-0">
                         <ul class="nav nav-pills ml-auto p-2">
-                            <li class="nav-item"><a class="nav-link active" href="#panel-pedidos" id="btn-panel-pedidos" data-toggle="tab">Pedidos</a></li>
+                            <li class="nav-item"><a class="nav-link active" href="#panel-pedidos" id="btn-panel-pedidos" data-toggle="tab">Inscripción </a></li>
                             <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos" data-toggle="tab">Datos</a></li>
                         </ul>
                     </div>

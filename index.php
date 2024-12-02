@@ -1,19 +1,19 @@
-<?php
-session_start();
-if (isset($_SESSION['id_usuario'])) {
-	if (!($_SESSION['id_usuario'] == null || $_SESSION['id_usuario'] == '')) {
-		header('Location: /tesis/inicio.php');
-	}
-}
+<!-- <?php
+// session_start();
+// if (isset($_SESSION['id_usuario'])) {
+// 	if (!($_SESSION['id_usuario'] == null || $_SESSION['id_usuario'] == '')) {
+// 		header('Location: /tesis/inicio.php');
+// 	}
+// }
 
-if (isset($_SESSION['mensaje'])) {
-	if ($_SESSION['mensaje'] == null || $_SESSION['mensaje'] == '') {
+// if (isset($_SESSION['mensaje'])) {
+// 	if ($_SESSION['mensaje'] == null || $_SESSION['mensaje'] == '') {
 
-	} else { //SI EXISTE EL LA VARIABLE MENSAJE
-		$mensaje= "verificar_mensaje('{$_SESSION['mensaje']}');";
-		$_SESSION['mensaje'] = '';
-	}
-}
+// 	} else { //SI EXISTE EL LA VARIABLE MENSAJE
+// 		$mensaje= "verificar_mensaje('{$_SESSION['mensaje']}');";
+// 		$_SESSION['mensaje'] = '';
+// 	}
+// }
 
 ?>
 <!DOCTYPE html>
@@ -98,7 +98,7 @@ if (isset($_SESSION['mensaje'])) {
 					</div>
 				</form> -->
 
-			</div>
+			<!-- </div>
 		</div>
 	</div>
 	<script src="/tesis/iconos/fontawesome.js"></script>
@@ -106,11 +106,11 @@ if (isset($_SESSION['mensaje'])) {
 	<script src="/tesis/estilo/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<script src="/tesis/estilo/plugins/fastclick/fastclick.js"></script>
 	<script src="/tesis/estilo/plugins/sweetalert2/sweetalert2.min.js"></script>
-	<script src="/tesis/estilo/plugins/toastr/toastr.min.js"></script>
-	<script>
+	<script src="/tesis/estilo/plugins/toastr/toastr.min.js"></script> -->
+	<!-- <script>
 		$(document).ready(function () {
-				<?php echo $mensaje;
-				$_SESSION['mensaje'] = '';
+				<?php //echo $mensaje;
+				//$_SESSION['mensaje'] = '';
 				?>
 		});
 		function verificar_mensaje(resultado) {
@@ -131,6 +131,60 @@ if (isset($_SESSION['mensaje'])) {
 		}
 	</script>
 	</div>
-</body>
+</body> 
+</html> -->
 
+<?php
+session_start();
+if (isset($_SESSION['id_usuario'])) {
+    header('Location: /tesis/inicio.php');
+    exit();
+}
+
+$mensaje = $_SESSION['mensaje'] ?? null;
+unset($_SESSION['mensaje']);
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENERGYM - Login</title>
+    <link rel="icon" href="/tesis/iconos/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/tesis/estilo/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="/tesis/estilo/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/tesis/estilo/plugins/sweetalert2/sweetalert2.min.css">
+    <style>
+        body { height: 100%; margin: 0; display: flex; align-items: center; justify-content: center; }
+        .fondo { background: url('./imagenes/fondo-ondulado-azul.jpg') center/cover no-repeat; width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; }
+    </style>
+</head>
+<body>
+    <div class="fondo">
+        <div class="login-box">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3 class="card-title">ENERGYM</h3>
+                </div>
+                <div class="card-body">
+                    <form action="login.php" method="post">
+                        <div class="mb-3">
+                            <input type="text" name="usuario" class="form-control" placeholder="Usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" name="contrasena" class="form-control" placeholder="Contraseña" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if ($mensaje): ?>
+        <script src="/tesis/estilo/plugins/sweetalert2/sweetalert2.min.js"></script>
+        <script>
+            Swal.fire({ icon: 'error', title: 'Error', text: '<?= htmlspecialchars($mensaje) ?>' });
+        </script>
+    <?php endif; ?>
+</body>
 </html>

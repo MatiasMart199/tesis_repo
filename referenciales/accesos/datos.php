@@ -13,6 +13,7 @@ $paises = pg_fetch_all($datos);
         <tr>
             <th>#</th>
             <th>usuario</th>
+            <th>Contraseña</th>
             <th>Funcionario</th>
             <th>CI</th>
             <th>Estado</th>
@@ -24,6 +25,7 @@ $paises = pg_fetch_all($datos);
             <tr>
                 <td><?= $p['id_acceso']; ?></td>
                 <td><?= $p['usu_login']; ?></td>
+                <td><?= str_repeat('*', strlen($p['usu_contrasena'])); ?></td>
                 <td><?= $p['funcionario']; ?></td>
                 <td><?= $p['per_ci']; ?></td>
                 <td><?= $p['estado']; ?></td>

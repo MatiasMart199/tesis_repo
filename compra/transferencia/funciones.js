@@ -155,7 +155,7 @@ function grabar() {
         id_vehiculo = $("#id_vehiculo").val();
         id_chofer = $("#id_chofer").val();
         observacion = $("#observacion").val();
-        console.log(id_tra, tra_fecha_elabo, tra_fecha_salida, tra_fecha_recep, id_sucursal_ori, id_sucursal_des, id_deposito_ori, id_deposito_des, id_vehiculo, id_chofer, observacion);
+        //console.log(id_tra, tra_fecha_elabo, tra_fecha_salida, tra_fecha_recep, id_sucursal_ori, id_sucursal_des, id_deposito_ori, id_deposito_des, id_vehiculo, id_chofer, observacion);
     }
     if (operacion == '5') {
         id_tra = $("#id_tra").val();
@@ -283,6 +283,7 @@ function autoSucursal1() {
 
     // Buscar la factura correspondiente en el objeto datosCompras
     const depositoSeleccionada = datoDeposito.find(d => d.id_sucursal === idDeposito);
+    
 
     if (depositoSeleccionada) {
 
@@ -290,6 +291,8 @@ function autoSucursal1() {
         const sucursalSelect = document.getElementById('id_sucursal_ori');
         sucursalSelect.innerHTML = ''; // Limpiar opciones previas
         const option = document.createElement('option');
+        
+        console.log(option);
         option.value = depositoSeleccionada.id_sucursal;
         option.textContent = depositoSeleccionada.suc_nombre;
         option.selected = true; // Seleccionar automáticamente

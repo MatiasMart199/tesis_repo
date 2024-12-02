@@ -1,6 +1,7 @@
 <?php
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
+
 //$modulos = pg_fetch_all(pg_query($conn, "SELECT * FROM modulos ORDER BY id_modulo;"));
 
 //INICIO AGREFADO
@@ -17,7 +18,8 @@ foreach ($lista_paginas as $l) {
 //var_dump($modulos);
 //var_dump($paginas);
 //FIN AGREGADO
-$permisos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_permisos where id_grupo=" . $_SESSION['id_grupo'] . "and estado= 'ACTIVO' and id_accion= 1 order by mod_orden, id_pagina"));
+$permisos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_permisos where id_grupo=" . $_SESSION['id_grupo'] . "AND estado= 'ACTIVO' AND id_accion= 1 order by mod_orden, id_pagina"));
+
 $modulos = null;
 $paginas = null;
 if (!empty($permisos)) {
@@ -32,6 +34,30 @@ if (!empty($permisos)) {
     }
 }
 ?>
+
+
+<!-- Navbar Search -->
+<!-- <li class="nav-item">
+    <a class="nav-link" data-widget="navbar-search" data-target="#navbar-search3" href="#" role="button">
+        <i class="fas fa-search"></i>
+    </a>
+    <div class="navbar-search-block" id="navbar-search3">
+        <form class="form-inline">
+            <div class="input-group input-group-sm">
+                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-navbar" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</li> -->
+
 <aside class="main-sidebar elevation-4 sidebar-light-primary">
     <a href="/tesis/inicio.php" class="brand-link navbar-primary">
         <img src="/tesis/iconos/1.jpg" alt="LOGO" class="brand-image img-circle elevation-5">
@@ -62,7 +88,22 @@ if (!empty($permisos)) {
                 </a>
             </div>
         </div>
+
+
+
+
         <nav class="mt-2">
+
+            <!-- <form class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <div class="input-group mb-2 mr-sm-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text"><i class="fas fa-search"></i></div>
+                    </div>
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
+                    <!-- <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button> -->
+                <!-- </div>
+            </form> -->
+
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <?php if (!empty($modulos)) {
                     foreach ($modulos as $m) { // Recorremos los módulos
@@ -109,19 +150,19 @@ if (!empty($permisos)) {
 
             <!-- ----------------------------------------------------------------------------------------------- -->
 
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- Menú principal: REFERENCIALES -->
-                <li class="nav-item has-treeview">
+            <!-- <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> -->
+            <!-- Menú principal: REFERENCIALES -->
+            <!-- <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-file"></i>
                         <p>
                             REFERENCIALES
                             <i class="right fas fa-angle-down"></i>
                         </p>
-                    </a>
+                    </a> -->
 
-                    <!-- Submenú: COMPRAS -->
-                    <ul class="nav nav-treeview">
+            <!-- Submenú: COMPRAS -->
+            <!-- <ul class="nav nav-treeview">
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fa fa-shopping-cart"></i>
@@ -129,114 +170,26 @@ if (!empty($permisos)) {
                                     COMPRAS
                                     <i class="right fas fa-angle-down"></i>
                                 </p>
-                            </a>
-                            <!-- Submenú dentro de COMPRAS -->
-                            <ul class="nav nav-treeview">
+                            </a> -->
+            <!-- Submenú dentro de COMPRAS -->
+            <!-- <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="#" class="nav-link">
                                         <i class="nav-icon fas fa-circle"></i>
                                         <p>Opción 1 de COMPRAS</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 2 de COMPRAS</p>
-                                    </a>
-                                </li>
                             </ul>
                         </li>
                     </ul>
 
-                    <!-- Submenú: SERVICIOS -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-dumbbell"></i>
-                                <p>
-                                    SERVICIOS
-                                    <i class="right fas fa-angle-down"></i>
-                                </p>
-                            </a>
-                            <!-- Submenú dentro de SERVICIOS -->
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 1 de SERVICIOS</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 2 de SERVICIOS</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    
+                </li> -->
 
-                    <!-- Submenú: VENTAS -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-tags"></i>
-                                <p>
-                                    VENTAS
-                                    <i class="right fas fa-angle-down"></i>
-                                </p>
-                            </a>
-                            <!-- Submenú dentro de VENTAS -->
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 1 de VENTAS</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 2 de VENTAS</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+            <!-- Mensaje de módulos no encontrados -->
 
-                    <!-- Submenú: SEGURIDAD -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-tags"></i>
-                                <p>
-                                    SEGURIDAD
-                                    <i class="right fas fa-angle-down"></i>
-                                </p>
-                            </a>
-                            <!-- Submenú dentro de VENTAS -->
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/tesis/referenciales/accesos/" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Accesos</p>
-                                    </a>
-                                </li>
-                                <!-- <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 2 de VENTAS</p>
-                                    </a>
-                                </li> -->
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
 
-                <!-- Mensaje de módulos no encontrados -->
 
-                
-                
             </ul>
 
         </nav>
