@@ -1,6 +1,6 @@
 
 $(function(){
-    panel_membresia();
+    pane_planes();
     panel_datos(-1);
 });
 
@@ -27,40 +27,31 @@ function formato_tabla(tabla, item_cantidad){
     });
 }
 
-function panel_membresia(){
+function pane_planes(){
     $.ajax({
-        url:"panel_membresia.php"
+        url:"pane_planes.php"
     }).done(function(resultado){
-        $("#panel-membresias").html(resultado);
-        formato_tabla("#tabla_panel_presupuestos", 5);
+        $("#pane-planes").html(resultado);
+        formato_tabla("#tabla_pane_planes", 5);
     });
 }
 
-function panel_datos(id_cpre){
+function panel_datos(id_ali){
     $.ajax({
         url:"panel_datos.php",
         type:"POST",
         data:{
-            id_cpre: id_cpre
+            id_ali: id_ali
         }
     }).done(function(resultado){
         $("#panel-datos").html(resultado);
-        panel_pedidos();
         refrescar_select();
     });
 }
 
-// function panel_pedidos(){
-//     $.ajax({
-//         url:"panel_presupuestos.php"
-//     }).done(function(resultado){
-//         $("#panel-presupuestos").html(resultado);
-//         formato_tabla("#tabla_panel_presupuestos", 5);
-//     });
-// }
 
-function datos(id_cpre){
-    panel_datos(id_cpre);
+function datos(id_ali){
+    panel_datos(id_ali);
     $("#btn-panel-datos").click();
 }
 
@@ -70,12 +61,12 @@ function agregar(){
 }
 
 function modificar_detalle(id_item){
-    var id_cpre = $("#id_cpre").val();
+    var id_ali = $("#id_ali").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
-            id_cpre: id_cpre,
+            id_ali: id_ali,
             id_item: id_item
         }
     }).done(function(resultado){
@@ -97,12 +88,12 @@ function modalSecund(){
     });
 }
 
-function modalConsolidacion(id_cpre){
+function modalConsolidacion(id_ali){
     $.ajax({
         type:"POST",
         url:"./panel_consolidacion.php",
         data:{
-            id_cpre: id_cpre
+            id_ali: id_ali
         }
      // ejecuta el llamado
     }).done(function(resultado){
@@ -148,17 +139,12 @@ function modificar_detalle_grabar(){
     grabar();
 }
 
-function eliminar_detalle(id_item){
-    $("#eliminar_id_item").val(id_item);
+function eliminar_detalle(id_act){
+    $("#eliminar_id_act").val(id_act);
     $("#operacion").val(7);
     grabar();
 }
 
-function eliminar_presupuesto_pedido(id_item){
-    $("#eliminar_id_item").val(id_item);
-    $("#operacion").val(11);
-    grabar();
-}
 
 function cancelar(){
     panel_datos(-1);
@@ -168,94 +154,103 @@ function cancelar(){
 
 function grabar(){
     var operacion = $("#operacion").val();
-    var id_cpre = '0';
-    var cpre_fecha = '2023-03-03';
-    var cpre_validez = '2023-03-03';
-    var cpre_numero = '0';
-    var cpre_observacion = '0';
-    var id_proveedor = '0';
-    var id_item = '0';
+    var id_ali = '0';
+    var ali_fecha = '2023-03-03';
+    var ali_fecha_fin = '2023-03-03';
+    var ali_objetivo = '0';
+    var ali_dias = '0';
+    var ali_observacion = '0';
+    var id_plan_servi = '0';
+    var id_cliente = '0';
+    var id_nutriologo = '0';
+    var id_act = '0';
+    var alimento = '0';
     var cantidad = '0';
-    var precio = '0';
-    var id_cp = '0';
+    var calorias = '0';
+    var carbohidratos = '0';
+    var proteinas = '0';
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
-        id_cpre = $("#id_cpre").val();
-        cpre_fecha = $("#cpre_fecha").val();
-        cpre_validez = $("#cpre_validez").val();
-        cpre_numero = $("#cpre_numero").val();
-        cpre_observacion = $("#cpre_observacion").val();
-        id_proveedor = $("#id_proveedor").val();
+        id_ali = $("#id_ali").val();
+        ali_fecha = $("#ali_fecha").val();
+        ali_fecha_fin = $("#ali_fecha_fin").val();
+        ali_objetivo = $("#ali_objetivo").val();
+        ali_dias = $("#ali_dias").val();
+        ali_observacion = $("#ali_observacion").val();
+        id_plan_servi = $("#id_plan_servi").val();
+        id_cliente = $("#id_cliente").val();
+        id_nutriologo = $("#id_nutriologo").val();
+        console.log(id_ali);
+        console.log(ali_fecha);
+        console.log(ali_fecha_fin);
+        console.log(ali_objetivo);
+        console.log(ali_dias);
+        console.log(ali_observacion);
+        console.log(id_plan_servi);
+        console.log(id_cliente);
+        console.log(id_nutriologo);
     }
     if(operacion == '5'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#agregar_id_item").val();
+        id_ali = $("#id_ali").val();
+        id_act = $("#agregar_id_act").val();
+        alimento = $("#agregar_alimento").val();
         cantidad = $("#agregar_cantidad").val();
-        precio = $("#agregar_precio").val();
+        calorias = $("#agregar_calorias").val();
+        carbohidratos = $("#agregar_carbohidratos").val();
+        proteinas = $("#agregar_proteinas").val();
+
     }
     if(operacion == '6'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#modificar_id_item").val();
-        cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
+        id_ali = $("#id_ali").val();
+        id_act = $("#mod_id_act").val();
+        alimento = $("#mod_alimento").val();
+        cantidad = $("#mod_cantidad").val();
+        calorias = $("#mod_calorias").val();
+        carbohidratos = $("#mod_carbohidratos").val();
+        proteinas = $("#mod_proteinas").val();
     }
     if(operacion == '7'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#eliminar_id_item").val();
-    }
-    if(operacion == '8'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-    }
-    if(operacion == '9'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-        id_item = $("#modificar_id_item").val();
-        cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
-    }
-    if(operacion == '10'){
-        id_cp = $("#id_cp").val();
-        id_item = $("#eliminar_id_item").val();
-    }
-    if(operacion == '11'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-        id_item = $("#eliminar_id_item").val();
+        id_ali = $("#id_ali").val();
+        id_act = $("#eliminar_id_act").val();
     }
     $.ajax({
         url: "grabar.php",
         type: "POST",
         data:{
-            id_cpre: id_cpre,
-            cpre_fecha: cpre_fecha,
-            cpre_validez: cpre_validez,
-            cpre_numero: cpre_numero,
-            cpre_observacion: cpre_observacion,
-            id_proveedor: id_proveedor,
-            id_item: id_item,
+            id_ali: id_ali,
+            ali_fecha: ali_fecha,
+            ali_fecha_fin: ali_fecha_fin,
+            ali_objetivo: ali_objetivo,
+            ali_dias: ali_dias,
+            ali_observacion: ali_observacion,
+            id_plan_servi: id_plan_servi,
+            id_cliente: id_cliente,
+            id_nutriologo: id_nutriologo,    
+            id_act: id_act,
+            alimento: alimento,
             cantidad: cantidad,
-            precio: precio,
-            id_cp: id_cp,
+            calorias: calorias,
+            carbohidratos: carbohidratos,
+            proteinas: proteinas,
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensaje(resultado)){
+        if(verificar_mensajeSinJson(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
     }).fail(function(a,b,c){
-        console.log('Error:', c);
+        console.error('Error:',a,b, c);
     });
 }
 
 function postgrabar(operacion){
-    panel_membresia();
+    pane_planes();
     if(operacion == '1'){
         panel_datos(-2);
         //$('#btn-panel-pedidos').click ();
     }
     if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
-        panel_datos($("#id_cpre").val());
+        panel_datos($("#id_ali").val());
         if(operacion == '6'){
             $("#btn-panel-modificar-cerrar").click();
         }
@@ -265,6 +260,74 @@ function postgrabar(operacion){
     }
     if(operacion == '3' || operacion == '4'){
         panel_datos(-1);
+
+    }
+}
+
+
+$(document).ready(function() {
+    $(document).on('change', '#id_cliente', function() {
+        llenarDatos();
+    });
+});
+
+$(document).ready(function() {
+    $(document).on('change', '#agregar_id_act', function() {
+        llenarDatosAct();
+    });
+});
+
+// Función para llenar datos
+function llenarDatos() {
+    const idCliente = document.getElementById('id_cliente').value;
+    console.log('ID Cliente seleccionado:', idCliente);
+
+    const clienteSeleccionada = datoCliente.find(d => d.id_cliente == idCliente);
+    console.log('Cliente encontrado:', clienteSeleccionada);
+
     
+    const generoSelect = document.getElementById('id_genero');
+    const selectServicio = document.getElementById('id_plan_servi');
+
+    // Limpiar campos
+    
+    generoSelect.innerHTML = '<option value="">Seleccione...</option>';
+    selectServicio.innerHTML = '<option value="">Seleccione un servicio</option>';
+
+    if (clienteSeleccionada) {
+        
+
+        const optionGenero = document.createElement('option');
+        optionGenero.value = clienteSeleccionada.id_genero;
+        optionGenero.textContent = clienteSeleccionada.gen_descrip;
+        optionGenero.selected = true;
+        generoSelect.appendChild(optionGenero);
+
+        const serviciosCliente = datoServicio.filter(s => s.id_cliente == idCliente);
+        console.log('Servicios del cliente:', serviciosCliente);
+
+        serviciosCliente.forEach(s => {
+            const optionServ = document.createElement('option');
+            optionServ.value = s.id_plan_servi;
+            optionServ.textContent = s.ps_descrip;
+            selectServicio.appendChild(optionServ);
+        });
+    }
+}
+
+function llenarDatosAct() {
+    // Obtener el ID de la factura seleccionada
+    const idAccion = document.getElementById('agregar_id_act').value;
+
+    // Buscar la factura correspondiente en el objeto datosCompras
+    const actSeleccionada = datoAct.find(d => d.id_act === idAccion);
+
+    const unidad = document.getElementById('unidad');
+
+    if (actSeleccionada) {
+        unidad.value = actSeleccionada.act_unidad;
+    }else{
+        unidad.value = '';
+
     }
 }

@@ -83,4 +83,63 @@ if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
 } 
 
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+//_---------------------------------------------------------------------------------------------------------------------------------------------------------
+//LOGIN BASICO DE 2FA
+require_once 'Conexion.php';
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
+    $usuario = trim($_POST['usuario']);
+    $contrasena = trim($_POST['contrasena']);
+    $hashedPassword = md5($contrasena); // Hash de la contraseña con md5
+
+    $conexion = new Conexion();
+    $conn = $conexion->getConexion();
+
+    $query = "SELECT id_usuario, usu_contrasena FROM usuarios WHERE usu_login = $1";
+    $result = pg_query_params($conn, $query, [$usuario]);
+
+    if ($result && $user = pg_fetch_assoc($result)) {
+        if ($hashedPassword === $user['usu_contrasena']) {
+            $_SESSION['id_usuario'] = $user['id_usuario'];
+
+            $vericationCode = rand(100000, 999999);
+            $expirationTime = date("Y-m-d H:i:s", strtotime('+10 minutes'));
+
+            //Guardar codigo para verificar en la base de datos
+            $queryUpdate = "UPDATE auth_2fa SET codigo = $1, fecha_expiracion = $2 WHERE id_usuario = $3";
+            pg_query_params($conn, $queryUpdate, [$vericationCode, $expirationTime, $_SESSION['id_usuario']]);
+
+            // Enviar el código al correo del usuario (aquí usarías una función de envío de correo)
+            if (!isset($_SESSION['per_correo']) and !isset($_SESSION['suc_correo'])) {
+                $to = $_SESSION['per_correo'];
+                $subject = "Código de Verificación de ENERGYM";
+                $message = "Tu código de verificación es: $vericationCode";
+                $headers = "From: ".$_SESSION['suc_correo']." " . "\r\n";
+
+                mail($to, $subject, $message, $headers);
+            }else {
+                $_SESSION['mensaje'] = "No se pudo enviar el correo.";
+                
+            }
+
+            // Redirigir a la página de verificación
+            header('Location: /tesis/autentificacion/index.php');
+            exit();
+        }
+        $_SESSION['mensaje'] = "La contraseña no coincide.";
+    } else {
+        $_SESSION['mensaje'] = "No existe el usuario.";
+    }
+    header('Location: /tesis/index.php');
+    exit();
+} else {
+    $_SESSION['mensaje'] = "Credenciales incompletas.";
+    header('Location: /tesis/index.php');
+    exit();
+}
 ?>

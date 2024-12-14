@@ -4,6 +4,8 @@ if (isset($_SESSION['id_usuario'])) {
     $conexion = new Conexion();
     $conn= $conexion->getConexion();
     $resul= pg_fetch_all(pg_query($conn, "SELECT * FROM v_usuarios  WHERE id_usuario = ". $_SESSION['id_usuario']));
+    //$resulCod= pg_fetch_all(pg_query($conn, "SELECT id_usuario, codigo, fecha_expiracion FROM v_usuarios  WHERE codigo ". $_SESSION['codigo']));
+    
     $_SESSION['usu_login']= $resul[0]['usu_login'];
     $_SESSION['usu_imagen']= $resul[0]['usu_imagen'];
     $_SESSION['id_grupo']= $resul[0]['id_grupo'];
@@ -37,9 +39,15 @@ if (isset($_SESSION['id_usuario'])) {
     $_SESSION['pais_codigo']= $resul[0]['pais_codigo'];
     $_SESSION['ec_descrip']= $resul[0]['ec_descrip'];
     $_SESSION['gen_descrip']= $resul[0]['gen_descrip'];
-    $_SESSION['codigo']= $resul[0]['codigo'];
-    $_SESSION['fecha_expiracion']= $resul[0]['fecha_expiracion'];
+    //$_SESSION['codigo']= $resul[0]['codigo'];
+    //$_SESSION['fecha_expiracion']= $resul[0]['fecha_expiracion'];
 
+    if (isset($_SESSION['codigo'])) {
+        $_SESSION['fecha_expiracion']= $resul[0]['fecha_expiracion'];
+    }else{  
+        header("Location: /tesis");
+        $_SESSION['mensaje']= "DEBES INGRESAR EL CODIGO";
+    }
     }else {
     header("Location: /tesis");
     $_SESSION['mensaje']= "DEBES INICIAR SESION";

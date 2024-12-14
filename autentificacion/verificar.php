@@ -5,6 +5,7 @@ require_once '../Conexion.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['codigo'])) {
     $codigo = trim($_POST['codigo']);
     $idUsuario = $_SESSION['id_usuario'] ?? null;
+    $_SESSION['codigo'] = $codigo;
 
     if (!$idUsuario) {
         $_SESSION['mensaje'] = "Sesión expirada. Por favor, inicia sesión nuevamente.";
