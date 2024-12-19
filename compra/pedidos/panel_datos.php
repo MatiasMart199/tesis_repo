@@ -140,3 +140,4 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
     </div>
 <?php
 }
+pg_close($conn);

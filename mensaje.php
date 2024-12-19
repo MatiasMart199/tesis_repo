@@ -1,20 +1,21 @@
 <script>
 
-    // function verificar_mensaje(resultado) {
-    //     const Toast = Swal.mixin({
-    //         toast: true,
-    //         position: 'top-end',
-    //         showConfirmButton: false,
-    //         timer: 3000
-    //     });
+    function verificar_mensaje(resultado) {
+        let mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
 
-    //     //var response = JSON.parse(resultado);
+        //var response = JSON.parse(resultado);
 
-    //     Toast.fire({
-    //         type: resultado.success ? 'success' : 'error',
-    //         title: resultado.message.replace(/_\/_/g, ' ')
-    //     });
-    // }
+        Toast.fire({
+            type: resultado.success ? 'success' : 'error',
+            title: resultado.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
+        });
+    }
 
 
     // function verificar_mensaje_prueba(resultado) {
@@ -36,27 +37,27 @@
 
 /**************************************EL MENSAJE A PRODUCCION******************/ 
 
-    function verificar_mensaje(resultado) {
-    var operacion = $("#operacion").val();
-    var response = JSON.parse(resultado);
-    var mensajeSinContexto = response.message.replace(/CONTEXT:.*$/g, "");
+//     function verificar_mensaje(resultado) {
+//     var operacion = $("#operacion").val();
+//     var response = JSON.parse(resultado);
+//     var mensajeSinContexto = response.message.replace(/CONTEXT:.*$/g, "");
 
-    swal.fire({
-        title: response.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
-        type: response.success ? 'success' : 'error',
+//     swal.fire({
+//         title: response.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
+//         type: response.success ? 'success' : 'error',
         
-    }, function (isConfirm) {
-        if (isConfirm) {
-            // Puedes hacer algo aquí si el usuario hace clic en "Sí"
-            // Por ejemplo, redirigir a otra página o realizar alguna acción adicional.
-            // resultado contiene la información que podrías necesitar.
-            console.log("Usuario hizo clic en Sí");
-        } else {
-            // Puedes hacer algo aquí si el usuario hace clic en "No"
-            console.log("Usuario hizo clic en No");
-        }
-    });
-}
+//     }, function (isConfirm) {
+//         if (isConfirm) {
+//             // Puedes hacer algo aquí si el usuario hace clic en "Sí"
+//             // Por ejemplo, redirigir a otra página o realizar alguna acción adicional.
+//             // resultado contiene la información que podrías necesitar.
+//             console.log("Usuario hizo clic en Sí");
+//         } else {
+//             // Puedes hacer algo aquí si el usuario hace clic en "No"
+//             console.log("Usuario hizo clic en No");
+//         }
+//     });
+// }
 
 function verificar_mensajeSinJson(resultado) {
     var operacion = $("#operacion").val();
@@ -79,6 +80,33 @@ function verificar_mensajeSinJson(resultado) {
     });
 }
 
+
+// function verificar_mensaje_excep(resultado) {
+//     // Convertir el resultado a JSON si no lo está
+//     if (typeof resultado === "string") {
+//         resultado = JSON.parse(resultado);
+//     }
+
+//     // Verificar si la operación fue exitosa o si hubo un error
+//     if (resultado.success) {
+//         // Manejar RAISE NOTICE
+//         Swal.fire({
+//             title: "Success",
+//             text: resultado.message,
+//             type: "success",
+//         });
+//     } else {
+//         // Manejar RAISE EXCEPTION
+//         Swal.fire({
+//             title: "Error",
+//             text: resultado.message,
+//             type: "error",
+//         });
+//     }
+
+//     // Retornar true para continuar si es necesario
+//     //return resultado.success;
+// }
 
 
 

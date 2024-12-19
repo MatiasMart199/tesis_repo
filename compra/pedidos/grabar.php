@@ -1,4 +1,8 @@
 <?php
+header('Content-type: application/json; charset=utf-8');
+
+// Deshabilitar la salida de errores y registrar en archivo
+include '../../deshabilitar_error.php';
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
@@ -24,6 +28,6 @@ if ($grabar) {
     $response['message'] =  pg_last_notice($conn);
 } else {
     $response['success'] = false;
-    $response['message'] = pg_last_error();
+    $response['message'] = pg_last_error($conn);
 }
 echo json_encode($response);

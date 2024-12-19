@@ -37,7 +37,7 @@ $querySucursal = pg_fetch_all(pg_query($conn, "SELECT id_sucursal, suc_nombre FR
 $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_cliente, cliente, per_ci,
                                             per_edad, id_genero, gen_descrip
                                         FROM v_servicios_inscripciones
-                                        WHERE estado = 'CONFIRMADO'
+                                        WHERE estado = 'CONFIRMADO' AND id_cliente NOT IN (select id_cliente from serv_mediciones_cab)
                                         ORDER BY id_cliente, cliente, per_ci;
                                         "));
 

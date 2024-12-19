@@ -176,7 +176,7 @@ function grabar() {
             operacion: operacion
         }
     }).done(function (resultado) {
-        if (verificar_mensajeSinJson(resultado)) {
+        if (verificar_mensaje(resultado)) {
             //postgrabar(operacion);
         }
         postgrabar(operacion);

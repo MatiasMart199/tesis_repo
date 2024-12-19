@@ -1,6 +1,6 @@
 <?php
 header('Content-type: application/json; charset=utf-8');
-
+include '../../deshabilitar_error.php';
 require_once "{$_SERVER['DOCUMENT_ROOT']}/tesis/Conexion.php";
 require_once "{$_SERVER['DOCUMENT_ROOT']}/tesis/session.php";
 $conexion = new Conexion();

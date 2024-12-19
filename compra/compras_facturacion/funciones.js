@@ -306,7 +306,7 @@ function grabar() {
     }).done(function (resultado) {
         console.log(resultado); // Agregado para verificar la respuesta del servidor
         //let result = JSON.parse(resultado);
-        if (verificar_mensaje_intern(resultado)) {
+        if (verificar_mensaje(resultado)) {
             
         }
         postgrabar(operacion);

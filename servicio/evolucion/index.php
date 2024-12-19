@@ -52,7 +52,7 @@ $_SESSION['id_pagina'] = '25';
         <div class="card">
           <div class="card-header p-0">
             <ul class="nav nav-pills ml-auto p-2">
-              <li class="nav-item"><a class="nav-link active" href="#panel-membresias" id="btn-panel-membresias"
+              <li class="nav-item"><a class="nav-link active" href="#panel-evoluciones" id="btn-panel-evoluciones"
                   data-toggle="tab">Evoluciones</a></li>
               <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos"
                   data-toggle="tab">Datos</a></li>
@@ -62,11 +62,11 @@ $_SESSION['id_pagina'] = '25';
           </div>
           <div class="card-body">
             <div class="tab-content">
-              <div class="tab-pane active" id="panel-membresias">
+              <div class="tab-pane active" id="panel-evoluciones">
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Cargando...</label>
               </div>
               <div class="tab-pane" id="panel-datos">
-                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una evolucion...</label>
+                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una Medicion...</label>
               </div>
               <!-- <div class="tab-pane" id="panel-pedidos">
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un pedido...</label> -->

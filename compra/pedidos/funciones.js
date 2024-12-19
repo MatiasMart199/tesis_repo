@@ -163,6 +163,8 @@ function grabar(){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
+    }).fail(function(a,b,c){
+        console.error('Error:',a,b, c);
     });
 }
 
