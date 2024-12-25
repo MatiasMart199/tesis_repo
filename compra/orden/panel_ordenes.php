@@ -21,8 +21,8 @@ $ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE i
             <th>Empresa</th> -->
             <th>Sucursal</th>
             <th>Fecha</th>
-            <th>Intervalo</th>
             <th>Proveedor</th>
+            <th>Intervalo</th>
             <th>Cuota</th>
             <th>Tip. Factura</th>
             <th>Estado</th>
@@ -37,8 +37,8 @@ $ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE i
             <td><?php //echo $p['emp_denominacion'];?></td> -->
             <td><?php echo $p['suc_nombre'];?></td>
             <td><?php echo $p['fecha'];?></td>
-            <td><?php echo $p['fecha_intervalo'];?></td>
             <td><?php echo $p['proveedor'];?></td>
+            <td><?php echo $p['ord_intervalo'];?></td>
             <td><?php echo $p['ord_cuota'];?></td>
             <td><?php echo $p['ord_tipo_factura'];?></td>
             <td><?php echo $p['estado'];?></td>

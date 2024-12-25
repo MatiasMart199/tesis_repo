@@ -1,270 +1,282 @@
 
-$(function(){
-    panel_membresia();
-    panel_datos(-1);
+$(function () {
+    panel_asistencias();
+    panel_datos();
 });
 
-function refrescar_select(){
+function refrescar_select() {
     $(".select2").select2();
     $(".select2").attr("style", "width: 100%;");
 }
 
-function formato_tabla(tabla, item_cantidad){
+function formato_tabla(tabla, item_cantidad) {
     $(tabla).DataTable({
         "lengthChange": false,
         responsive: "true",
         "iDisplayLength": item_cantidad,
         language: {
-            "sSearch":"Buscar: ",
-            "sInfo":"Mostrando resultados del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoFiltered":"(filtrado de entre _MAX_ registros)",
-            "sInfoEmpty":"No hay resultados",
-            "oPaginate":{
-                "sNext":"Siguiente",
-                "sPrevious":"Anterior"
+            "sSearch": "Buscar: ",
+            "sInfo": "Mostrando resultados del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoFiltered": "(filtrado de entre _MAX_ registros)",
+            "sInfoEmpty": "No hay resultados",
+            "oPaginate": {
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
             }
         }
     });
 }
 
-function panel_membresia(){
+function panel_asistencias() {
     $.ajax({
-        url:"panel_membresia.php"
-    }).done(function(resultado){
-        $("#panel-membresias").html(resultado);
-        formato_tabla("#tabla_panel_presupuestos", 5);
+        url: "panel_asistencias.php"
+    }).done(function (resultado) {
+        $("#panel-asistencias").html(resultado);
+        formato_tabla("#tabla_panel_asistencias", 5);
     });
 }
 
-function panel_datos(id_cpre){
+function panel_datos() {
     $.ajax({
-        url:"panel_datos.php",
-        type:"POST",
-        data:{
-            id_cpre: id_cpre
-        }
-    }).done(function(resultado){
+        url: "panel_datos.php",
+    }).done(function (resultado) {
         $("#panel-datos").html(resultado);
-        panel_pedidos();
-        refrescar_select();
+        //refrescar_select();
     });
 }
 
-// function panel_pedidos(){
-//     $.ajax({
-//         url:"panel_presupuestos.php"
-//     }).done(function(resultado){
-//         $("#panel-presupuestos").html(resultado);
-//         formato_tabla("#tabla_panel_presupuestos", 5);
-//     });
-// }
-
-function datos(id_cpre){
-    panel_datos(id_cpre);
+function datos(id_asi) {
+    panel_datos();
     $("#btn-panel-datos").click();
 }
 
-function agregar(){
+function agregar() {
     panel_datos(0);
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
-    var id_cpre = $("#id_cpre").val();
+function modificar_detalle(id_item) {
+    var id_asi = $("#id_asi").val();
     $.ajax({
-        url:"panel_modificar.php",
-        type:"POST",
-        data:{
-            id_cpre: id_cpre,
+        url: "panel_modificar.php",
+        type: "POST",
+        data: {
+            id_asi: id_asi,
             id_item: id_item
         }
-    }).done(function(resultado){
+    }).done(function (resultado) {
         $("#panel-modificar").html(resultado);
         $("#btn-panel-modificar").click();
     });
 }
 
-function modalSecund(){
+function modalSecund() {
     $.ajax({
-        type:"POST",
-        url:"./panel_secundario.php"
-     // ejecuta el llamado
-    }).done(function(resultado){
+        type: "POST",
+        url: "./panel_secundario.php"
+        // ejecuta el llamado
+    }).done(function (resultado) {
         $("#panel-secund").html(resultado);
         $("#btn-panel-secund").click();
-    }).fail(function(a,b,c){
+    }).fail(function (a, b, c) {
         console.log(c);
     });
 }
 
-function modalConsolidacion(id_cpre){
+function modalConsolidacion(id_asi) {
     $.ajax({
-        type:"POST",
-        url:"./panel_consolidacion.php",
-        data:{
-            id_cpre: id_cpre
+        type: "POST",
+        url: "./panel_consolidacion.php",
+        data: {
+            id_asi: id_asi
         }
-     // ejecuta el llamado
-    }).done(function(resultado){
+        // ejecuta el llamado
+    }).done(function (resultado) {
         $("#panel-consolidacion").html(resultado);
         $("#btn-panel-consolidacion").click();
     });
 }
 
-function agregar_presupuesto_pedido(id_cp){
+function agregar_presupuesto_pedido(id_cp) {
     $("#id_cp").val(id_cp);
     $("#operacion").val(8);
     grabar();
-    $("html, body").animate({ scrollTop: 0}, "slow");
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 }
 
-function agregar_grabar(){
+function entrada() {
     $("#operacion").val(1);
     grabar();
 }
 
-function modificar(){
-    $("#operacion").val(2);
-    grabar();
-}
-
-function confirmar(){
+function salida() {
     $("#operacion").val(3);
     grabar();
 }
 
-function anular(){
+function linpiarCampos() {
+        document.getElementById('per_ci').value = '';
+        document.getElementById('id_mem').value = '0';
+        document.getElementById('id_cliente').value = '0';
+        document.getElementById('nombre').value = 'N/A';
+
+}
+function modificar(id_asi) {
+    $("#id_asi").val(id_asi);
+    $("#operacion").val(2);
+    grabar();
+}
+
+function confirmar() {
+    $("#operacion").val(3);
+    grabar();
+}
+
+function anular() {
     $("#operacion").val(4);
     grabar();
 }
 
-function agregar_detalles(){
+function agregar_detalles() {
     $("#operacion").val(5);
     grabar();
 }
 
-function modificar_detalle_grabar(){
+function modificar_detalle_grabar() {
     $("#operacion").val(6);
     grabar();
 }
 
-function eliminar_detalle(id_item){
-    $("#eliminar_id_item").val(id_item);
-    $("#operacion").val(7);
+function anular(id_asi) {
+    $("#id_asi").val(id_asi);
+    $("#operacion").val(4);
     grabar();
 }
 
-function eliminar_presupuesto_pedido(id_item){
+function eliminar_presupuesto_pedido(id_item) {
     $("#eliminar_id_item").val(id_item);
     $("#operacion").val(11);
     grabar();
 }
 
-function cancelar(){
-    panel_datos(-1);
+function cancelar() {
+    panel_datos();
     $("#btn-panel-membresia").click();
-    mensaje("CANCELADO","error");
+    mensaje("CANCELADO", "error");
 }
 
-function grabar(){
+function grabar() {
     var operacion = $("#operacion").val();
-    var id_cpre = '0';
-    var cpre_fecha = '2023-03-03';
-    var cpre_validez = '2023-03-03';
-    var cpre_numero = '0';
-    var cpre_observacion = '0';
-    var id_proveedor = '0';
-    var id_item = '0';
-    var cantidad = '0';
-    var precio = '0';
-    var id_cp = '0';
-    if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
-        id_cpre = $("#id_cpre").val();
-        cpre_fecha = $("#cpre_fecha").val();
-        cpre_validez = $("#cpre_validez").val();
-        cpre_numero = $("#cpre_numero").val();
-        cpre_observacion = $("#cpre_observacion").val();
-        id_proveedor = $("#id_proveedor").val();
-    }
-    if(operacion == '5'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#agregar_id_item").val();
-        cantidad = $("#agregar_cantidad").val();
-        precio = $("#agregar_precio").val();
-    }
-    if(operacion == '6'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#modificar_id_item").val();
-        cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
-    }
-    if(operacion == '7'){
-        id_cpre = $("#id_cpre").val();
-        id_item = $("#eliminar_id_item").val();
-    }
-    if(operacion == '8'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-    }
-    if(operacion == '9'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-        id_item = $("#modificar_id_item").val();
-        cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
-    }
-    if(operacion == '10'){
-        id_cp = $("#id_cp").val();
-        id_item = $("#eliminar_id_item").val();
-    }
-    if(operacion == '11'){
-        id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
-        id_item = $("#eliminar_id_item").val();
+    var id_asi = '0';
+    var asi_entrada = '2023-03-03';
+    var asi_salida = '2023-03-03';
+    var id_cliente = '0';
+    var nombre = '0';
+    var id_mem = '0';
+    if (operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4') {
+        id_asi = $("#id_asi").val();
+        asi_entrada = $("#hora_actual").val();
+        asi_salida = $("#hora_actual").val();
+        id_cliente = $("#id_cliente").val();
+        nombre = $("#nombre").val();
+        id_mem = $("#id_mem").val();
+        console.log(id_asi);
+        console.log(asi_entrada);
+        console.log(asi_salida);
+        console.log(id_cliente);
+        console.log(nombre);
+        console.log(id_mem);
+        console.log(operacion);
     }
     $.ajax({
         url: "grabar.php",
         type: "POST",
-        data:{
-            id_cpre: id_cpre,
-            cpre_fecha: cpre_fecha,
-            cpre_validez: cpre_validez,
-            cpre_numero: cpre_numero,
-            cpre_observacion: cpre_observacion,
-            id_proveedor: id_proveedor,
-            id_item: id_item,
-            cantidad: cantidad,
-            precio: precio,
-            id_cp: id_cp,
+        data: {
+            id_asi: id_asi,
+            asi_entrada: asi_entrada,
+            asi_salida: asi_salida,
+            id_cliente: id_cliente,
+            nombre: nombre,
+            id_mem: id_mem,
             operacion: operacion
         }
-    }).done(function(resultado){
-        if(verificar_mensaje(resultado)){
+    }).done(function (resultado) {
+        if (verificar_mensaje(resultado)) {
             //postgrabar(operacion);
         }
         postgrabar(operacion);
-    }).fail(function(a,b,c){
-        console.log('Error:', c);
+    }).fail(function (a, b, c) {
+        console.error('Error:', a, b, c);
     });
 }
 
-function postgrabar(operacion){
-    panel_membresia();
-    if(operacion == '1'){
-        panel_datos(-2);
+function postgrabar(operacion) {
+    panel_asistencias();
+    if (operacion == '1' || operacion == '3') {
+        //panel_datos();
+        linpiarCampos();
         //$('#btn-panel-pedidos').click ();
     }
-    if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
-        panel_datos($("#id_cpre").val());
-        if(operacion == '6'){
-            $("#btn-panel-modificar-cerrar").click();
-        }
+    if (operacion == '2') {
+        //panel_datos();
+        $("#btn-panel-modificar-cerrar").click();
     }
-    if (operacion == '8') {
-        $("#btn-modal-secund-cerrar").click();
-    }
-    if(operacion == '3' || operacion == '4'){
-        panel_datos(-1);
-    
+    if (operacion == '4') {
+        //panel_asistencias();
     }
 }
+
+
+
+
+
+/****************************************************************************************************************/
+
+//  // Función para autocompletar los campos
+//  document.getElementById('per_ci').addEventListener('input', function() {
+//     const ci = this.value.trim(); // Obtén el valor ingresado
+//     const result = servicios.find(servicio => servicio.per_ci === ci); // Busca coincidencia en los datos
+
+//     if (result) {
+//         // Autocompleta los campos
+//         document.getElementById('id_mem').value = result.id_mem;
+//         document.getElementById('id_cliente').value = result.id_cliente;
+//         document.getElementById('nombre').value = result.cliente;
+//     } else {
+//         // Limpia los campos si no hay coincidencia
+//         document.getElementById('id_mem').value = '';
+//         document.getElementById('id_cliente').value = '';
+//         document.getElementById('nombre').value = '';
+//     }
+// });
+
+// // Función para enfocar el campo Nro de Documento
+// function enfocarCampo() {
+//     document.getElementById('per_ci').focus(); // Enfoca el campo Nro de Documento
+// }
+
+// // Ejecutar al cargar la página para enfocar el campo
+// window.onload = function() {
+//     enfocarCampo();
+// };
+
+// // Función para actualizar la hora actual en tiempo real
+// function actualizarHora() {
+//     const now = new Date(); // Fecha y hora actual
+//     const anhos = String(now.getFullYear()); // Años con 4 dígitos
+//     const meses = String(now.getMonth() + 1).padStart(2, '0'); // Meses con 2 dígitos
+//     const dias = String(now.getDate()).padStart(2, '0'); // Días con 2 dígitos
+//     const horas = String(now.getHours()).padStart(2, '0'); // Horas con 2 dígitos
+//     const minutos = String(now.getMinutes()).padStart(2, '0'); // Minutos con 2 dígitos
+//     const segundos = String(now.getSeconds()).padStart(2, '0'); // Segundos con 2 dígitos
+
+//     // Formato de hora: YYYY/MM/DD HH:MM:SS
+//     const horaFormateada = `${anhos}/${meses}/${dias} ${horas}:${minutos}:${segundos}`;
+//     document.getElementById('hora_actual').value = horaFormateada; // Actualiza el campo de hora
+// }
+
+// // Actualiza la hora cada segundo
+// setInterval(actualizarHora, 1000);
+
+// // Ejecuta la función para la hora al cargar
+// actualizarHora();

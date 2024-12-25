@@ -1,5 +1,5 @@
 <?php
-$id_cpre = $_POST['id_cp'];
+//$id_cpre = $_POST['id_cp'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
@@ -33,7 +33,7 @@ $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE  e
                     // Construye la fila de encabezado de la tabla una sola vez
                     $pedidos_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra_detalles WHERE id_cp = " . $pedido['id_cp'] . " ORDER BY precio ASC;"));
 
-                    echo '<input type="hidden" value="' . $pedido['id_cp'] . '" id="id_cpedido">';
+                    echo '<input type="hidden" value="' . $pedido['id_cp'] . '" id="id_cp">';
                     echo '<table class="table table-bordered">';
                     if (!empty($pedidos_detalles)) {
                         echo '<thead>';

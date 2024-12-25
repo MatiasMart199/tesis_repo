@@ -1,11 +1,11 @@
 <?php
-$id_cpre = $_POST['id_cpre'];
-$id_item = $_POST['id_item'];
+$id_asi = $_POST['id_asi'];
+
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_detalles WHERE id_cpre = $id_cpre AND id_item = $id_item;"));
+$datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_asistencias_cab WHERE id_asi = $id_asi;"));
 ?>
 <div class="modal-dialog">
     <div class="modal-content">

@@ -225,6 +225,11 @@ function filtrarMotivos() {
         });
 }
 
+$(document).ready(function () {
+    $(document).on('change', '#agregar_mot_tipo_ajuste', function () {
+        filtrarMotivos();
+    })
+});
 
 function actualizarProductos() {
     // Obtener el depósito seleccionado

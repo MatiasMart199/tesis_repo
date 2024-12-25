@@ -10,7 +10,7 @@ class Conexion{
     function __construct(){
         $this->host = "localhost";
         $this->port = "5432";
-        $this->dbname = "bdtesis2";
+        $this->dbname = "dbenergym";
         $this->user = "postgres";
         $this->pass = "1";
     }

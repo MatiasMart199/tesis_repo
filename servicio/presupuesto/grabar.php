@@ -1,23 +1,35 @@
 <?php
+header('Content-type: application/json; charset=utf-8');
+// Deshabilitar la salida de errores y registrar en archivo
+include '../../deshabilitar_error.php';
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$id_cpre = $_POST['id_cpre'];
-$cpre_fecha = $_POST['cpre_fecha'];
-$cpre_validez = $_POST['cpre_validez'];
-$cpre_numero = $_POST['cpre_numero'];
-$cpre_observacion = $_POST['cpre_observacion'];
+$id_pre = $_POST['id_pre'];
+$pre_fecha = $_POST['pre_fecha'];
+$pre_observacion = $_POST['pre_observacion'];
+$id_cliente = $_POST['id_cliente'];
+$id_personal = $_POST['id_personal'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
-$id_proveedor = $_POST['id_proveedor'];
-$id_item = $_POST['id_item'];
-$cantidad = $_POST['cantidad'];
-$precio = $_POST['precio'];
-$id_cp = $_POST['id_cp'];
+$id_act = $_POST['id_act'];
+$descrip = $_POST['descrip'];
+$costo = $_POST['costo'];
 $usuario = $_SESSION['usu_login'];
 $operacion = $_POST['operacion'];
-$grabar = pg_query($conn, "SELECT sp_compras_presupuestos ($id_cpre,'$cpre_fecha' ,'$cpre_validez',$cpre_numero,'$cpre_observacion',$id_sucursal,$id_funcionario ,$id_proveedor,$id_item,$cantidad,$precio,$id_cp,'$usuario',$operacion);");
+$grabar = pg_query($conn, "SELECT sp_presupuestos_preparacion (
+                                                $id_pre,
+                                                '$pre_fecha' ,
+                                                '$pre_observacion',
+                                                $id_cliente,
+                                                $id_personal,
+                                                $id_sucursal,
+                                                $id_funcionario ,
+                                                $id_act,
+                                                '$descrip',
+                                                $costo,
+                                                '$usuario',$operacion);");
 $response = array();
 if ($grabar) {
     $response['success'] = true;
@@ -29,3 +41,15 @@ if ($grabar) {
 echo json_encode($response);
 
 
+
+/*
+sp_presupuestos_preparacion(
+id_pre integer, 
+pre_fecha date, 
+pre_observacion text,
+id_cliente integer,
+id_personal int,
+id_act integer, 
+descrip varchar,
+costo numeric, 
+*/

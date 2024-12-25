@@ -7,26 +7,25 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
-$sucursal=pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
+$sucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
 
-// Fetching the last purchase details for the current branch
-$comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_cc = (SELECT max(id_cc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
+//$comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_cc = (SELECT max(id_cc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
 
 // Fetching the active provider for the last recorded purchase
-$proveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE estado = 'ACTIVO' AND id_proveedor = " . $comprasSucursal[0]['id_proveedor'] . ";"));
+$proveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE estado = 'ACTIVO';"));
 
 // Fetching a list of active providers not associated with the current purchase
 $listProveedores = pg_fetch_all(pg_query($conn, "SELECT * FROM v_proveedores WHERE estado = 'ACTIVO' AND id_proveedor NOT IN (SELECT id_proveedor FROM v_compras_cab WHERE id_cc = $id_cc) ORDER BY proveedor, per_ruc;"));
 
 
-        // Initialize arrays to store total IVA 10%, 5%, and Exentos
-        // and total to pay
-        $totalIva10 = array(0); // Total IVA 10%
-        $totalIva5 = array(0); // Total IVA 5%
-        $totalExenta = array(0); // Total Exentos
-        $totalPagar = array(0); // Total to pay
-      
-        $impuestos = "";
+// Initialize arrays to store total IVA 10%, 5%, and Exentos
+// and total to pay
+$totalIva10 = array(0); // Total IVA 10%
+$totalIva5 = array(0); // Total IVA 5%
+$totalExenta = array(0); // Total Exentos
+$totalPagar = array(0); // Total to pay
+
+$impuestos = "";
 if ($id_cc == '-1') { //CUANDO SE RESETEA
 ?>
     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un presupuesto</label>
@@ -51,7 +50,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-            
+
 
 
 
@@ -100,18 +99,17 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label>Intervalo</label>
+                        <input type="number" value="0" class="form-control" id="cc_intervalo" disabled>
+                    </div>
+                </div>
 
                 <div class="col-md-1 mb-2">
                     <div class="form-group">
                         <label>Cuota</label>
                         <input type="number" value="0" class="form-control" id="cc_cuota" disabled>
-                    </div>
-                </div>
-                
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <label>Intervalo</label>
-                        <input type="number" value="0" class="form-control" id="cc_intervalo" disabled>
                     </div>
                 </div>
 
@@ -128,9 +126,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
-    <script>
-        validarTipoFactura();
-    </script>
 
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
@@ -159,44 +154,46 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         // }
     }
     $totalIva10 = [];
-$totalIva5 = [];
-$totalExenta = [];
-$totaGrav = [];
-$totalIva = [];
+    $totalIva5 = [];
+    $totalExenta = [];
+    $totaGrav = [];
+    $totalIva = [];
 
-// Procesar los impuestos
-if ($impuestos) {
-    foreach ($impuestos as $imp) {
-        $totalIva10[] = isset($imp['totaliva10']) ? $imp['totaliva10'] : 0;
-        $totalIva5[] = isset($imp['totaliva5']) ? $imp['totaliva5'] : 0;
-        $totalExenta[] = isset($imp['totalexenta']) ? $imp['totalexenta'] : 0;
-        $totalGrav10[] = isset($imp['totalgrav10']) ? $imp['totalgrav10'] : 0;
-        $totalGrav5[] = isset($imp['totalgrav5']) ? $imp['totalgrav5'] : 0;
+    // Procesar los impuestos
+    if ($impuestos) {
+        foreach ($impuestos as $imp) {
+            $totalIva10[] = isset($imp['totaliva10']) ? $imp['totaliva10'] : 0;
+            $totalIva5[] = isset($imp['totaliva5']) ? $imp['totaliva5'] : 0;
+            $totalExenta[] = isset($imp['totalexenta']) ? $imp['totalexenta'] : 0;
+            $totalGrav10[] = isset($imp['totalgrav10']) ? $imp['totalgrav10'] : 0;
+            $totalGrav5[] = isset($imp['totalgrav5']) ? $imp['totalgrav5'] : 0;
 
-        // Sumar los impuestos calculados
-        $totaGrav[] = end($totalGrav10) + end($totalGrav5) + end($totalExenta);
-        $totalIva[] = end($totalIva10) + end($totalIva5);
+            // Sumar los impuestos calculados
+            $totaGrav[] = end($totalGrav10) + end($totalGrav5) + end($totalExenta);
+            $totalIva[] = end($totalIva10) + end($totalIva5);
+        }
     }
-}
 
-// Sumar totales
-$totalIva10 = array_sum($totalIva10);
-$totalIva5 = array_sum($totalIva5);
-$totalExenta = array_sum($totalExenta);
-$totalGrav = array_sum($totaGrav);
-$totalIva = array_sum($totalIva);
+    // Sumar totales
+    $totalIva10 = array_sum($totalIva10);
+    $totalIva5 = array_sum($totalIva5);
+    $totalExenta = array_sum($totalExenta);
+    $totalGrav = array_sum($totaGrav);
+    $totalIva = array_sum($totalIva);
 ?>
     <div class="card">
         <div class="card-body">
             <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
                     class="fas fa-plus-circle"></i> Ordenes</button>
             <button class="btn btn-primary text-white"
-                onclick="modalConsolidacion(<?php echo $compras[0]['id_cc']; ?>);" id="btn-modal-secund-cerrar"><i
+                onclick="modalConsolidacion(<?= $compras[0]['id_cc']; ?>);" id="btn-modal-secund-cerrar"><i
                     class="fas fa fa-object-group"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i
+            <button class="btn btn-danger text-white" onclick="generarInforme(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
-            <button class="btn btn-success" onclick="generarLibroCuenta()" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa fa-book"></i> Gr. libro y Cuenta</button>
+            <button class="btn btn-success" onclick="modalLibro(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
+                    class="fas fa-regular fa fa-book"></i>libro de Compras</button>
+            <button class="btn btn-success" onclick="modalCuenta(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
+                    class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button>
 
         </div>
     </div>
@@ -226,7 +223,7 @@ $totalIva = array_sum($totalIva);
                         </div>
                     </div>
 
-                    
+
 
 
                     <div class="col-md-4">
@@ -275,14 +272,6 @@ $totalIva = array_sum($totalIva);
                             </select>
                         </div>
                     </div>
-
-
-                    <div class="col-md-1 mb-2">
-                        <div class="form-group">
-                            <label>Cuota</label>
-                            <input type="number" value="<?= $compras[0]['cc_cuota'] ?>" class="form-control" id="cc_cuota" disabled>
-                        </div>
-                    </div>
                     
                     <div class="col-md-1">
                         <div class="form-group">
@@ -291,6 +280,12 @@ $totalIva = array_sum($totalIva);
                         </div>
                     </div>
 
+                    <div class="col-md-1 mb-2">
+                        <div class="form-group">
+                            <label>Cuota</label>
+                            <input type="number" value="<?= $compras[0]['cc_cuota'] ?>" class="form-control" id="cc_cuota" disabled>
+                        </div>
+                    </div>
                     <!-- <fieldset>
                             <legend>Is your cat an indoor or outdoor cat?</legend>
                 
@@ -377,7 +372,7 @@ $totalIva = array_sum($totalIva);
             </div>
         </div>
         <?php if ($compras[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") ORDER BY item_descrip;"));
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"));
             $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
@@ -388,20 +383,20 @@ $totalIva = array_sum($totalIva);
                 <div class="card-body">
                     <?php if (!empty($articulos) && !empty($depositos)) { ?>
 
-                        
-                            <div class="form-group">
-                                <label>Depositos</label>
-                                <select class="select2" id="ag_id_deposito">
-                                    <!-- <option selected="true" disabled="disabled"></option> -->
-                        
-                                    <?php foreach ($depositos as $pr) { ?>
-                                        <option value="<?= $pr['id_sucursal']; ?>">
-                                            <?= $pr['dep_descrip']; ?>
-                                        </option>
-                                    <?php }; ?>
-                                </select>
-                            </div>
-                        
+
+                        <div class="form-group">
+                            <label>Depositos</label>
+                            <select class="select2" id="ag_id_deposito">
+                                <!-- <option selected="true" disabled="disabled"></option> -->
+
+                                <?php foreach ($depositos as $pr) { ?>
+                                    <option value="<?= $pr['id_sucursal']; ?>">
+                                        <?= $pr['dep_descrip']; ?>
+                                    </option>
+                                <?php }; ?>
+                            </select>
+                        </div>
+
 
                         <div class="form-group">
                             <label>Producto</label>
@@ -515,11 +510,10 @@ $totalIva = array_sum($totalIva);
 
 
     </div>
-
-    <script>
-        validarTipoFactura()
-    </script>
 <?php
 
 }
 ?>
+<script>
+    validarTipoFactura()
+</script>

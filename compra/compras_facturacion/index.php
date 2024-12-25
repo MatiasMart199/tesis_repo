@@ -38,6 +38,8 @@ $_SESSION['id_pagina'] = '2';
               <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
               <input type="hidden" id="btn-panel-secund" data-toggle="modal" data-target="#panel-secund">
               <input type="hidden" id="btn-panel-consolidacion" data-toggle="modal" data-target="#panel-consolidacion">
+              <input type="hidden" id="btn-panel-libro" data-toggle="modal" data-target="#panel-libro">
+              <input type="hidden" id="btn-panel-cuenta" data-toggle="modal" data-target="#panel-cuenta">
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -82,6 +84,12 @@ $_SESSION['id_pagina'] = '2';
 
       </div>
       <div class="modal fade" id="panel-consolidacion">
+
+      </div>
+      <div class="modal fade" id="panel-libro">
+
+      </div>
+      <div class="modal fade" id="panel-cuenta">
 
       </div>
     </div>

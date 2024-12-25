@@ -2,5 +2,9 @@
     "php.stubs": [
         "*",
         "pgsql"
+    ],
+    "cSpell.words": [
+        "Emision",
+        "EMISION"
     ]
 }

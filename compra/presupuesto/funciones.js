@@ -167,17 +167,17 @@ function cancelar(){
 }
 
 function grabar(){
-    var operacion = $("#operacion").val();
-    var id_cpre = '0';
-    var cpre_fecha = '2023-03-03';
-    var cpre_validez = '2023-03-03';
-    var cpre_numero = '0';
-    var cpre_observacion = '0';
-    var id_proveedor = '0';
-    var id_item = '0';
-    var cantidad = '0';
-    var precio = '0';
-    var id_cp = '0';
+    let operacion = $("#operacion").val();
+    let id_cpre = '0';
+    let cpre_fecha = '2023-03-03';
+    let cpre_validez = '2023-03-03';
+    let cpre_numero = '0';
+    let cpre_observacion = '0';
+    let id_proveedor = '0';
+    let id_item = '0';
+    let cantidad = '0';
+    let precio = '0';
+    let id_cp = '0';
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
         id_cpre = $("#id_cpre").val();
         cpre_fecha = $("#cpre_fecha").val();
@@ -185,6 +185,18 @@ function grabar(){
         cpre_numero = $("#cpre_numero").val();
         cpre_observacion = $("#cpre_observacion").val();
         id_proveedor = $("#id_proveedor").val();
+         // Solo asignamos id_cp si el input tiene un valor válido y operacion == 3
+         if (operacion == '3' && $("#id_cp").val().trim() !== '') {
+            id_cp = $("#id_cp").val();
+        }
+        
+        console.log(id_cpre);
+        console.log(cpre_fecha);
+        console.log(cpre_validez);
+        console.log(cpre_numero);
+        console.log(cpre_observacion);
+        console.log(id_proveedor);
+        console.log(id_cp);
     }
     if(operacion == '5'){
         id_cpre = $("#id_cpre").val();
@@ -244,7 +256,7 @@ function grabar(){
         }
         postgrabar(operacion);
     }).fail(function(a,b,c){
-        console.log('Error:', c);
+        console.error('Error:',a,b,c);
     });
 }
 

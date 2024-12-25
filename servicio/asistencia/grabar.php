@@ -1,23 +1,29 @@
 <?php
+header('Content-type: application/json; charset=utf-8');
+
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$id_cpre = $_POST['id_cpre'];
-$cpre_fecha = $_POST['cpre_fecha'];
-$cpre_validez = $_POST['cpre_validez'];
-$cpre_numero = $_POST['cpre_numero'];
-$cpre_observacion = $_POST['cpre_observacion'];
+$id_asi = $_POST['id_asi'];
+$asi_entrada = $_POST['asi_entrada'];
+$asi_salida = $_POST['asi_salida'];
+$id_cliente = $_POST['id_cliente'];
+$nombre = $_POST['nombre'];
+$id_mem = $_POST['id_mem'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
-$id_proveedor = $_POST['id_proveedor'];
-$id_item = $_POST['id_item'];
-$cantidad = $_POST['cantidad'];
-$precio = $_POST['precio'];
-$id_cp = $_POST['id_cp'];
 $usuario = $_SESSION['usu_login'];
 $operacion = $_POST['operacion'];
-$grabar = pg_query($conn, "SELECT sp_compras_presupuestos ($id_cpre,'$cpre_fecha' ,'$cpre_validez',$cpre_numero,'$cpre_observacion',$id_sucursal,$id_funcionario ,$id_proveedor,$id_item,$cantidad,$precio,$id_cp,'$usuario',$operacion);");
+$grabar = pg_query($conn, "SELECT sp_asistencias ($id_asi,
+                                                '$asi_entrada' ,
+                                                '$asi_salida',
+                                                $id_cliente,
+                                                '$nombre',
+                                                $id_mem,
+                                                $id_sucursal,
+                                                $id_funcionario,
+                                                '$usuario',$operacion);");
 $response = array();
 if ($grabar) {
     $response['success'] = true;
@@ -29,3 +35,12 @@ if ($grabar) {
 echo json_encode($response);
 
 
+/*
+public.sp_asistencias(
+id_asi integer, 
+asi_entrada timestamp, 
+asi_salida timestamp,
+id_cliente integer,
+nombre int,
+id_mem int,
+*/

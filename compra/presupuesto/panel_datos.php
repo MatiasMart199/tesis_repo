@@ -38,7 +38,7 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
         </div>
         <div class="form-group">
             <label>Nª</label>
-            <input type="number" value="0" class="form-control" id="cpre_numero">
+            <input type="number" value="" class="form-control" id="cpre_numero">
         </div>
         <div class="form-group">
             <label>Observacón</label>
@@ -57,8 +57,8 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
         //$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE id_cp = (select max(id_cp) from compras_pedidos_cabecera where id_sucursal = $id_sucursal);"));
     }else{ //SE TRATA DE UN PEDIDO DEFINIDO
         $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos WHERE id_cpre = $id_cpre;"));
-        $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE  estado = 'CONFIRMADO';"));
-        $consolidacion= pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_consolidacion WHERE  id_cpre = $id_cpre;"));
+        //$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE  estado = 'CONFIRMADO';"));
+        //$consolidacion= pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_consolidacion WHERE  id_cpre = $id_cpre;"));
     }
     $presupuestos_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_detalles WHERE id_cpre = $id_cpre ORDER BY item_descrip, mar_descrip;"));
     $presupuestos_pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_pedidos where id_cpre = $id_cpre ORDER BY  item_descrip, mar_descrip;"));
@@ -66,6 +66,7 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
     if($presupuestos[0]['estado'] == 'PENDIENTE'){
         $disabled = '';
     }
+    $id_cp = isset($presupuestos_pedidos[0]['id_cp']) ? $presupuestos_pedidos[0]['id_cp'] : "";
 ?>
 <div class="card">
             <div class="card-body">
@@ -84,14 +85,15 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
         </div>
         <div class="card-body">
             <input type="hidden" value="<?php echo $presupuestos[0]['id_cpre']; ?>" id="id_cpre">
-            <input type="hidden" value="<?php echo $pedidos[0]['id_cp']; ?>" id="id_cp">
+            <input type="hidden" value="<?php echo $id_cp; ?>" id="id_cp">
             <input type="hidden" value="0" id="eliminar_id_item">
             <input type="hidden" value="0" id="eliminar_id_items">
             
             
             <div>
             <label>Proveedor</label>
-            <select class="select2" id="id_proveedor">
+            <select class="select2" id="id_proveedor" disabled="disabled">
+                <option selected="true" value="<?= $presupuestos[0]['id_proveedor'] ?>"><?= $presupuestos[0]['proveedor'] ?></option>
                 <?php foreach($proveedores as $pr){ ?>
                 <option value="<?php echo $pr['id_proveedor'];?>"><?php echo $pr['proveedor']." ". $pr['per_ruc']; ?></option>
                 <?php }; ?>
@@ -99,19 +101,19 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
         </div>
         <div class="form-group">
             <label>Fecha</label>
-            <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="cpre_fecha">
+            <input type="date" value="<?= $presupuestos[0]['cpre_fecha']; ?>" class="form-control" id="cpre_fecha">
         </div>
         <div class="form-group">
             <label>Valido Hasta</label>
-            <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="cpre_validez">
+            <input type="date" value="<?= $presupuestos[0]['cpre_validez']; ?>" class="form-control" id="cpre_validez">
         </div>
         <div class="form-group">
             <label>Nª</label>
-            <input type="number" value="0" class="form-control" id="cpre_numero">
+            <input type="number" value="<?= $presupuestos[0]['cpre_numero']; ?>" class="form-control" id="cpre_numero">
         </div>
         <div class="form-group">
             <label>Observacón</label>
-            <textarea class="form-control" id="cpre_observacion"></textarea>
+            <textarea class="form-control" id="cpre_observacion"><?= $presupuestos[0]['cpre_observacion']; ?></textarea>
         </div>
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
@@ -171,7 +173,7 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
         </div>
     </div>
         <?php if($presupuestos[0]['estado'] == 'PENDIENTE'){
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_presupuestos_detalles WHERE id_cpre = ".$presupuestos[0]['id_cpre'].") ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_presupuestos_detalles WHERE id_cpre = ".$presupuestos[0]['id_cpre'].") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
             ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -263,4 +265,4 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
     
     </div>
 <?php
-}
+}pg_close($conn);

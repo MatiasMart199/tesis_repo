@@ -171,7 +171,7 @@ function grabar(){
     var operacion = $("#operacion").val();
     var id_corden = '0';
     var ord_fecha = '2023-03-03';
-    var ord_intervalo = '2023-03-03';
+    var ord_intervalo = '0';
     var ord_tipo_factura = 'CONTADO';
     var ord_cuota = '0';
     var id_proveedor = '0';
@@ -186,6 +186,18 @@ function grabar(){
         ord_tipo_factura = $("#ord_tipo_factura").val();
         ord_cuota = $("#ord_cuota").val();
         id_proveedor = $("#id_proveedor").val();
+        // Solo asignamos id_cp si el input tiene un valor válido y operacion == 3
+        if (operacion == '3' && $("#id_cpre").val().trim() !== '') {
+            id_cpre = $("#id_cpre").val();
+        }
+
+        // console.log(id_corden);
+        // console.log(ord_fecha);
+        // console.log(ord_intervalo);
+        // console.log(ord_tipo_factura);
+        // console.log(ord_cuota);
+        // console.log(id_proveedor);
+        // console.log(id_cpre);
     }
     if(operacion == '5'){
         id_corden = $("#id_corden").val();
@@ -244,8 +256,9 @@ function grabar(){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
-    }).fail(function(a,b,c){
-        console.log('Error:', c);
+    }).fail(function (a, b, c) {
+        //console.error(b);
+        console.error("Error:", a, b, c); // Error detallado
     });
 }
 
@@ -268,4 +281,21 @@ function postgrabar(operacion){
         panel_datos(-1);
     
     }
+}
+
+function validarTipoFactura() {
+    $(document).ready(function () {
+        $('#ord_tipo_factura').change(function () {
+            const tipoFactura = $(this).val(); // Obtenemos el valor del tipo de factura
+
+            if (tipoFactura === 'CREDITO') {
+                $('#ord_cuota').prop('disabled', false).val(''); // Habilita el campo cuota
+                $('#ord_intervalo').prop('disabled', false).val(''); // Habilita el campo
+            } else {
+                $('#ord_cuota').prop('disabled', true).val('0'); // Deshabilita y limpia el campo cuota
+                $('#ord_intervalo').prop('disabled', true).val('0');
+            }
+        });
+    });
+
 }

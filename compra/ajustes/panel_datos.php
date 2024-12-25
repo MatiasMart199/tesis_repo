@@ -160,7 +160,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                         SELECT id_item 
                         FROM comp_ajustes_det 
                         WHERE id_caju = " . $cabecera[0]['id_caju'] . "
-                    )
+                    ) AND id_tip_item NOT IN (7)
                     ORDER BY item_descrip;
                 "));
 
@@ -216,7 +216,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
 
                         <div class="form-group">
                             <label>Tipo de Ajuste</label>
-                            <select class="select2" id="agregar_mot_tipo_ajuste" onchange="filtrarMotivos()">
+                            <select class="select2" id="agregar_mot_tipo_ajuste">
                                 <option selected="true">Seleccione el tipo de Ajuste</option>
                                 <?php foreach ($tiposAjuste as $m) { ?>
                                     <option value="<?= $m['mot_tipo_ajuste'] ?>"><?= $m['mot_tipo_ajuste'] ?></option>

@@ -80,6 +80,12 @@ function datos(id_cc) {
     $("#btn-panel-datos").click();
 }
 
+function generarInforme(id_cc) {
+    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_cp
+    //window.open('./reporte.php?id_cp=' + id_cp, '_blank');
+    window.open('reporte.php?id_cc=' + id_cc, '_blank');
+}
+
 function agregar() {
     panel_datos(0);
     $("#btn-panel-datos").click();
@@ -125,6 +131,34 @@ function modalConsolidacion(id_cc) {
     }).done(function (resultado) {
         $("#panel-consolidacion").html(resultado);
         $("#btn-panel-consolidacion").click();
+    });
+}
+
+function modalLibro(id_cc) {
+    $.ajax({
+        type: "POST",
+        url: "./panel_libro.php",
+        data: {
+            id_cc: id_cc
+        }
+        // ejecuta el llamado
+    }).done(function (resultado) {
+        $("#panel-libro").html(resultado);
+        $("#btn-panel-libro").click();
+    });
+}
+
+function modalCuenta(id_cc) {
+    $.ajax({
+        type: "POST",
+        url: "./panel_cuenta.php",
+        data: {
+            id_cc: id_cc
+        }
+        // ejecuta el llamado
+    }).done(function (resultado) {
+        $("#panel-cuenta").html(resultado);
+        $("#btn-panel-cuenta").click();
     });
 }
 
@@ -218,14 +252,47 @@ function grabar() {
         cc_cuota = $("#cc_cuota").val();
         id_proveedor = $("#id_proveedor").val();
 
-        console.log("id_cc " + id_cc);
-        console.log("cc_fecha " + cc_fecha);
-        console.log("cc_intervalo " + cc_intervalo);
-        console.log("cc_nro_factura " + cc_nro_factura);
-        console.log("cc_timbrado " + cc_timbrado);
-        console.log("cc_tipo_factura " + cc_tipo_factura);
-        console.log("cc_cuota " + cc_cuota);
-        console.log("id_proveedor " + id_proveedor);
+        // iva5 = $("#total_iva5").val();
+        // iva10 = $("#total_iva10").val();
+        // exenta = $("#total_exenta").val();
+        // monto = $("#total_pagar").val();
+        // saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
+
+        // Solo asignamos id_cp si el input tiene un valor válido y operacion == 3
+        if (operacion == '3' && $("#id_corden").val().trim() !== '') {
+            id_corden = $("#id_corden").val();
+        }
+
+
+        if (operacion == '3' && $("#total_iva5").val().trim() !== '') {
+            iva5 = $("#total_iva5").val();
+        }
+        if (operacion == '3' && $("#total_iva10").val().trim() !== '') {
+            iva10 = $("#total_iva10").val();
+        }
+        if (operacion == '3' && $("#total_exenta").val().trim() !== '') {
+            exenta = $("#total_exenta").val();
+        }
+        if (operacion == '3' && $("#total_pagar").val().trim() !== '') {
+            monto = $("#total_pagar").val();
+            saldo = $("#total_pagar").val();
+        }
+        
+
+        // console.log("id_cc " + id_cc);
+        // console.log("cc_fecha " + cc_fecha);
+        // console.log("cc_intervalo " + cc_intervalo);
+        // console.log("cc_nro_factura " + cc_nro_factura);
+        // console.log("cc_timbrado " + cc_timbrado);
+        // console.log("cc_tipo_factura " + cc_tipo_factura);
+        // console.log("cc_cuota " + cc_cuota);
+        // console.log("id_proveedor " + id_proveedor);
+        // console.log("id_corden " + id_corden);
+        // console.log("iva5 " + iva5);
+        // console.log("iva10 " + iva10);
+        // console.log("exenta " + exenta);
+        // console.log("monto " + monto);
+        // console.log("saldo " + saldo);
         
 
     }
@@ -272,11 +339,7 @@ function grabar() {
     if (operacion == '12') {// INSERTAR LIBRO DE COMPRAS Y CUENTA A PAGAR
         id_cc = $("#id_cc").val();
         cc_fecha = $("#cc_fecha").val();
-        iva5 = $("#total_iva5").val();
-        iva10 = $("#total_iva10").val();
-        exenta = $("#total_exenta").val();
-        monto = $("#total_pagar").val();
-        saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
+        
         
     }
     $.ajax({
@@ -343,11 +406,11 @@ function validarTipoFactura() {
             const tipoFactura = $(this).val(); // Obtenemos el valor del tipo de factura
 
             if (tipoFactura === 'CREDITO') {
-                $('#cc_cuota').prop('disabled', false); // Habilita el campo cuota
-                $('#cc_intervalo').prop('disabled', false); // Habilita el campo
+                $('#cc_cuota').prop('disabled', false).val(''); // Habilita el campo cuota
+                $('#cc_intervalo').prop('disabled', false).val(''); // Habilita el campo
             } else {
-                $('#cc_cuota').prop('disabled', true).val(''); // Deshabilita y limpia el campo cuota
-                $('#cc_intervalo').prop('disabled', true).val('');
+                $('#cc_cuota').prop('disabled', true).val('0'); // Deshabilita y limpia el campo cuota
+                $('#cc_intervalo').prop('disabled', true).val('0');
             }
         });
     });

@@ -33,7 +33,7 @@ $_SESSION['id_pagina'] = '25';
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0 text-dark">Presupuesto de Preparación</h1>
+              <h1 class="m-0 text-dark">Presupuesto de Servicio</h1>
               <input type="hidden" id="operacion" value="0">
               <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
               <input type="hidden" id="btn-panel-secund" data-toggle="modal" data-target="#panel-secund">
@@ -42,7 +42,7 @@ $_SESSION['id_pagina'] = '25';
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">Servicio</li>
-                <li class="breadcrumb-item active">Presupuesto de Preparación</li>
+                <li class="breadcrumb-item active">Presupuesto de Servicio</li>
               </ol>
             </div>
           </div>
@@ -52,8 +52,8 @@ $_SESSION['id_pagina'] = '25';
         <div class="card">
           <div class="card-header p-0">
             <ul class="nav nav-pills ml-auto p-2">
-              <li class="nav-item"><a class="nav-link active" href="#panel-membresias" id="btn-panel-membresias"
-                  data-toggle="tab">Presupuesto de Preparación</a></li>
+              <li class="nav-item"><a class="nav-link active" href="#panel-presupuesto" id="btn-panel-presupuesto"
+                  data-toggle="tab">Presupuesto de Servicio</a></li>
               <li class="nav-item"><a class="nav-link" href="#panel-datos" id="btn-panel-datos"
                   data-toggle="tab">Datos</a></li>
                   <!-- <li class="nav-item"><a class="nav-link" href="#panel-pedidos" id="btn-panel-pedidos"
@@ -62,11 +62,11 @@ $_SESSION['id_pagina'] = '25';
           </div>
           <div class="card-body">
             <div class="tab-content">
-              <div class="tab-pane active" id="panel-membresias">
+              <div class="tab-pane active" id="panel-presupuesto">
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Cargando...</label>
               </div>
               <div class="tab-pane" id="panel-datos">
-                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un Presupuesto...</label>
+                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una Medicion...</label>
               </div>
               <!-- <div class="tab-pane" id="panel-pedidos">
                 <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un pedido...</label> -->

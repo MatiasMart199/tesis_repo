@@ -17,9 +17,12 @@ $id_proveedor = $_POST['id_proveedor'];
 $id_item = $_POST['id_item'];
 $cantidad = $_POST['cantidad'];
 $precio = $_POST['precio'];
-$id_cp = $_POST['id_cp'];
+//$id_cp = $_POST['id_cp'];
 $usuario = $_SESSION['usu_login'];
 $operacion = $_POST['operacion'];
+
+$id_cp = isset($_POST['id_cp']) && $_POST['id_cp'] !== '' ? $_POST['id_cp'] : null;
+
 $grabar = pg_query($conn, "SELECT sp_compras_presupuestos ($id_cpre,'$cpre_fecha' ,'$cpre_validez',$cpre_numero,'$cpre_observacion',$id_sucursal,$id_funcionario ,$id_proveedor,$id_item,$cantidad,$precio,$id_cp,'$usuario',$operacion);");
 $response = array();
 if ($grabar) {

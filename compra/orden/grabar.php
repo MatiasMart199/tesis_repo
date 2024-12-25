@@ -20,7 +20,7 @@ $precio = $_POST['precio'];
 $id_cpre = $_POST['id_cpre'];
 $usuario = $_SESSION['usu_login'];
 $operacion = $_POST['operacion'];
-$grabar = pg_query($conn, "SELECT sp_compras_ordenes ($id_corden,'$ord_fecha' ,'$ord_intervalo','$ord_tipo_factura','$ord_cuota',$id_sucursal,$id_funcionario ,$id_proveedor,$id_item,$cantidad,$precio,$id_cpre,'$usuario',$operacion);");
+$grabar = pg_query($conn, "SELECT sp_compras_ordenes ($id_corden,'$ord_fecha' ,$ord_intervalo,'$ord_tipo_factura',$ord_cuota,$id_sucursal,$id_funcionario ,$id_proveedor,$id_item,$cantidad,$precio,$id_cpre,'$usuario',$operacion);");
 
 $response = array();
 if ($grabar) {
