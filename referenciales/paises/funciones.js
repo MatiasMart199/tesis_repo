@@ -117,14 +117,13 @@ function agregar_grabar() {
           pais_codigo: pais_codigo,
           operacion: operacion
       }
-  }).done(function(resultado) {
-    if(verificar_mensaje(resultado)){
-      //postgrabar(operacion);
-  }
-      postgrabar();
-  }).fail(function(a,b,c){
-    console.log('Error:', c);
-});
+  }).done(function (resultado) {
+    let response = JSON.parse(resultado);
+    verificar_mensaje(response);
+    postgrabar();
+  }).fail(function (a, b, c) {
+    console.error("Error: ", a, b, c);
+  });
   }
 
   function postgrabar() {

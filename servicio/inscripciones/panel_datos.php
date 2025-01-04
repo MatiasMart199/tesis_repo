@@ -45,7 +45,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
             </div>
 
             <div class="form-group">
-                <label>Fecha de Aprobación</label>
+                <label>Vencimiento</label>
                 <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="ins_aprobacion">
             </div>
             <div class="form-group">
@@ -61,13 +61,13 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_inscrip == '-2') { //SE TRATA DEL ULTIMO PEDIDO
-        $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE id_inscrip = (select max(id_inscrip) from servicios_inscripciones_cabecera where id_sucursal = $id_sucursal);"));
+        $movimientos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE id_inscrip = (select max(id_inscrip) from servicios_inscripciones_cabecera where id_sucursal = $id_sucursal);"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
-        $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE id_inscrip = $id_inscrip;"));
+        $movimientos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE id_inscrip = $id_inscrip;"));
     }
-    $pedidos_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones_detalle WHERE id_inscrip = " . $pedidos[0]['id_inscrip'] . " ORDER BY ps_descrip;"));
+    $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones_detalle WHERE id_inscrip = " . $movimientos[0]['id_inscrip'] . " ORDER BY ps_descrip;"));
     $disabled = 'disabled';
-    if ($pedidos[0]['estado'] == 'PENDIENTE') {
+    if ($movimientos[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
     }
 ?>
@@ -78,31 +78,31 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
             </div>
             
             <div class="card-body">
-                <input type="hidden" value="<?php echo $pedidos[0]['id_inscrip']; ?>" id="id_inscrip">
+                <input type="hidden" value="<?php echo $movimientos[0]['id_inscrip']; ?>" id="id_inscrip">
                 <input type="hidden" value="0" id="eliminar_id_plan_servi">
                 <div>
                     <label>Cliente</label>
                     <select class="select2" id="id_cliente" disabled>
-                        <option selected="true" value="<?= $pedidos[0]['id_cliente']; ?>"><?= $pedidos[0]['cliente'] . " " . $pedidos[0]['per_ci']; ?></option>
+                        <option selected="true" value="<?= $movimientos[0]['id_cliente']; ?>"><?= $movimientos[0]['cliente'] . " " . $movimientos[0]['per_ci']; ?></option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>Fecha</label>
-                    <input type="date" value="<?= $pedidos[0]['ins_fecha']; ?>" class="form-control" disabled>
+                    <input type="date" value="<?= $movimientos[0]['ins_fecha']; ?>" class="form-control" disabled>
                 </div>
 
                 <div class="form-group">
-                    <label>Fecha de Aprobación</label>
-                    <input type="date" value="<?= $pedidos[0]['ins_aprobacion']; ?>" class="form-control" id="ins_aprobacion">
+                    <label>Vencimiento</label>
+                    <input type="date" value="<?= $movimientos[0]['ins_aprobacion']; ?>" class="form-control" id="ins_aprobacion">
                 </div>
                 <div class="form-group">
                     <label>Estado de Salud</label>
-                    <textarea class="form-control" id="ins_estad_salud"><?= $pedidos[0]['ins_estad_salud']; ?></textarea>
+                    <textarea class="form-control" id="ins_estad_salud"><?= $movimientos[0]['ins_estad_salud'] ?></textarea>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
-                    <?php if ($pedidos[0]['estado'] == 'PENDIENTE') { ?>
+                    <?php if ($movimientos[0]['estado'] == 'PENDIENTE') { ?>
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
@@ -115,7 +115,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                 Detalles de la Inscripción
             </div>
             <div class="card-body">
-                <?php if (!empty($pedidos_detalles)) { ?>
+                <?php if (!empty($detalles)) { ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -128,7 +128,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                         </thead>
                         <tbody>
                             <?php $total = 0;
-                            foreach ($pedidos_detalles as $d) {
+                            foreach ($detalles as $d) {
                                 $total = $total + ($d['precio'] * $d['dia']) ?>
                                 <tr>
                                     <td><?php echo $d['ps_descrip']; ?></td>
@@ -136,7 +136,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                                     <td><?php echo $d['precio']; ?></td>
                                     <td><?php echo $d['precio'] * $d['dia']; ?></td>
                                     <td>
-                                        <?php if ($pedidos[0]['estado'] == 'PENDIENTE') { ?>
+                                        <?php if ($movimientos[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_plan_servi']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_plan_servi']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>
@@ -157,8 +157,8 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                 <?php } ?>
             </div>
         </div>
-        <?php if ($pedidos[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_planes_servicios WHERE estado = 'ACTIVO' AND id_plan_servi NOT IN (select id_plan_servi from servicios_inscripciones_detalle WHERE id_inscrip = " . $pedidos[0]['id_inscrip'] . ") ORDER BY ps_descrip;"))
+        <?php if ($movimientos[0]['estado'] == 'PENDIENTE') {
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_planes_servicios WHERE estado = 'ACTIVO' AND id_plan_servi NOT IN (select id_plan_servi from servicios_inscripciones_detalle WHERE id_inscrip = " . $movimientos[0]['id_inscrip'] . ") ORDER BY ps_descrip;"))
         ?>
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">
@@ -176,7 +176,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                         </div>
                         <div class="form-group">
                             <label>Dias</label>
-                            <input type="number" value="<?= getFechaDays($pedidos[0]['ins_fecha'], $pedidos[0]['ins_aprobacion']) ?>" class="form-control" id="agregar_dia">
+                            <input type="number" value="<?= getFechaDays($movimientos[0]['ins_fecha'], $movimientos[0]['ins_aprobacion']) ?>" class="form-control" id="agregar_dia">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>

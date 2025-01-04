@@ -1,6 +1,9 @@
 <?php
 include './Conexion.php';
 include './session.php';
+
+$compras = pg_fetch_all(pg_query($conn, "SELECT count(id_cc) FROM v_compras_cab WHERE estado = 'CONFIRMADO'"));
+$inscrip = pg_fetch_all(pg_query($conn, "SELECT count(id_inscrip) FROM v_servicios_inscripciones WHERE estado = 'CONFIRMADO'"));
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,6 +39,8 @@ include './session.php';
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1 class="m-0 text-dark">ENERGYM</h1>
+
+
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -47,7 +52,79 @@ include './session.php';
             </div>
             <section class="content">
                 <div class="container-fluid">
+                    <!-- ---------------------------------------------------------------------------------------------------------------------------------- -->
 
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-info">
+                                <div class="inner d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3><?= $compras[0]['count'] ?></h3>
+                                        <p>Compras</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-cart-plus fa-3x"></i>
+                                    </div>
+                                </div>
+                                <a href="/tesis/compra/compras_facturacion/" class="small-box-footer">
+                                    More info <i class="fas fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-warning">
+                                <div class="inner d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h3><?= $inscrip[0]['count'] ?></h3>
+                                        <p>Inscritos</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-address-card fa-3x"></i>
+                                    </div>
+                                </div>
+                                <a href="/tesis/servicio/inscripciones/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <!-- <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                                    <p>Bounce Rate</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div> -->
+                        </div>
+
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <!-- <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>65</h3>
+
+                                    <p>Unique Visitors</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div> -->
+                        </div>
+                        <!-- ./col -->
+                    </div>
+
+                    <!-- ------------------------------------------------------------------------------------------------------------------------------ -->
                 </div>
             </section>
         </div>
@@ -57,7 +134,9 @@ include './session.php';
     </div>
     <script src="/tesis/estilo/plugins/jquery/jquery.min.js"></script>
     <script src="/tesis/estilo/plugins/jquery-ui/jquery-ui.min.js"></script>
-    <script> $.widget.bridge('uibutton', $.ui.button) </script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
     <script src="/tesis/estilo/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/tesis/estilo/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <script src="/tesis/estilo/dist/js/adminlte.js"></script>

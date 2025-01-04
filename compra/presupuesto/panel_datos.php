@@ -192,7 +192,7 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
                         </div>
                         <div class="form-group">
                             <label>Cantidad</label>
-                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                            <input type="number" value="" class="form-control" id="agregar_cantidad">
                         </div>
                         <div class="form-group">
                             <label>Precio</label>
@@ -236,7 +236,7 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
                                 <td><?php echo $d['precio'] * $d['cantidad']; ?></td>
                                 <td>
                                     <?php if($presupuestos[0]['estado'] == 'PENDIENTE'){ ?>
-                                    <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php //echo $d['id_item']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                    <button class="btn btn-warning text-white" onclick="modificar_detalle_ped(<?= $d['id_cpre']; ?>,<?= $d['id_item']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                         <button class="btn btn-danger" onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button> -->
                                     <?php } ?>
@@ -261,7 +261,9 @@ if($id_cpre == '-1'){ //CUANDO SE RESETEA
     </div>
 
     <!-- MONTOS TOTALES DE PEDIDOS Y PRESUPUESTO -->
-    
+    <script>
+        const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
+    </script>
     
     </div>
 <?php

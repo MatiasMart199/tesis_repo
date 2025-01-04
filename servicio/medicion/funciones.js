@@ -60,14 +60,14 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
+function modificar_detalle(id_act){
     var id_med = $("#id_med").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_med: id_med,
-            id_item: id_item
+            id_act: id_act
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -174,13 +174,13 @@ function grabar(){
         id_med = $("#id_med").val();
         id_tip_med = $("#agregar_id_tip_med").val();
         valor = $("#agregar_valor").val();
-        console.log(id_med);
-        console.log(id_tip_med);
-        console.log(valor);
+        // console.log(id_med);
+        // console.log(id_tip_med);
+        // console.log(valor);
     }
     if(operacion == '6'){
         id_med = $("#id_med").val();
-        id_tip_med = $("#modificar_id_tip_med").val();
+        id_tip_med = $("#id_act").val();
         valor = $("#modificar_valor").val();
     }
     if(operacion == '7'){

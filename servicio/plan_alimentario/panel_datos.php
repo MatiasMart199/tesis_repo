@@ -17,9 +17,9 @@ $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_clie
                                         ORDER BY id_cliente, cliente, per_ci;
                                         "));
 
-$servicio = pg_fetch_all(pg_query($conn, "SELECT id_mem, id_plan_servi, ps_descrip, id_cliente, cliente FROM v_serv_membresias_cliente WHERE 
+$servicio = pg_fetch_all(pg_query($conn, "SELECT id_mem, id_plan_servi, ps_descrip, id_cliente, cliente FROM v_serv_membresias_cliente_f WHERE 
     id_mem = (SELECT MAX(id_mem) 
-                FROM v_serv_membresias_cliente) AND estadoCab = 'CONFIRMADO' order by ps_descrip;"));
+                FROM v_serv_membresias_cliente_f) AND estadoCab = 'CONFIRMADO' order by ps_descrip;"));
 
 $nutriologos = pg_fetch_all(pg_query($conn, "SELECT * from  v_nutriologos where estado = 'ACTIVO' order by v_nutriologos;"));
 if ($id_ali == '-1') { //CUANDO SE RESETEA

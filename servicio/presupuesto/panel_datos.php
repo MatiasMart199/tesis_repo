@@ -166,7 +166,7 @@ if ($id_pre == '-1') { //CUANDO SE RESETEA
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Medición</th>
+                                <th>Tip. Presupuesto</th>
                                 <th>Descripción</th>
                                 <th>Costo</th>
                                 <th>Acciones</th>

@@ -20,7 +20,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos del pedido
+        Datos de la Nota
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_not">
@@ -91,7 +91,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-                Datos del pedido
+                Datos de la Nota
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $cabecera[0]['id_not']; ?>" id="id_not">
@@ -148,7 +148,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
         </div>
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles del pedido
+                Detalles de la Nota
             </div>
 
             <?php
@@ -201,7 +201,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                                     <td><?= ($iva == 2) ? number_format($d['totaliva10'], 0, ",", ".") : '0'; ?></td>
                                     <td>
                                         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_item']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_not'] ?>, <?= $d['id_item'] ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>
                                     </td>
@@ -232,25 +232,25 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from comp_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . ") ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from comp_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . ") AND id_tip_item = 7 ORDER BY item_descrip;"))
         ?>
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">
-                    Agregar Producto
+                    Agregar Concepto
                 </div>
                 <div class="card-body">
                     <?php if (!empty($articulos)) { ?>
                         <div class="form-group">
-                            <label>Producto</label>
+                            <label>Conceptos</label>
                             <select class="select2" id="agregar_id_item">
                                 <?php foreach ($articulos as $a) { ?>
-                                    <option value="<?php echo $a['id_item']; ?>"><?= $a['mar_descrip'] . ": " . $a['item_descrip']; ?></option>
+                                    <option value="<?php echo $a['id_item']; ?>"><?= $a['item_descrip']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Cantidad</label>
-                            <input type="number" value="0" class="form-control" id="agregar_cantidad">
+                            <input type="number" value="" class="form-control" id="agregar_cantidad">
                         </div>
 
                         <div class="form-group">

@@ -60,14 +60,14 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
+function modificar_detalle(id_act){
     var id_ali = $("#id_ali").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_ali: id_ali,
-            id_item: id_item
+            id_act: id_act
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -201,8 +201,8 @@ function grabar(){
     }
     if(operacion == '6'){
         id_ali = $("#id_ali").val();
-        id_act = $("#mod_id_act").val();
-        alimento = $("#mod_alimento").val();
+        id_act = $("#id_act").val();
+        //alimento = $("#mod_alimento").val();
         cantidad = $("#mod_cantidad").val();
         calorias = $("#mod_calorias").val();
         carbohidratos = $("#mod_carbohidratos").val();
@@ -234,7 +234,7 @@ function grabar(){
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensajeSinJson(resultado)){
+        if(verificar_mensaje(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);

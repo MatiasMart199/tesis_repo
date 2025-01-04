@@ -1,4 +1,5 @@
 <?php 
+include '../../deshabilitar_error.php';
 require '../../Conexion.php';
 require '../../session.php';
 

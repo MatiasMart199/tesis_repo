@@ -42,11 +42,11 @@ function formato_tabla(tabla, cantidad){
   });
 }
 
-function agregarFisica() {
+function agregar() {
    // hace el llamado
     $.ajax({
       type:"POST",
-      url:"./agregar_fisica.php"
+      url:"./agregar.php"
   // ejecuta el llamado
   }).done(function(resultado){
       $("#modal-agregar-fisica").html(resultado);
@@ -106,12 +106,14 @@ function inactivar(id_persona) {
   grabar();
 }
 
+
+
 function grabar() {
   var id_persona = '0';
-  var per_nombre = 'JURIDICA';
-  var per_apellido = '---';
+  var per_nombre = 'N/A';
+  var per_apellido = 'N/A';
   var per_ruc = '0';
-  var per_ci = 'JURIDICA';
+  var per_ci = 'N/A';
   var per_direccion = '0';
   var per_correo = '0';
   var per_fenaci = '2003-03-03';
@@ -131,28 +133,38 @@ function grabar() {
     per_correo = $("#agregar_correo").val();
     per_fenaci = $("#agregar_fenaci").val();
     per_telefono = $("#agregar_telefono").val();
-    persona_fisica = $("#tipo_persona_fisica").val();
-    id_ciudad = $("#agregar_ciudad").val();
-    id_ecivil = $("#agregar_ecivil").val();
-    id_genero = $("#agregar_genero").val();
-  }
-  if (operacion == '2') {                 //INSERTA PERSONA JURIDICA
-    id_persona = $("#id_persona").val();
-    per_nombre  = $("#agregar_nombre").val();
-    per_apellido = $("#agregar_apellido").val();
-    per_ruc = $("#agregar_ruc").val();
-    per_ci = $("#agregar_ci").val();
-    per_direccion = $("#agregar_direccion").val();
-    per_correo = $("#agregar_correof").val();
-    per_fenaci = $("#agregar_fenaci").val();
-    per_telefono = $("#agregar_telefono").val();
-    persona_fisica = $("#tipo_persona_jurid").val();
+    persona_fisica = $("#persona_fisica").val();
     id_ciudad = $("#agregar_ciudad").val();
     id_ecivil = $("#agregar_ecivil").val();
     id_genero = $("#agregar_genero").val();
   }
   if (operacion == '3') {   //ACTUALIZAR
     id_persona = $("#id_persona").val();
+    per_nombre  = $("#editar_nombre").val();
+    per_apellido = $("#editar_apellido").val();
+    per_ruc = $("#editar_ruc").val();
+    per_ci = $("#editar_ci").val();
+    per_direccion = $("#editar_direccion").val();
+    per_correo = $("#editar_correo").val();
+    per_fenaci = $("#editar_fenaci").val();
+    per_telefono = $("#editar_telefono").val();
+    persona_fisica = $("#editar_persona_fisica").val();
+    id_ciudad = $("#editar_ciudad").val();
+    id_ecivil = $("#editar_ecivil").val();
+    id_genero = $("#editar_genero").val();
+    console.log(id_persona);
+    console.log(per_nombre);
+    console.log(per_apellido);
+    console.log(per_ruc);
+    console.log(per_ci);
+    console.log(per_direccion);
+    console.log(per_correo);
+    console.log(per_fenaci);
+    console.log(per_telefono);
+    console.log(persona_fisica);
+    console.log(id_ciudad);
+    console.log(id_ecivil);
+    console.log(id_genero);
   }
   if (operacion == '4' || operacion == '5') {   //ACTIVA E INACTIVA PERSONA
     id_persona = $("#id_persona").val();
@@ -176,10 +188,13 @@ function grabar() {
       id_genero:id_genero,
       operacion: operacion
     }
-  }).done(function(resultado) {
-    verificar_mensaje(resultado);
+  }).done(function (resultado) {
+    let response = JSON.parse(resultado);
+    verificar_mensaje(response);
     postgrabar();
-})
+  }).fail(function (a, b, c) {
+    console.error("Error: ", a, b, c);
+  });
 }
 
 function postgrabar() {
@@ -193,4 +208,25 @@ function postgrabar() {
   }
 
 }
+
+
+$(document).ready(function () {
+  $(document).on('change', '#persona_fisica', function() {
+    if ($("#persona_fisica").val() === "false") {
+      // Oculta los grupos completos
+      $("#agregar_apellido").closest('.form-group').attr("hidden", true);
+      $("#agregar_ci").closest('.form-group').attr("hidden", true);
+      $("#agregar_fenaci").closest('.form-group').attr("hidden", true);
+      $("#agregar_ecivil").closest('.form-group').attr("hidden", true);
+      $("#agregar_genero").closest('.form-group').attr("hidden", true);
+    } else {
+      // Muestra los grupos completos
+      $("#agregar_apellido").closest('.form-group').removeAttr("hidden");
+      $("#agregar_ci").closest('.form-group').removeAttr("hidden");
+      $("#agregar_fenaci").closest('.form-group').removeAttr("hidden");
+      $("#agregar_ecivil").closest('.form-group').removeAttr("hidden");
+      $("#agregar_genero").closest('.form-group').removeAttr("hidden");
+    }
+  });
+});
 

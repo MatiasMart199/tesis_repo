@@ -36,7 +36,7 @@ $query = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_asistencias_cab WHER
             <td><?= $p['estado'];?></td>
             <td>
                 <!-- <button class="btn btn-warning text-white" onclick="modificar(<?php //echo $p['id_asi']; ?>);"><i class="fa fa-edit"></i></button> -->
-                <button class="btn btn-danger" onclick="anular(<?php echo $p['id_asi']; ?>);"><i class="fa fa-minus-circle"></i></button>
+                <button class="btn btn-danger" onclick="anular(<?= $p['id_asi'] ?>)"><i class="fa fa-minus-circle"></i></button>
                
             </td>
         </tr>

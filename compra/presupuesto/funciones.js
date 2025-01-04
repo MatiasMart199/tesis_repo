@@ -84,6 +84,21 @@ function modificar_detalle(id_item){
     });
 }
 
+function modificar_detalle_ped(id_cpre, id_item){
+    var id_cpre = $("#id_cpre").val();
+    $.ajax({
+        url:"panel_modificar_ped.php",
+        type:"POST",
+        data:{
+            id_cpre: id_cpre,
+            id_item: id_item
+        }
+    }).done(function(resultado){
+        $("#panel-modificar").html(resultado);
+        $("#btn-panel-modificar").click();
+    });
+}
+
 function modalSecund(){
     $.ajax({
         type:"POST",
@@ -148,6 +163,11 @@ function modificar_detalle_grabar(){
     grabar();
 }
 
+function modificar_detalle_ped_grabar(){
+    $("#operacion").val(9);
+    grabar();
+}
+
 function eliminar_detalle(id_item){
     $("#eliminar_id_item").val(id_item);
     $("#operacion").val(7);
@@ -208,7 +228,11 @@ function grabar(){
         id_cpre = $("#id_cpre").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
+        precio = $("#modificar_precio").val();
+        console.log("id_cpre "+id_cpre);
+        console.log("id_item "+ id_item);
+        console.log("cantidad "+cantidad);
+        console.log("precio "+precio);
     }
     if(operacion == '7'){
         id_cpre = $("#id_cpre").val();
@@ -220,10 +244,11 @@ function grabar(){
     }
     if(operacion == '9'){
         id_cpre = $("#id_cpre").val();
-        id_cp = $("#id_cp").val();
+        //id_cp = $("#id_cp").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
+        precio = $("#modificar_precio").val();
+        
     }
     if(operacion == '10'){
         id_cp = $("#id_cp").val();
@@ -268,7 +293,7 @@ function postgrabar(operacion){
     }
     if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
         panel_datos($("#id_cpre").val());
-        if(operacion == '6'){
+        if(operacion == '6' || operacion == '9'){
             $("#btn-panel-modificar-cerrar").click();
         }
     }
@@ -280,3 +305,23 @@ function postgrabar(operacion){
     
     }
 }
+
+function llenarPrecio() { 
+    // Obtener el ID del producto seleccionado
+    const articuloId = document.getElementById('agregar_id_item').value;
+    const precio = document.getElementById('agregar_precio');
+    // Buscar el producto correspondiente en el objeto datoStock
+    const itemSeleccionado = artuculos.find(d => d.id_item == articuloId);
+
+    if (itemSeleccionado) {
+        precio.value = itemSeleccionado.precio_compra; // Asignar el valor del stock
+    } else {
+        precio.value = ''; // Limpiar el campo si no se encuentra
+    }
+}
+
+$(document).ready(function() {
+    $(document).on('change', '#agregar_id_item', function() {
+        llenarPrecio();
+    });
+});

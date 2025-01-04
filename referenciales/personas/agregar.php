@@ -15,7 +15,13 @@ $generos = pg_fetch_all(pg_query($conn, "SELECT * FROM generos WHERE estado = 'A
                 AGREGAR PERSONAS FISICA
             </div>
             <div class="card-body">
-
+                <div class="form-group">
+                    <label>Tipo de Persona</label>
+                    <select class="form-control" id="persona_fisica">
+                        <option selected value="true">FISICA</option>
+                        <option value="false">JURIDICA</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Nombre</label>
                     <input type="text" class="form-control" id="agregar_nombre">
@@ -100,3 +106,5 @@ $generos = pg_fetch_all(pg_query($conn, "SELECT * FROM generos WHERE estado = 'A
         </div>
     </div>
 </div>
+
+<?php pg_close($conn) ?>

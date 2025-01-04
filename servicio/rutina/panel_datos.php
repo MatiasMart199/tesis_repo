@@ -17,9 +17,9 @@ $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_clie
                                         ORDER BY id_cliente, cliente, per_ci;
                                         "));
 
-$servicio = pg_fetch_all(pg_query($conn, "SELECT id_mem, id_plan_servi, ps_descrip, id_cliente, cliente FROM v_serv_membresias_cliente WHERE 
+$servicio = pg_fetch_all(pg_query($conn, "SELECT id_mem, id_plan_servi, ps_descrip, id_cliente, cliente, estadoCab FROM v_serv_membresias_cliente_f WHERE 
     id_mem = (SELECT MAX(id_mem) 
-                FROM v_serv_membresias_cliente) AND estadoCab = 'CONFIRMADO' order by ps_descrip;"));
+                FROM v_serv_membresias_cliente_f) AND estadoCab = 'CONFIRMADO' order by ps_descrip;"));
 
 $personal_trainer = pg_fetch_all(pg_query($conn, "SELECT * from  v_personal_trainers where estado = 'ACTIVO' order by personal_trainer;"));
 if ($id_rut == '-1') { //CUANDO SE RESETEA
@@ -223,7 +223,7 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Medición</th>
+                                <th>Tipo Ejercicio</th>
                                 <th>Ejercicio</th>
                                 <th>Series</th>
                                 <th>Repeticiones</th>
@@ -244,7 +244,7 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                                     <td><?php echo $d['peso']; ?></td>
                                     <td>
                                         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_act']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_act'] ?>)" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_act']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>
                                     </td>

@@ -44,16 +44,16 @@
                 <section class="content">
                     <div class="card">
                         <div class="card-header">
-                            <button type="button" class="btn btn-success" onclick="agregarFisica();">
-                                <i class="fas fa-plus-circle"></i> Fisica
+                            <button type="button" class="btn btn-success" onclick="agregar();">
+                                <i class="fas fa-plus-circle"></i> Agregar
                             </button>
-                            <button type="button" class="btn btn-success" onclick="agregarJuridica();">
+                            <!-- <button type="button" class="btn btn-success" onclick="agregarJuridica();">
                                 <i class="fas fa-plus-circle"></i> Juridica
-                            </button>
+                            </button> -->
                             <input type="hidden" id="operacion" value="0">
                             <!-- colocar en id el codigo de la referencia trabajada -->
                             <input type="hidden" id="id_persona" value="0">
-                            <input type="hidden" id="tipo_persona_fisica" value="true">
+                            <!-- <input type="hidden" id="persona_fisica" value="true"> -->
                             <input type="hidden" id="tipo_persona_jurid" value="false">
                             <input type="hidden" id="btn-modal-agregar-fisica" data-toggle="modal" data-target="#modal-agregar-fisica">
                             <input type="hidden" id="btn-modal-agregar-juridica" data-toggle="modal" data-target="#modal-agregar-juridica">

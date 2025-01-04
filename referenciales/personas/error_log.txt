@@ -1,0 +1,11 @@
+[29-Dec-2024 02:59:50 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:00:11 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:00:36 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:02:19 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:02:36 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:03:56 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:04:14 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:05:52 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:09:50 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:12:36 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38
+[29-Dec-2024 03:13:12 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\referenciales\personas\grabar.php on line 38

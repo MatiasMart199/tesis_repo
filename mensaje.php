@@ -1,6 +1,10 @@
 <script>
 
     function verificar_mensaje(resultado) {
+        if (!resultado || typeof resultado.message !== "string") {
+        console.error("El resultado no tiene la estructura esperada:", resultado);
+        return; // Detenemos la ejecución si no es válido
+    }
         let mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
         const Toast = Swal.mixin({
             toast: true,

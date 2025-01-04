@@ -128,7 +128,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                                     <td><?= $d['precio']; ?></td>
                                     <td>
                                         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_item'] ?>, <?= $d['id_motivo'] ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_caju'] ?>, <?= $d['id_item'] ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?= $d['id_item'] ?>, <?= $d['id_motivo'] ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>
                                     </td>
@@ -233,7 +233,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
 
                         <div class="form-group">
                             <label>Cantidad</label>
-                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                            <input type="number" value="" class="form-control" id="agregar_cantidad">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>

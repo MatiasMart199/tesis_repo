@@ -65,7 +65,7 @@ function agregar() {
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item) {
+function modificar_detalle(id_caju,id_item) {
     var id_caju = $("#id_caju").val();
     $.ajax({
         url: "panel_modificar.php",

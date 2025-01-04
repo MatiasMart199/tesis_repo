@@ -297,7 +297,7 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
                                     <td><?= $d['cantidad'] ?></td>
                                     <td>
                                         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_item']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_tra']; ?>, <?= $d['id_item']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?= $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>
                                     </td>

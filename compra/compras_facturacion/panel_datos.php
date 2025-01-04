@@ -345,7 +345,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($compras[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?php echo $d['id_item']; ?>);"
+                                                onclick="modificar_detalle(<?= $d['id_cc'] ?>, <?= $d['id_item'] ?>);"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i
                                                     class="fa fa-minus-circle"></i></button>
@@ -435,7 +435,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PEDIDOS CONFIRMADOS -->
         <div class="card card-success col-12">
             <div class="card-header text-center elevation-3">
-                Detalles de los Pedidos a Presupuestos
+                Detalles de Ordenes a Compras
             </div>
             <div class="card-body">
 
@@ -475,8 +475,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($compras[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?php //echo $d['id_item']; 
-                                                                            ?>);"
+                                                onclick="modificar_detalle_ord(<?= $d['id_cc'] ?>, <?= $d['id_item'] ?>);"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger"
                                                 onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i
@@ -515,5 +514,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 }
 ?>
 <script>
-    validarTipoFactura()
+    validarTipoFactura();
+    const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
 </script>

@@ -215,7 +215,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?php echo $d['id_item']; ?>);"
+                                                onclick="modificar_detalle(<?= $d['id_corden']?>, <?= $d['id_item']?>)"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i
                                                     class="fa fa-minus-circle"></i></button>
@@ -263,11 +263,11 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                         </div>
                         <div class="form-group">
                             <label>Cantidad</label>
-                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                            <input type="number" value="" class="form-control" id="agregar_cantidad">
                         </div>
                         <div class="form-group">
                             <label>Precio</label>
-                            <input type="number" step="0.1" inputmode="decimal" value="0" class="form-control" id="agregar_precio">
+                            <input type="number" value="" class="form-control" id="agregar_precio">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
@@ -319,8 +319,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?php //echo $d['id_item']; 
-                                                                            ?>);"
+                                                onclick="modificar_detalle_pre(<?= $d['id_corden']?>, <?= $d['id_item']?>);"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger"
                                                 onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i
@@ -361,4 +360,5 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
 ?>
 <script>
     validarTipoFactura();
+    const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
 </script>

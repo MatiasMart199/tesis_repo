@@ -55,47 +55,6 @@ function agregar() {
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item) {
-    var id_asi = $("#id_asi").val();
-    $.ajax({
-        url: "panel_modificar.php",
-        type: "POST",
-        data: {
-            id_asi: id_asi,
-            id_item: id_item
-        }
-    }).done(function (resultado) {
-        $("#panel-modificar").html(resultado);
-        $("#btn-panel-modificar").click();
-    });
-}
-
-function modalSecund() {
-    $.ajax({
-        type: "POST",
-        url: "./panel_secundario.php"
-        // ejecuta el llamado
-    }).done(function (resultado) {
-        $("#panel-secund").html(resultado);
-        $("#btn-panel-secund").click();
-    }).fail(function (a, b, c) {
-        console.log(c);
-    });
-}
-
-function modalConsolidacion(id_asi) {
-    $.ajax({
-        type: "POST",
-        url: "./panel_consolidacion.php",
-        data: {
-            id_asi: id_asi
-        }
-        // ejecuta el llamado
-    }).done(function (resultado) {
-        $("#panel-consolidacion").html(resultado);
-        $("#btn-panel-consolidacion").click();
-    });
-}
 
 function agregar_presupuesto_pedido(id_cp) {
     $("#id_cp").val(id_cp);
@@ -132,10 +91,10 @@ function confirmar() {
     grabar();
 }
 
-function anular() {
-    $("#operacion").val(4);
-    grabar();
-}
+// function anular() {
+//     $("#operacion").val(4);
+//     grabar();
+// }
 
 function agregar_detalles() {
     $("#operacion").val(5);
@@ -174,19 +133,37 @@ function grabar() {
     var nombre = '0';
     var id_mem = '0';
     if (operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4') {
-        id_asi = $("#id_asi").val();
-        asi_entrada = $("#hora_actual").val();
-        asi_salida = $("#hora_actual").val();
-        id_cliente = $("#id_cliente").val();
-        nombre = $("#nombre").val();
-        id_mem = $("#id_mem").val();
-        console.log(id_asi);
-        console.log(asi_entrada);
-        console.log(asi_salida);
-        console.log(id_cliente);
-        console.log(nombre);
-        console.log(id_mem);
-        console.log(operacion);
+        // id_asi = $("#id_asi").val();
+        // asi_entrada = $("#hora_actual").val();
+        // asi_salida = $("#hora_actual").val();
+        // id_cliente = $("#id_cliente").val();
+        // nombre = $("#nombre").val();
+        // id_mem = $("#id_mem").val();
+        if (operacion !== '' && $("#id_asi").val().trim() !== '') {
+            id_asi = $("#id_asi").val();
+        }
+        if (operacion !== '' && $("#hora_actual").val().trim() !== '') {
+            asi_entrada = $("#hora_actual").val();
+        }
+        if (operacion !== '' && $("#hora_actual").val().trim() !== '') {
+            asi_salida = $("#hora_actual").val();
+        }
+        if (operacion !== '' && $("#id_cliente").val().trim() !== '') {
+            id_cliente = $("#id_cliente").val();
+        }
+        if (operacion !== '' && $("#nombre").val().trim() !== '') {
+            nombre = $("#nombre").val();
+        }
+        if (operacion !== '' && $("#id_mem").val().trim() !== '') {
+            id_mem = $("#id_mem").val();
+        }
+        //console.log(id_asi);
+        // console.log(asi_entrada);
+        // console.log(asi_salida);
+        // console.log(id_cliente);
+        // console.log(nombre);
+        // console.log(id_mem);
+        // console.log(operacion);
     }
     $.ajax({
         url: "grabar.php",

@@ -92,10 +92,25 @@ function agregar() {
     //console.log('agregar() ejecutado');
 }
 
-function modificar_detalle(id_item) {
-    var id_cc = $("#id_cc").val();
+function modificar_detalle(id_cc, id_item) {
+    //var id_cc = $("#id_cc").val();
     $.ajax({
         url: "panel_modificar.php",
+        type: "POST",
+        data: {
+            id_cc: id_cc,
+            id_item: id_item
+        }
+    }).done(function (resultado) {
+        $("#panel-modificar").html(resultado);
+        $("#btn-panel-modificar").click();
+    });
+}
+
+function modificar_detalle_ord(id_cc, id_item) {
+    //var id_cc = $("#id_cc").val();
+    $.ajax({
+        url: "panel_modificar_ord.php",
         type: "POST",
         data: {
             id_cc: id_cc,
@@ -199,6 +214,12 @@ function modificar_detalle_grabar() {
     grabar();
 }
 
+function modificar_detalle_ord_grabar() {
+    $("#operacion").val(9);
+    grabar();
+}
+
+
 function eliminar_detalle(id_item) {
     $("#eliminar_id_item").val(id_item);
     $("#operacion").val(7);
@@ -277,8 +298,6 @@ function grabar() {
             monto = $("#total_pagar").val();
             saldo = $("#total_pagar").val();
         }
-        
-
         // console.log("id_cc " + id_cc);
         // console.log("cc_fecha " + cc_fecha);
         // console.log("cc_intervalo " + cc_intervalo);
@@ -293,8 +312,6 @@ function grabar() {
         // console.log("exenta " + exenta);
         // console.log("monto " + monto);
         // console.log("saldo " + saldo);
-        
-
     }
     if (operacion == '5') {
         id_cc = $("#id_cc").val();
@@ -308,7 +325,11 @@ function grabar() {
         id_cc = $("#id_cc").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
-        precio = $().val("#modificar_precio");
+        precio = $("#modificar_precio").val();
+        console.log(id_cc);
+        console.log(id_item);
+        console.log(cantidad);
+        console.log(precio);
     }
     if (operacion == '7') {
         id_cc = $("#id_cc").val();
@@ -387,7 +408,7 @@ function postgrabar(operacion) {
     }
     if (operacion == '2' || operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8' || operacion == '9' || operacion == '10' || operacion == '11' || operacion == '12') {
         panel_datos($("#id_cc").val());
-        if (operacion == '6') {
+        if (operacion == '6' || operacion == '9') {
             $("#btn-panel-modificar-cerrar").click();
         }
     }
@@ -416,5 +437,25 @@ function validarTipoFactura() {
     });
 
 }
+
+function llenarPrecio() { 
+    // Obtener el ID del producto seleccionado
+    const articuloId = document.getElementById('agregar_id_item').value;
+    const precio = document.getElementById('agregar_precio');
+    // Buscar el producto correspondiente en el objeto datoStock
+    const itemSeleccionado = artuculos.find(d => d.id_item == articuloId);
+
+    if (itemSeleccionado) {
+        precio.value = itemSeleccionado.precio_compra; // Asignar el valor del stock
+    } else {
+        precio.value = ''; // Limpiar el campo si no se encuentra
+    }
+}
+
+$(document).ready(function() {
+    $(document).on('change', '#agregar_id_item', function() {
+        llenarPrecio();
+    });
+});
 
 

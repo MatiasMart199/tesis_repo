@@ -14,6 +14,7 @@ $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_deta
                 Modificar Cantidad
             </div>
             <div class="card-body">
+                <input type="text" hidden="" id="modificar_id_item" value="<?= $id_item; ?>">
                 <div class="form-group">
                     <label>Producto</label> 
                     <input type="text" disabled="" value="<?php echo $datos[0]['item_descrip']." - ".$datos[0]['mar_descrip']; ?>" class="form-control">
@@ -34,3 +35,4 @@ $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_deta
         </div>
     </div>
 </div>
+<?php pg_close($conn); ?>

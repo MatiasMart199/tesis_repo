@@ -60,14 +60,14 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
+function modificar_detalle(id_act){
     var id_rut = $("#id_rut").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_rut: id_rut,
-            id_item: id_item
+            id_act: id_act
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -186,11 +186,15 @@ function grabar(){
     }
     if(operacion == '6'){
         id_rut = $("#id_rut").val();
-        id_act = $("#agregar_id_act").val();
-        serie = $("#agregar_serie").val();
-        repeticion = $("#agregar_repeticion").val();
-        peso = $("#agregar_peso").val();
-        ejercicio = $("#agregar_ejercicio").val();
+        id_act = $("#id_act").val();
+        serie = $("#modificar_serie").val();
+        repeticion = $("#modificar_repeticion").val();
+        peso = $("#modificar_peso").val();
+        // console.log(id_rut);
+        // console.log(id_act);
+        // console.log(serie);
+        // console.log(repeticion);
+        // console.log(peso);
     }
     if(operacion == '7'){
         id_rut = $("#id_rut").val();
@@ -215,7 +219,7 @@ function grabar(){
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensajeSinJson(resultado)){
+        if(verificar_mensaje(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);

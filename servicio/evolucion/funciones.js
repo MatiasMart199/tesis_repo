@@ -60,14 +60,14 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
+function modificar_detalle(id_act){
     var id_evo = $("#id_evo").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_evo: id_evo,
-            id_item: id_item
+            id_act: id_act
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -180,13 +180,13 @@ function grabar(){
         id_evo = $("#id_evo").val();
         id_act = $("#agregar_id_act").val();
         valor = $("#agregar_valor").val();
-        console.log(id_evo);
-        console.log(id_act);
-        console.log(valor);
+        // console.log(id_evo);
+        // console.log(id_act);
+        // console.log(valor);
     }
     if(operacion == '6'){
         id_evo = $("#id_evo").val();
-        id_act = $("#modificar_id_act").val();
+        id_act = $("#id_act").val();
         valor = $("#modificar_valor").val();
     }
     if(operacion == '7'){

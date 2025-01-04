@@ -1,12 +1,12 @@
 <?php
-$id_cpre = $_POST['id_cpre'];
+$id_mem = $_POST['id_mem'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos WHERE id_cpre = $id_cpre;"));
-$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_consolidacion WHERE  id_cpre = $id_cpre;"));
+$movimientos = pg_fetch_all(pg_query($conn, "SELECT * FROM serv_membresias_cab WHERE id_mem = $id_mem;"));
+$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_consolidacion WHERE  id_mem = $id_mem;"));
 ?>
 
 <div class="modal-dialog modal-lg">
@@ -25,9 +25,8 @@ $consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupues
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Producto</th>
-                                        <th>Marca</th>
-                                        <th>Tipo</th>
+                                        <th>Servicio</th>
+                                        <th>Dias</th>
                                         <th>Precio</th>
 
                                     </tr>
@@ -35,16 +34,14 @@ $consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupues
                                 <?php //if(!empty($consolidacion)){ ?>
                                 <tbody>
                                     <?php $total = 0;
-                                    foreach ($consolidacion as $d) { ?>
+                                    foreach ($consolidacion as $d) { 
+                                        $total = $total + ($d['precio'] * $d['dias']) ?>
                                         <tr>
                                             <td>
-                                                <?php echo $d['item_descrip']; ?>
+                                                <?php echo $d['ps_descrip']; ?>
                                             </td>
                                             <td>
-                                                <?php echo $d['mar_descrip']; ?>
-                                            </td>
-                                            <td>
-                                                <?php echo $d['tip_item_descrip']; ?>
+                                                <?php echo $d['dias']; ?>
                                             </td>
                                             <td>
                                                 <?php echo number_format($d['precio'], 0, ",", "."); ?>
@@ -56,9 +53,9 @@ $consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupues
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="3">Total</th>
+                                        <th colspan="2">Total</th>
                                         <th>
-                                            <?php echo number_format($presupuestos[0]['monto_total'], 0, ",", "."); ?>
+                                            <?= number_format($total, 0, ",", "."); ?>
                                         </th>
                                         <!-- <th>
                                 

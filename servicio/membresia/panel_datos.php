@@ -84,7 +84,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
         //$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE id_cp = (select max(id_cp) from compras_pedidos_cabecera where id_sucursal = $id_sucursal);"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $membresias = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_cab WHERE id_mem = $id_mem;"));
-        $consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_consolidacion WHERE  id_mem = $id_mem;"));
+        //$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_consolidacion WHERE  id_mem = $id_mem;"));
     }
     $membresias_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_det WHERE id_mem = $id_mem ORDER BY ps_descrip;"));
     $inscripcionMembresias = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_inscripciones_membresias where id_mem = $id_mem ORDER BY  ps_descrip;"));
@@ -179,8 +179,8 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                                     <td><?php echo $d['precio'] * $d['dias']; ?></td>
                                     <td>
                                         <?php if ($membresias[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_plan_servi']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_plan_servi']; ?>);"><i class="fa fa-minus-circle"></i></button>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle(<?= $d['id_mem']; ?>, <?= $d['id_plan_servi']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                            <button class="btn btn-danger" onclick="eliminar_detalle(<?= $d['id_plan_servi']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                             <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_plan_servi']; 
                                                                                                             ?>);"><i class="fa fa-minus-circle"></i></button> -->
                                         <?php } ?>
@@ -271,6 +271,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                                     <td><?php echo $d['precio'] * $d['dias']; ?></td>
                                     <td>
                                         <?php if ($membresias[0]['estado'] == 'PENDIENTE') { ?>
+                                            <button class="btn btn-warning text-white" onclick="modificar_detalle_ins(<?= $d['id_mem']; ?>, <?= $d['id_plan_servi']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_membresia_inscripcion(<?= $d['id_plan_servi'] ?>);"><i class="fa fa-minus-circle"></i></button>
                                             <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button> -->
                                         <?php } ?>

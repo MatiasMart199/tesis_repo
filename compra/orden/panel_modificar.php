@@ -1,11 +1,11 @@
 <?php
-$id_cpre = $_POST['id_cpre'];
+$id_corden = $_POST['id_corden'];
 $id_item = $_POST['id_item'];
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_detalles WHERE id_cpre = $id_cpre AND id_item = $id_item;"));
+    $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_detalles WHERE id_corden = $id_corden AND id_item = $id_item;")); 
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -14,6 +14,7 @@ $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_deta
                 Modificar Cantidad
             </div>
             <div class="card-body">
+                <input type="text" hidden="" id="modificar_id_item" value="<?= $id_item; ?>">
                 <div class="form-group">
                     <label>Producto</label> 
                     <input type="text" disabled="" value="<?php echo $datos[0]['item_descrip']." - ".$datos[0]['mar_descrip']; ?>" class="form-control">

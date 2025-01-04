@@ -161,11 +161,11 @@ function grabar(){
             ins_estad_salud: ins_estad_salud,
             id_cliente: id_cliente,
             id_plan_servi: id_plan_servi,
-            dia: dia ,
+            dia: dia,
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensajeSinJson(resultado)){
+        if(verificar_mensaje(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);

@@ -1,4 +1,5 @@
 <?php 
+include '../../deshabilitar_error.php';
 require "{$_SERVER['DOCUMENT_ROOT']}/tesis/Conexion.php";
 require "{$_SERVER['DOCUMENT_ROOT']}/tesis/session.php";
 

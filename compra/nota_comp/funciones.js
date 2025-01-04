@@ -66,8 +66,8 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
-    var id_not = $("#id_not").val();
+function modificar_detalle(id_not,id_item){
+    //var id_not = $("#id_not").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
@@ -148,12 +148,13 @@ function grabar(){
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         monto = $("#agregar_monto").val();
-        console.log(id_not, id_item, cantidad, monto);
+        //console.log(id_not, id_item, cantidad, monto);
     }
     if(operacion == '6'){
         id_not = $("#id_not").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
+        monto = $("#modificar_monto").val();
     }
     if(operacion == '7'){
         id_not = $("#id_not").val();

@@ -1,11 +1,11 @@
 <?php
-$id_cpre = $_POST['id_cpre'];
-$id_item = $_POST['id_item'];
+$id_mem = $_POST['id_mem'];
+$id_plan_servi = $_POST['id_plan_servi'];
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_detalles WHERE id_cpre = $id_cpre AND id_item = $id_item;"));
+$datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_det WHERE id_mem = $id_mem AND id_plan_servi = $id_plan_servi;"));
 ?>
 <div class="modal-dialog">
     <div class="modal-content">
@@ -14,18 +14,19 @@ $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_presupuestos_deta
                 Modificar Cantidad
             </div>
             <div class="card-body">
-                <div class="form-group">
-                    <label>Producto</label> 
-                    <input type="text" disabled="" value="<?php echo $datos[0]['item_descrip']." - ".$datos[0]['mar_descrip']; ?>" class="form-control">
+            <div class="form-group">
+                    <label>Planes</label> 
+                    <input type="text" disabled="" value="<?php echo $datos[0]['ps_descrip']; ?>" class="form-control">
+                    <input type="hidden" id="modificar_id_plan_servi" value="<?php echo $datos[0]['id_plan_servi']; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Cantidad</label>
-                    <input type="number" class="form-control" value="<?php echo $datos[0]['cantidad']; ?>" id="modificar_cantidad">
+                    <label>Dias</label>
+                    <input type="number" class="form-control" value="<?php echo $datos[0]['dias']; ?>" id="modificar_dias">
                 </div>
-                <div class="form-group">
-                    <label>Precio Unitario</label>
-                    <input type="number" class="form-control" value="<?php echo $datos[0]['precio']; ?>" id="modificar_precio">
-                </div> 
+                <!-- <div class="form-group">
+                    <label>Precio</label>
+                    <input type="number" class="form-control" disabled value="<?php //echo $datos[0]['precio']; ?>" id="modificar_precio">
+                </div>  -->
             </div>
             <div class="modal-footer justify-content-between">
                 <button class="btn btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Cancelar</button>

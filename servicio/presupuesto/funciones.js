@@ -60,14 +60,14 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
+function modificar_detalle(id_act){
     var id_pre = $("#id_pre").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_pre: id_pre,
-            id_item: id_item
+            id_act: id_act
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -160,7 +160,7 @@ function grabar(){
     var id_cliente = '0';
     var id_personal = '0';
     var id_act = '0';
-    var descrip = '0';
+    var descrip = 'N/A';
     var costo = '0';
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
         id_pre = $("#id_pre").val();
@@ -174,15 +174,15 @@ function grabar(){
         id_act = $("#agregar_id_act").val();
         descrip = $("#agregar_descrip").val();
         costo = $("#agregar_costo").val();
-        console.log(id_pre);
-        console.log(id_act);
-        console.log(descrip);
-        console.log(costo);
+        // console.log(id_pre);
+        // console.log(id_act);
+        // console.log(descrip);
+        // console.log(costo);
     }
     if(operacion == '6'){
         id_pre = $("#id_pre").val();
-        id_act = $("#modificar_id_act").val();
-        descrip = $("#modificar_descrip").val();
+        id_act = $("#id_act").val();
+        //descrip = $("#modificar_descrip").val();
         costo = $("#modificar_costo").val();
     }
     if(operacion == '7'){

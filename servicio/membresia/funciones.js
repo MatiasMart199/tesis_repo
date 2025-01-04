@@ -70,14 +70,29 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item){
-    var id_mem = $("#id_mem").val();
+function modificar_detalle(id_mem, id_plan_servi){
+    //var id_mem = $("#id_mem").val();
     $.ajax({
         url:"panel_modificar.php",
         type:"POST",
         data:{
             id_mem: id_mem,
-            id_item: id_item
+            id_plan_servi: id_plan_servi
+        }
+    }).done(function(resultado){
+        $("#panel-modificar").html(resultado);
+        $("#btn-panel-modificar").click();
+    });
+}
+
+function modificar_detalle_ins(id_mem, id_plan_servi){
+    //var id_mem = $("#id_mem").val();
+    $.ajax({
+        url:"panel_modificar_ins.php",
+        type:"POST",
+        data:{
+            id_mem: id_mem,
+            id_plan_servi: id_plan_servi
         }
     }).done(function(resultado){
         $("#panel-modificar").html(resultado);
@@ -140,6 +155,11 @@ function agregar_detalles(){
 
 function modificar_detalle_grabar(){
     $("#operacion").val(6);
+    grabar();
+}
+
+function modificar_detalle_ins_grabar(){
+    $("#operacion").val(9);
     grabar();
 }
 
@@ -209,10 +229,11 @@ function grabar(){
     }
     if(operacion == '9'){
         id_mem = $("#id_mem").val();
-        id_inscrip = $("#id_inscrip").val();
+        //id_inscrip = $("#id_inscrip").val();
         id_plan_servi = $("#modificar_id_plan_servi").val();
-        dias = $("#modificar_cantidad").val();
+        dias = $("#modificar_dias").val();
         precio = $("#modificar_precio").val();
+
     }
     if(operacion == '10'){
         id_inscrip = $("#id_inscrip").val();
@@ -238,7 +259,7 @@ function grabar(){
             operacion: operacion
         }
     }).done(function(resultado){
-        if(verificar_mensajeSinJson(resultado)){
+        if(verificar_mensaje(resultado)){
             //postgrabar(operacion);
         }
         postgrabar(operacion);
@@ -255,7 +276,7 @@ function postgrabar(operacion){
     }
     if(operacion == '2'|| operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8'|| operacion == '9'|| operacion == '10'|| operacion == '11'){
         panel_datos($("#id_mem").val());
-        if(operacion == '6'){
+        if(operacion == '6' || operacion == '9'){
             $("#btn-panel-modificar-cerrar").click();
         }
     }

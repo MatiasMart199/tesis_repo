@@ -66,7 +66,7 @@ function agregar() {
     $("#btn-panel-datos").click();
 }
 
-function modificar_detalle(id_item) {
+function modificar_detalle(id_tra, id_item) {
     var id_tra = $("#id_tra").val();
     $.ajax({
         url: "panel_modificar.php",
