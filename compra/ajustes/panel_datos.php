@@ -227,7 +227,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <label>Motivo</label>
                             <select class="select2" id="agregar_mot_descrip" onchange="mostrarIdMotivo()">
-                            <option selected="true" disabled="disabled">Seleccione Producto</option>
+                            <option selected="true" disabled="disabled">Seleccione Motivo</option>
                             </select>
                         </div>
 
