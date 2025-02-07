@@ -1,12 +1,12 @@
 <?php
-$id_cc = $_POST['id_cc'];
+$id_vc = $_POST['id_vc'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$consultasCab = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_cab WHERE id_cc = $id_cc;"));
-$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_consolidacion WHERE  id_cc = $id_cc;"));
+$consultasCab = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab WHERE id_vc = $id_vc;"));
+$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_consolidacion WHERE  id_vc = $id_vc;"));
 ?>
 conponents
 <div class="modal-dialog modal-lg">

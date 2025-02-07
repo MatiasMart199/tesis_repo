@@ -3,9 +3,9 @@
 require_once '../../TCPDF_v2/tcpdf.php';
 include '../../Conexion.php';
 include '../../session.php';
-$id_cc = $_GET['id_cc'];
-$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_cab WHERE id_cc = $id_cc;"));
-$detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_cal_impuesto_compra WHERE id_cc = $id_cc ORDER BY id_cc asc;"));
+$id_vc = $_GET['id_vc'];
+$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab WHERE id_vc = $id_vc;"));
+$detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_cal_impuesto_ventas WHERE id_vc = $id_vc ORDER BY id_vc asc;"));
 
 // Crear instancia de TCPDF
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -13,7 +13,7 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // Establecer la información del documento
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Your Name');
-$pdf->SetTitle('Compra #' . $cabecera[0]['id_cc'] . ' ');
+$pdf->SetTitle('Compra #' . $cabecera[0]['id_vc'] . ' ');
 $pdf->SetSubject('Detalles de la compra');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
@@ -78,8 +78,8 @@ $html = '
             
             -------------------------------------------------------------------------------- <br>
         <b>FECHA EMISION: </b> ' . $cabecera[0]['fecha'] . '<br>
-        <strong>Nro FACTURA</strong>: ' . $cabecera[0]['cc_nro_factura'] . '<br>
-        <strong>Nro TIMBRADO</strong>: ' . $cabecera[0]['cc_timbrado'] . '<br>
+        <strong>Nro FACTURA</strong>: ' . $cabecera[0]['vc_nro_factura'] . '<br>
+        <strong>Nro TIMBRADO</strong>: ' . $cabecera[0]['tim_num_timbrado'] . '<br>
          -------------------------------------------------------------------------------- <br><br>
          <table border="1" cellpadding="3" style="text-align: center; font-size: 12px">
     <thead>

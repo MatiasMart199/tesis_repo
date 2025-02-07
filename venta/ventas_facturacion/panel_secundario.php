@@ -1,5 +1,5 @@
 <?php
-//$id_corden = $_POST['id_corden'];
+//$id_vped = $_POST['id_vped'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
@@ -7,7 +7,7 @@ $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
 //CONSULTA DE LA VISTA DE LOS DETALLES DEL MOVIMIENTO ANTERIOR
-$consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WHERE  estado = 'CONFIRMADO' order by id_corden;"));
+$consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_pedidos WHERE  estado = 'CONFIRMADO' order by id_vped;"));
 ?>
 
 <div class="modal-dialog modal-lg">
@@ -16,7 +16,7 @@ $consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WH
             <div class="card-header text-center text-white">
                 ORDENES CONFIRMADOS
             </div>
-            <input type="hidden" value="<?php echo $consultas_bd[0]['id_corden']; ?>" id="id_corden">
+            <input type="hidden" value="<?php echo $consultas_bd[0]['id_vped']; ?>" id="id_vped">
             <div class="card-body contenido-principal">
                 <!--CONTENIDO PRINCIPAL-->
 
@@ -29,14 +29,14 @@ $consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WH
 
                 foreach ($consultas_bd as $p) {
                     echo '<div class="custom-container">';
-                    echo '<label class="custom-container__label">#' . $p['id_corden'] . ' Nº-----( ' . $p['fecha'] . ' )</label>';
-                    echo '<button class="btn btn-success" onclick="agregar_compra_orden(' . $p['id_corden'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
+                    echo '<label class="custom-container__label">#' . $p['id_vped'] . ' Nº-----( ' . $p['fecha'] . ' )</label>';
+                    echo '<button class="btn btn-success" onclick="agregar_compra_orden(' . $p['id_vped'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                     echo '</div>';
-                    //echo '<input type="hidden" value="echo '.$p[0]['id_corden'].'" id="id_corden">';
+                    //echo '<input type="hidden" value="echo '.$p[0]['id_vped'].'" id="id_vped">';
                     // Construye la fila de encabezado de la tabla una sola vez
-                    $consultas_consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_consolidacion WHERE id_corden = " . $p['id_corden'] . " ORDER BY precio ASC;"));
+                    $consultas_consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_pedidos_detalle WHERE id_vped = " . $p['id_vped'] . " ORDER BY precio ASC;"));
 
-                    echo '<input type="hidden" value="' . $p['id_corden'] . '" id="id_cpedido">';
+                    echo '<input type="hidden" value="' . $p['id_vped'] . '" id="id_cpedido">';
                     echo '<table class="table table-bordered">';
                     if (!empty($consultas_consolidacion)) {
                         echo '<thead>';
@@ -54,12 +54,12 @@ $consultas_bd = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_ordenes WH
                         $total = 0;
                         foreach ($consultas_consolidacion as $d) {
 
-                            $total = $total + ($d['precio'] * $d['sum']);
+                            $total = $total + ($d['precio'] * $d['cantidad']);
                             echo '<tr>';
                             echo '<td>' . $d['item_descrip'] . ' - ' . $d['mar_descrip'] . '</td>';
-                            echo '<td>' . $d['sum'] . '</td>';
+                            echo '<td>' . $d['cantidad'] . '</td>';
                             echo '<td>' . $d['precio'] . '</td>';
-                            echo '<td>' . ($d['precio'] * $d['sum']) . '</td>';
+                            echo '<td>' . ($d['precio'] * $d['cantidad']) . '</td>';
                             // echo '<td>';
                 
                             // echo '</td>';

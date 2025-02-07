@@ -33,7 +33,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un presupuesto</label>
 <?php
 } else if ($id_vc == '0') { //CUANDO SE PRESIONA EL BOTON AGREGAR
-//global $timbrados;
+    //global $timbrados;
 ?>
 
     <div class="card card-primary">
@@ -143,8 +143,8 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
         </div>
     </div>
     <script>
-            validarTipoFactura();
-            const timbrados = <?php echo json_encode($timbrados); ?>;
+        validarTipoFactura();
+        const timbrados = <?php echo json_encode($timbrados); ?>;
     </script>
 
 <?php
@@ -230,7 +230,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <input type="number" id="total_exenta" value="<?= $totalExenta ?>" hidden>
 
                 <input type="hidden" value="<?php echo $ventas[0]['id_vc']; ?>" id="id_vc">
-                <input type="hidden" value="<?php echo $pedidos[0]['id_vped']; ?>" id="id_corden">
+                <input type="hidden" value="<?php echo $pedidos[0]['id_vped']; ?>" id="id_vped">
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
 
@@ -246,7 +246,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Cliente</label>
                             <select class="select2" id="id_cliente">
@@ -261,7 +261,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                     </div>
 
 
-                    <div class="col-md-4 mb-4">
+                    <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label>Fecha de Emision</label>
                             <input type="date" value="<?= $ventas[0]['vc_fecha'] ?>" class="form-control" id="vc_fecha">
@@ -270,22 +270,31 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Nro Factura</label>
-                            <input type="text" value="<?= $ventas[0]['vc_nro_factura'] ?>" class="form-control" id="vc_nro_factura">
+                            <label>Tipo Doc</label>
+                            <input type="text" value="<?= $ventas[0]['tim_documento'] ?>" class="form-control" id="tip_doc" disabled>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Timbrado</label>
-                            <input type="text" value="<?= $ventas[0]['tim_num_timbrado'] ?>" class="form-control" id="id_tim" disabled>
+                            <select class="form-control" id="id_tim" disabled>
+                                <option value="<?= $ventas[0]['id_tim'] ?>" selected><?= $ventas[0]['tim_num_timbrado'] ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Nro Factura</label>
+                            <input type="text" value="<?= $ventas[0]['vc_nro_factura'] ?>" class="form-control" id="vc_nro_factura" disabled>
                         </div>
                     </div>
 
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Tipo de Factura</label>
-                            <select class="form-control" id="cc_tipo_factura" style="width: 100%;">
+                            <select class="form-control" id="vc_tipo_factura" style="width: 100%;">
                                 <option disabled="disabled" <?= empty($ventas[0]['vc_tipo_factura']) ? 'selected' : '' ?>>Seleccione Tipo de Factura</option>
                                 <option value="CONTADO" <?= $ventas[0]['vc_tipo_factura'] == 'CONTADO' ? 'selected' : '' ?>>CONTADO</option>
                                 <option value="CREDITO" <?= $ventas[0]['vc_tipo_factura'] == 'CREDITO' ? 'selected' : '' ?>>CRÉDITO</option>
@@ -475,7 +484,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                             <?php $total = 0;
                             foreach ($ventas_pedidos as $d) {
                                 $total = $total + ($d['precio'] * $d['cantidad']) ?>
-                                <input type="hidden" value="<?php echo $d['id_corden']; ?>" id="id_cped_item">
+                                <input type="hidden" value="<?php echo $d['id_vped']; ?>" id="id_cped_item">
                                 <tr>
                                     <td>
                                         <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
@@ -536,7 +545,8 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 <script>
     validarTipoFactura();
     const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
-    //const timbrados = <?php //echo json_encode($timbrados); ?>;
-        //console.log(timbrados);
+    //const timbrados = <?php //echo json_encode($timbrados); 
+                        ?>;
+    //console.log(timbrados);
 </script>
 <?php pg_close($conn) ?>
