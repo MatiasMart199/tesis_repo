@@ -134,6 +134,8 @@ function grabar(){
     var vac_monto_ape = '0';
     var vac_monto_cie = '0';
     var id_caja = '0';
+    var id_ee = '0';
+    var id_fun_solicitante = '0';
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
         id_vac = $("#id_vac").val();
         vac_fecha_ape = $("#vac_fecha_ape").val();
@@ -144,6 +146,26 @@ function grabar(){
         vac_monto_ape = $("#vac_monto_ape").val();
         vac_monto_cie = $("#vac_monto_cie").val();
         id_caja = $("#id_caja").val();
+
+        // if (operacion == '2' && $("#id_ee").val().trim() !== '') {
+        //     id_ee = $("#id_ee").val();
+        // }
+
+        if(operacion == '1' || operacion == '2' && $('#id_ee').val().trim() !== ''){
+            id_ee = $("#id_ee").val();
+        }
+    }
+    if(operacion == '5' || operacion == '6'){
+        id_vac = $("#id_vac").val();
+        vac_fecha_ape = $("#vac_fecha_ape").val();
+        vac_fecha_cie = $("#vac_fecha_cie").val();
+        vac_monto_efec = $("#vac_monto_efec").val();
+        vac_monto_cheq = $("#vac_monto_cheq").val();
+        vac_monto_tarj = $("#vac_monto_tarj").val();
+        vac_monto_ape = $("#vac_monto_ape").val();
+        vac_monto_cie = $("#vac_monto_cie").val();
+        id_caja = $("#id_caja").val();
+        id_fun_solicitante = $("#id_fun_solicitante").val();
     }
     $.ajax({
         url: "grabar.php",
@@ -158,6 +180,8 @@ function grabar(){
             vac_monto_ape: vac_monto_ape,
             vac_monto_cie: vac_monto_cie,
             id_caja: id_caja,
+            id_ee: id_ee,
+            id_fun_solicitante: id_fun_solicitante,
             operacion: operacion
         }
     }).done(function(resultado){

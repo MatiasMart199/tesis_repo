@@ -22,6 +22,7 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_vac">
+
             <!---------------------------------- FORMULARIO DE APERTURA------------------------------------------ -->
             <div class="row">
                 <div class="col-md-6">
@@ -100,7 +101,18 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
                         <input type="number" value="0" class="form-control" id="vac_monto_tarj" disabled>
                     </div>
                 </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Entidad Emisora</label>
+                        <select class="select2" id="id_ee" disabled>
+                            <option value="0"></option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
+
 
             <div class="row">
                 <div class="form-group">
@@ -114,21 +126,35 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_vac == '-2') { //SE TRATA DEL ULTIMO PEDIDO
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_aperturas_cierres WHERE id_vac = (select max(id_vac) from vent_aperturas_cierres where id_sucursal = $id_sucursal);"));
+        $emisora = pg_fetch_all(pg_query($conn, "SELECT * FROM entidades_emisoras;"));
+        $funcionario = pg_fetch_all(pg_query($conn, "SELECT * FROM v_funcionarios WHERE estado = 'ACTIVO';"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_aperturas_cierres WHERE id_vac = $id_vac;"));
+        $emisora = pg_fetch_all(pg_query($conn, "SELECT * FROM entidades_emisoras;"));
+        $funcionario = pg_fetch_all(pg_query($conn, "SELECT * FROM v_funcionarios WHERE estado = 'ACTIVO';"));
     }
     $disabled = 'disabled';
     if ($cabeceras[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
     }
 
-    function verificarFecha($fecha){
-    date_default_timezone_set('America/Asuncion');
+    function verificarFecha($fecha)
+    {
+        date_default_timezone_set('America/Asuncion');
 
         if ($fecha == null) {
             return date('Y-m-d H:i:s');
         } else {
             return $fecha;
+        }
+    }
+
+    function verificarEntidad($id_ee)
+    {
+        if ($id_ee == null) {
+            return 0;
+        } else {
+            return $id_ee;
         }
     }
     // $fecha_cierre = null;
@@ -146,6 +172,7 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $cabeceras[0]['id_vac']; ?>" id="id_vac">
+
 
                 <div class="row">
                     <div class="col-md-6">
@@ -220,10 +247,72 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
                             <input type="number" value="<?= $cabeceras[0]['vac_monto_tarj'] ?>" class="form-control" id="vac_monto_tarj">
                         </div>
                     </div>
-                </div>
 
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Entidad Emisora</label>
+                            <select class="select2" id="id_ee">
+                                <?php foreach ($emisora as $e) { ?>
+                                    <option value="<?= $e['id_ee'] ?>"><?= $e['ee_descrip'] . " - " . $e['ee_tipo_entidad'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($cabeceras[0]['estado'] == 'CONFIRMADO') { ?>
+                    <hr>
+                    <legend>Detalle de Arqueo</legend>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Solicitante</label>
+                                <select class="select2" id="id_fun_solicitante">
+                                    <?php foreach ($funcionario as $f) { ?>
+                                        <option value="<?= $f['id_funcionario'] ?>"><?= $f['funcionario'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Estado de Arqueo</label>
+                                <select class="select2" id="estado_arqueo">
+                                    <option value="">OBSERVACIÓN</option>
+                                    <option value="">IMPRESIÓN</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" value="" class="form-check-input" id="check_tarjeta">
+                                <label>Tarjeta</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" value="" class="form-check-input" id="check_cheque">
+                                <label>Cheque</label>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" value="" class="form-check-input" id="check_efectivo">
+                                <label>Efectivo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    
+                <?php } ?>
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
+                    <?php if ($cabeceras[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-info" onclick=""><i class="fa fa-check-circle"></i>Generar Arqueo</button>
+                    <?php } ?>
                     <?php if ($cabeceras[0]['estado'] == 'ABIERTO' || $cabeceras[0]['estado'] == 'CERRADO') { ?>
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Cierre</button>
