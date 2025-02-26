@@ -270,6 +270,7 @@ function grabar() {
         vc_tipo_factura = $("#vc_tipo_factura").val();
         vc_cuota = $("#vc_cuota").val();
         id_cliente = $("#id_cliente").val();
+        id_vped = $("#id_vped").val() || 0;
 
         // iva5 = $("#total_iva5").val();
         // iva10 = $("#total_iva10").val();
@@ -278,11 +279,9 @@ function grabar() {
         // saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
 
         // Solo asignamos id_cp si el input tiene un valor válido y operacion == 3
-        if (operacion == '3' && $("#id_vped").val().trim() !== '') {
-            id_vped = $("#id_vped").val();
-        }
-
-
+        // if (operacion == '3' && $("#id_vped").val().trim() !== '') {
+        //     id_vped = $("#id_vped").val();
+        // }
         if (operacion == '3' && $("#total_iva5").val().trim() !== '') {
             iva5 = $("#total_iva5").val();
         }
@@ -296,20 +295,20 @@ function grabar() {
             monto = $("#total_pagar").val();
             saldo = $("#total_pagar").val();
         }
-        // console.log("id_vc " + id_vc);
-        // console.log("cc_fecha " + cc_fecha);
-        // console.log("cc_intervalo " + cc_intervalo);
-        // console.log("cc_nro_factura " + cc_nro_factura);
-        // console.log("cc_timbrado " + cc_timbrado);
-        // console.log("cc_tipo_factura " + cc_tipo_factura);
-        // console.log("cc_cuota " + cc_cuota);
-        // console.log("id_proveedor " + id_proveedor);
-        // console.log("id_vped " + id_vped);
-        // console.log("iva5 " + iva5);
-        // console.log("iva10 " + iva10);
-        // console.log("exenta " + exenta);
-        // console.log("monto " + monto);
-        // console.log("saldo " + saldo);
+        console.log("id_vc " + id_vc);
+        console.log("vc_fecha " + vc_fecha);
+        console.log("vc_intervalo " + vc_intervalo);
+        console.log("vc_nro_factura " + vc_nro_factura);
+        console.log("id_tim " + id_tim);
+        console.log("vc_tipo_factura " + vc_tipo_factura);
+        console.log("vc_cuota " + vc_cuota);
+        console.log("id_cliente " + id_cliente);
+        console.log("id_vped " + id_vped);
+        console.log("iva5 " + iva5);
+        console.log("iva10 " + iva10);
+        console.log("exenta " + exenta);
+        console.log("monto " + monto);
+        console.log("saldo " + saldo);
     }
     if (operacion == '5') {
         id_vc = $("#id_vc").val();

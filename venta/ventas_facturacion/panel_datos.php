@@ -200,6 +200,9 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
     $totalExenta = array_sum($totalExenta);
     $totalGrav = array_sum($totaGrav);
     $totalIva = array_sum($totalIva);
+
+    // Verificar si existe un pedido asociado a la venta
+    $id_vped = isset($pedidos[0]['id_vped'])  ? $pedidos[0]['id_vped'] : 0;
 ?>
     <div class="card">
         <div class="card-body">
@@ -230,7 +233,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <input type="number" id="total_exenta" value="<?= $totalExenta ?>" hidden>
 
                 <input type="hidden" value="<?php echo $ventas[0]['id_vc']; ?>" id="id_vc">
-                <input type="hidden" value="<?php echo $pedidos[0]['id_vped']; ?>" id="id_vped">
+                <input type="hidden" value="<?php echo $id_vped; ?>" id="id_vped">
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
 
@@ -484,7 +487,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                             <?php $total = 0;
                             foreach ($ventas_pedidos as $d) {
                                 $total = $total + ($d['precio'] * $d['cantidad']) ?>
-                                <input type="hidden" value="<?php echo $d['id_vped']; ?>" id="id_cped_item">
+                                
                                 <tr>
                                     <td>
                                         <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>

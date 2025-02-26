@@ -180,6 +180,9 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
     $totalExenta = array_sum($totalExenta);
     $totalGrav = array_sum($totaGrav);
     $totalIva = array_sum($totalIva);
+
+    //verificar si la compra tiene una orden de compra asociada
+    $id_corden = isset($ordenes[0]['id_corden']) ? $ordenes[0]['id_corden'] : 0;
 ?>
     <div class="card">
         <div class="card-body">
@@ -210,7 +213,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 <input type="number" id="total_exenta" value="<?= $totalExenta ?>" hidden>
 
                 <input type="hidden" value="<?php echo $compras[0]['id_cc']; ?>" id="id_cc">
-                <input type="hidden" value="<?php echo $ordenes[0]['id_corden']; ?>" id="id_corden">
+                <input type="hidden" value="<?= $id_corden; ?>" id="id_corden">
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
 
