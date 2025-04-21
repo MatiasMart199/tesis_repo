@@ -253,7 +253,7 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
                             <label>Entidad Emisora</label>
                             <select class="select2" id="id_ee">
                                 <?php foreach ($emisora as $e) { ?>
-                                    <option value="<?= $e['id_ee'] ?>"><?= $e['ee_descrip'] . " - " . $e['ee_tipo_entidad'] ?></option>
+                                    <option value="<?= $e['id_ee'] ?>"><?= $e['ee_razon_social'] . " - " . $e['ee_tipo_entidad'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>

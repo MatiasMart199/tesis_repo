@@ -295,20 +295,20 @@ function grabar() {
             monto = $("#total_pagar").val();
             saldo = $("#total_pagar").val();
         }
-        console.log("id_vc " + id_vc);
-        console.log("vc_fecha " + vc_fecha);
-        console.log("vc_intervalo " + vc_intervalo);
-        console.log("vc_nro_factura " + vc_nro_factura);
-        console.log("id_tim " + id_tim);
-        console.log("vc_tipo_factura " + vc_tipo_factura);
-        console.log("vc_cuota " + vc_cuota);
-        console.log("id_cliente " + id_cliente);
-        console.log("id_vped " + id_vped);
-        console.log("iva5 " + iva5);
-        console.log("iva10 " + iva10);
-        console.log("exenta " + exenta);
-        console.log("monto " + monto);
-        console.log("saldo " + saldo);
+        // console.log("id_vc " + id_vc);
+        // console.log("vc_fecha " + vc_fecha);
+        // console.log("vc_intervalo " + vc_intervalo);
+        // console.log("vc_nro_factura " + vc_nro_factura);
+        // console.log("id_tim " + id_tim);
+        // console.log("vc_tipo_factura " + vc_tipo_factura);
+        // console.log("vc_cuota " + vc_cuota);
+        // console.log("id_cliente " + id_cliente);
+        // console.log("id_vped " + id_vped);
+        // console.log("iva5 " + iva5);
+        // console.log("iva10 " + iva10);
+        // console.log("exenta " + exenta);
+        // console.log("monto " + monto);
+        // console.log("saldo " + saldo);
     }
     if (operacion == '5') {
         id_vc = $("#id_vc").val();
@@ -387,9 +387,9 @@ function grabar() {
         console.log(resultado); // Agregado para verificar la respuesta del servidor
         //let result = JSON.parse(resultado);
         if (verificar_mensaje(resultado)) {
-            
+              
         }
-        postgrabar(operacion);
+        postgrabar(operacion); 
     }).fail(function (a, b, c) {
         //console.error(b);
         console.error("Error:", a, b, c); // Error detallado
@@ -413,6 +413,7 @@ function postgrabar(operacion) {
     }
     if (operacion == '3' || operacion == '4') {
         panel_datos(-1);
+        //location.reload();
 
     }
 }
