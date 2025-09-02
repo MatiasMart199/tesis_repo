@@ -33,6 +33,10 @@
                     <h1 class="m-0 text-dark">Cobranza</h1>
                     <input type="hidden" id="operacion" value="0">
                     <input type="hidden" id="btn-panel-detalle" data-toggle="modal" data-target="#panel-detalle">
+                    <!-- PANELES DE COBROS -->
+                    <input type="hidden" id="btn-panel-cheque" data-toggle="modal" data-target="#panel-cheque">
+                    <input type="hidden" id="btn-panel-tarjeta" data-toggle="modal" data-target="#panel-tarjeta">
+                    <input type="hidden" id="btn-panel-transferencia" data-toggle="modal" data-target="#panel-transferencia">
                   </div>
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -66,6 +70,11 @@
             <div class="modal fade" id="panel-detalle">
                 
             </div>
+
+            <!-- PANELES COBROS -->
+             <div class="modal fade" id="panel-cheque"></div>
+             <div class="modal fade" id="panel-tarjeta"></div>
+             <div class="modal fade" id="panel-transferencia"></div>
         </div>
         <footer class="main-footer">
           <strong>Copyright &copy; <?php echo date('Y'); ?> <a href="#">TESIS</a></strong>

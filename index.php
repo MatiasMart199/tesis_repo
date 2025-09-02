@@ -172,7 +172,7 @@ unset($_SESSION['mensaje']);
                             <input type="text" name="usuario" class="form-control" placeholder="Usuario" required>
                         </div>
                         <div class="mb-3">
-                            <input type="password" name="contrasena" class="form-control" placeholder="Contraseña" required>
+                            <input type="password" name="contrasena" class="form-control" placeholder="Contraseña" min="6" required>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
                     </form>

@@ -136,6 +136,7 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
+    <script>const datoDeposito = <?= json_encode($deposito); ?>;</script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_tra == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -273,6 +274,9 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
 
             </div>
         </div>
+
+        <script>const datoDeposito = <?= json_encode($deposito); ?>;</script>
+
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
                 Detalles de la Transferencia
@@ -358,15 +362,8 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
                     <?php } ?>
                 </div>
             </div>
-
+            <script> const datoStock = <?= json_encode($articulos); ?>;</script>
         <?php } ?>
     </div>
 
-<?php
-}
-pg_close($conn);
-?>
-<script>
-    const datoDeposito = <?= json_encode($deposito); ?>;
-    const datoStock = <?= json_encode($articulos); ?>;
-</script>
+<?php } pg_close($conn); ?>

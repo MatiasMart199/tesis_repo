@@ -27,6 +27,7 @@ function formato_tabla(tabla, item_cantidad){
     });
 }
 
+
 function panel_cobros(){
     $.ajax({
         url:"panel_cobros.php"
@@ -46,6 +47,7 @@ function panel_datos(id_cob){
     }).done(function(resultado){
         $("#panel-datos").html(resultado);
         refrescar_select();
+        formato_tabla("#tabla_cuentas", 2);
     });
 }
 
@@ -100,11 +102,6 @@ function anular(){
     grabar();
 }
 
-// function agregar_detalles(){
-//     $("#operacion").val(5);
-//     grabar();
-// }
-
 function agregar_detalle_grabar(){
     $("#operacion").val(5);
     grabar();
@@ -120,6 +117,91 @@ function cancelar(){
     panel_datos(-1);
     $("#btn-panel-cobros").click();
     mensaje("CANCELADO","error");
+}
+
+//AGREGAR LOS DIFERENTES TIPOS DE COBROS
+function agregar_cheque_grabar(){
+    $("#operacion").val(8);
+    grabar();
+}
+
+function agregar_tarjeta_grabar(){
+    $("#operacion").val(9);
+    grabar();
+}
+function agregar_transferencia_grabar(){
+    $("#operacion").val(10);
+    grabar();
+}
+//*******************************************   */
+function agregar_cobro(id_cob, id_fc){
+    let id_cue = $("#id_cue_f").val();
+    //FORMA COBRO CHEQUE
+    if(id_fc == 1){
+    $.ajax({
+        url:"./paneles_cobro/panel_cheque.php",
+        type:"POST",
+        data:{
+            id_cob: id_cob,
+            id_fc: id_fc,
+            id_cue: id_cue
+        }
+    }).done(function(resultado){
+        $("#panel-cheque").html(resultado);
+        $("#btn-panel-cheque").click();
+    });
+
+    //FORMA COBRO TARJETA
+    }else if(id_fc == 2){
+    $.ajax({
+        url:"./paneles_cobro/panel_tarjeta.php",
+        type:"POST",
+        data:{
+            id_cob: id_cob,
+            id_fc: id_fc,
+            id_cue: id_cue
+        }
+    }).done(function(resultado){
+        $("#panel-tarjeta").html(resultado);
+        $("#btn-panel-tarjeta").click();
+    });
+
+    //FORMA COBRO TRANSFERENCIA
+    }else if(id_fc == 3){
+    $.ajax({
+        url:"./paneles_cobro/panel_transferencia.php",
+        type:"POST",
+        data:{
+            id_cob: id_cob,
+            id_fc: id_fc,
+            id_cue: id_cue
+        }
+    }).done(function(resultado){
+        $("#panel-transferencia").html(resultado);
+        $("#btn-panel-transferencia").click();
+        refrescar_select();
+    });
+    }
+}
+
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
 }
 
 function grabar(){
@@ -152,6 +234,17 @@ function grabar(){
         id_vac = $("#id_vac").val();
         id_caja = $("#id_caja").val();
         id_vc = $("#id_vc").val();
+
+        if (!validarCampos([
+            {id: "#id_cob", nombre: "Codigo"},
+            {id: "#cob_fecha", nombre: "Fecha"},
+            {id: "#id_vac", nombre: "apertura y cierre"},
+            {id: "#id_caja", nombre: "Caja"},
+            {id: "#id_vc", nombre: "Nro Factura"}
+            ])) {
+                return; // ❌ corta si falta un campo
+            }
+
     }
     if(operacion == '5'){
         id_cob = $("#id_cob").val();
@@ -159,11 +252,11 @@ function grabar(){
         id_fc = $("#id_fc").val();
         cob_monto_efe = $("#cob_monto_efe").val();
         monto = $("#monto").val();
-        console.log(id_cob);
-        console.log(id_cue);
-        console.log(id_fc);
-        console.log(cob_monto_efe);
-        console.log(monto);
+        // console.log(id_cob);
+        // console.log(id_cue);
+        // console.log(id_fc);
+        // console.log(cob_monto_efe);
+        // console.log(monto);
     }
     if(operacion == '6'){
         id_cob = $("#id_cob").val();
@@ -177,26 +270,55 @@ function grabar(){
         id_cue = $("#id_cue").val();
     }
     if(operacion == '8'){
+        id_cob = $("#id_cob").val();
+        id_cue = $("#id_cue").val();
         id_ee = $("#id_ee").val();
         che_nro_cheque = $("#che_nro_cheque").val();
         che_vencimiento = $("#che_vencimiento").val();
         che_monto = $("#che_monto").val();
         che_tipo_cheque = $("#che_tipo_cheque").val();
+        // console.log(che_tipo_cheque);
+        // console.log(che_nro_cheque);
+        // console.log(che_vencimiento);
+        // console.log(che_monto);
+        // console.log(id_ee);
+        // console.log(id_cue);
+        // console.log(id_cob);
         
     }
     if(operacion == '9'){
+        id_cob = $("#id_cob").val();
+        id_cue = $("#id_cue").val();
         id_ee = $("#id_ee").val();
         tar_nro_tarjeta = $("#tar_nro_tarjeta").val();
         tar_vencimiento = $("#tar_vencimiento").val();
         tar_monto = $("#tar_monto").val();
         id_mt = $("#id_mt").val();
+        id_fc = $("#id_fc_f").val();
+        // console.log(id_cob);
+        // console.log(id_cue);
+        // console.log(id_ee);
+        // console.log(tar_nro_tarjeta);
+        // console.log(tar_vencimiento);
+        // console.log(tar_monto);
+        // console.log(id_mt);
+        // console.log(id_fc);
     }
+    // cobro tranferencia
     if(operacion == '10'){
-        id_ee = $("#id_ee").val();
+        id_cob = $("#id_cob").val();
+        id_ee = $("#id_ee_ori").val();
         id_ee_des = $("#id_ee_des").val();
         tra_nro_cuenta = $("#tra_nro_cuenta").val();
         tra_monto = $("#tra_monto").val();
         tra_motivo = $("#tra_motivo").val();
+        console.log(id_cob);
+        console.log(id_ee);
+        console.log(id_ee_des);
+        console.log(tra_nro_cuenta);
+        console.log(tra_monto);
+        console.log(tra_motivo);
+       
     }
     $.ajax({
         url: "grabar.php",
@@ -228,9 +350,9 @@ function grabar(){
         }
     }).done(function(resultado){
         if(verificar_mensaje(resultado)){
-            //postgrabar(operacion);
+            postgrabar(operacion);
         }
-        postgrabar(operacion);
+        //postgrabar(operacion);
     }).fail(function(a,b,c){
         console.error('Error:',a,b, c);
     });
@@ -266,8 +388,28 @@ function autoCompCaja(){
     
 }
 
+function autoCompAdherida(){
+    const id_ee = document.getElementById("id_ee").value;
+    const id_mt = document.getElementById("id_mt");
+    const selecttedOption = adheridas.find(a => a.id_ee == id_ee);
+    if (selecttedOption) {
+        id_mt.value = selecttedOption.id_mt;
+    }
+    else {
+        id_mt.value = "";
+    }
+}
+
+// Se ejecuta cuando el DOM está completamente cargado
 $(document).ready(function() {
     $(document).on('change', '#id_vac', function() {
         autoCompCaja();
     });
 });
+
+$(document).ready(function() {
+    $(document).on('change', '#id_ee', function() {
+        autoCompAdherida();
+    });
+});
+

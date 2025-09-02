@@ -78,12 +78,19 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_cab WHERE id_cob = $id_cob;"));
     }
     $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_det WHERE id_cob = " . $cabeceras[0]['id_cob'] . " ORDER BY fc_descrip;"));
+    $cuenta_cobrar = pg_fetch_all(pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc =" . $cabeceras[0]['id_vc'] . "AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob =" . $cabeceras[0]['id_cob'] . " );"));
+    // $cuenta_cobrar = [];
+    // $result = pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc = {$cabeceras[0]['id_vc']} AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob = {$cabeceras[0]['id_cob']});");
 
-    $cuenta_cobrar = [];
-    $result = pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc = {$cabeceras[0]['id_vc']}");
+    // if ($result) {
+    //     $cuenta_cobrar = pg_fetch_all($result) ?: []; // Si no hay resultados, devuelve array vacío
+    // }
 
-    if ($result) {
-        $cuenta_cobrar = pg_fetch_all($result) ?: []; // Si no hay resultados, devuelve array vacío
+    function ocultar_tarjeta($tarjeta) {
+        $numero = $tarjeta;
+        $enmascarado = substr($numero, -4).'**** **** ****';
+        return $enmascarado;
+
     }
 
     $cobros_tarjetas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_cobros_tarjetas WHERE estado = 'ACTIVO' AND id_cob = " . $cabeceras[0]['id_cob'] . " ORDER BY id_ctar ASC;"));
@@ -95,7 +102,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
     }
 ?>
     <div class="row">
-        <div class="card card-primary col-8">
+        <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
                 Datos del Cobro
             </div>
@@ -146,15 +153,17 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
 
-        <div class="card card-danger col-4">
+        <div class="card card-danger col-12">
             <div class="card-header text-center elevation-3">
                 Cuentas Pendiente
             </div>
             <div class="card-body">
                 <?php if (!empty($cuenta_cobrar)) { ?>
-                    <table class="table table-bordered" style="font-size: 12px;">
+                    <table id="tabla_cuentas" width="100%" class="table table-bordered table-striped" style="font-size: 12px;">
                         <thead>
                             <tr>
+                                <th>Nro Cuota</th>
+                                <th>Fecha Intevalo</th>
                                 <th>Monto</th>
                                 <th>Saldo</th>
                                 <th>Estado</th>
@@ -164,6 +173,8 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                         <tbody>
                             <?php foreach ($cuenta_cobrar as $c) { ?>
                                 <tr>
+                                    <td>CUOTA <?= $c['nro_cuota'] ?></td>
+                                    <td><?= $c['fecha_intervalo'] ?></td>
                                     <td><?= number_format($c['cue_monto'], 0, ",", ".") ?></td>
                                     <td><?= number_format($c['cue_saldo'], 0, ",", ".") ?></td>
                                     <td><?= $c['estado']; ?></td>
@@ -185,13 +196,14 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                 Detalles de Cobro
             </div>
             <div class="card-body">
+
                 <?php if (!empty($detalles)) { ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Form. Cobro</th>
-                                <th>Monto Efectivo</th>
+                                <th>Monto</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -199,13 +211,20 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                             <?php $total = 0;
                             foreach ($detalles as $d) {
                                 $total = $total + $d['cob_monto_efe'] ?>
+                                <input type="hidden" value="<?php echo $d['id_cue']; ?>" id="id_cue_f">
                                 <tr>
                                     <td><?php echo $d['id_cob']; ?></td>
                                     <td><?php echo $d['fc_descrip']; ?></td>
                                     <td><?php echo number_format($d['cob_monto_efe'], 0, ",", "."); ?></td>
                                     <td>
-                                        <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-success text-white" onclick="modificar_detalle(<?php echo $d['id_cue']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-plus"></i></button>
+                                        <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { 
+                                                if ($d['id_fc'] == 1) {?>
+                                                    <button class="btn btn-success text-white" onclick="agregar_cobro(<?= $d['id_cob'] ?>, <?= $d['id_fc'] ?>);" id="btn-panel-cheque"><i class="fa fa-plus"></i></button>
+                                                <?php } else if ($d['id_fc'] == 2) { ?>
+                                                    <button class="btn btn-success text-white" onclick="agregar_cobro(<?= $d['id_cob'] ?>, <?= $d['id_fc'] ?>);" id="btn-panel-tarjeta"><i class="fa fa-plus"></i></button>
+                                                <?php } else if ($d['id_fc'] == 3) { ?>
+                                                    <button class="btn btn-success text-white" onclick="agregar_cobro(<?= $d['id_cob'] ?>, <?= $d['id_fc'] ?>);" id="btn-panel-transferencia"><i class="fa fa-plus"></i></button>
+                                                <?php } ?>
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -226,49 +245,50 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         </div>
 
         <!-- CARD DE FORMA DE COBRO TARJETA -->
-        <div class="card card-warning col-4">
+        <div class="card card-secondary col-4">
             <div class="card-header text-center elevation-3">
                 Cobro con Tarjeta
             </div>
             <div class="card-body">
                 <?php if (!empty($cobros_tarjetas)) { ?>
                     <!-- GRILLA -->
-                    <table class="table table-bordered" style="font-size: 12px;">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Vencimiento</th>
-                                <th>Monto</th>
-                                <th>Entidad</th>
-                                <th>Tip. Entidad</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $total = 0;
-                            foreach ($detalles as $d) {
-                                $total = $total + $d['tar_monto'] ?>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 12px;">
+                            <thead>
                                 <tr>
-                                    <td><?php echo $d['fecha_vencimiento']; ?></td>
-                                    <td><?php echo number_format($d['tar_monto'], 0, ",", "."); ?></td>
-                                    <td><?php echo $d['ee_razon_social'] ." - ". $d['mt_descrip']; ?></td>
-                                    <td><?php echo $d['ee_tipo_entidad']; ?></td>
-                                    <td>
-                                        <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-success text-white" onclick="modificar_detalle(<?php echo $d['id_ctar']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-plus"></i></button>
-                                        <?php } ?>
-                                    </td>
+                                    <th>Nro Tarjeta</th>
+                                    <th>Vencimiento</th>
+                                    <th>Monto</th>
+                                    <th>Entidad</th>
+                                    <th>Tip. Entidad</th>
+                                    <!-- <th>Acciones</th> -->
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3">Total</th>
-                                <th><?php echo number_format($total, 0, ",", "."); ?></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($cobros_tarjetas as $d) {
+                                    $total = $total + $d['tar_monto'] ?>
+                                    <tr>
+                                        <td><?php echo ocultar_tarjeta($d['tar_nro_tarjeta']); ?></td>
+                                        <td><?php echo $d['fecha_vencimiento']; ?></td>
+                                        <td><?php echo number_format($d['tar_monto'], 0, ",", "."); ?></td>
+                                        <td><?php echo $d['ee_razon_social'] . " - " . $d['mt_descrip']; ?></td>
+                                        <td><?php echo $d['ee_tipo_entidad']; ?></td>
+                                        
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total</th>
+                                    <th><?php echo number_format($total, 0, ",", "."); ?></th>
+                                    <th></th>
+                                    <th></th>
+                                    
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 <?php } else { ?>
                     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron cobros...</label>
                 <?php } ?>
@@ -276,51 +296,50 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         </div>
 
         <!-- CARD DE FORMA DE COBRO CHEQUE -->
-        <div class="card card-warning col-4">
+        <div class="card card-secondary col-4">
             <div class="card-header text-center elevation-3">
                 Cobro con Cheque
             </div>
             <div class="card-body">
                 <?php if (!empty($cobros_cheques)) { ?>
-                    <table class="table table-bordered" style="font-size: 12px;">
-                        <thead>
-                            <tr>
-                                <th>Nro. Cheque</th>
-                                <th>Vencimiento</th>
-                                <th>Monto</th>
-                                <th>Tip. Cheque</th>
-                                <th>Entidad</th>
-                                <th>Tip. Entidad</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $total = 0;
-                            foreach ($detalles as $d) {
-                                $total = $total + $d['che_monto'] ?>
-                                <tr>            
-                                    <td><?php echo $d['che_nro_cheque']; ?></td>
-                                    <td><?php echo $d['fecha_vencimiento']; ?></td>
-                                    <td><?php echo number_format($d['che_monto'], 0, ",", "."); ?></td>
-                                    <td><?php echo $d['che_tipo_cheque']; ?></td>
-                                    <td><?php echo $d['ee_razon_social']; ?></td>
-                                    <td><?php echo $d['ee_tipo_entidad']; ?></td>
-                                    <td>
-                                        <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-success text-white" onclick="modificar_detalle(<?php echo $d['id_che']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-plus"></i></button>
-                                        <?php } ?>
-                                    </td>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Nro. Cheque</th>
+                                    <th>Vencimiento</th>
+                                    <th>Monto</th>
+                                    <th>Tip. Cheque</th>
+                                    <th>Entidad</th>
+                                    <th>Tip. Entidad</th>
+                                    <!-- <th>Acciones</th> -->
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3">Total</th>
-                                <th><?php echo number_format($total, 0, ",", "."); ?></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($cobros_cheques as $d) {
+                                    $total = $total + $d['che_monto'] ?>
+                                    <tr>
+                                        <td><?php echo $d['che_nro_cheque']; ?></td>
+                                        <td><?php echo $d['fecha_vencimiento']; ?></td>
+                                        <td><?php echo number_format($d['che_monto'], 0, ",", "."); ?></td>
+                                        <td><?php echo $d['che_tipo_cheque']; ?></td>
+                                        <td><?php echo $d['ee_razon_social']; ?></td>
+                                        <td><?php echo $d['ee_tipo_entidad']; ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total</th>
+                                    <th><?php echo number_format($total, 0, ",", "."); ?></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 <?php } else { ?>
                     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron cobros...</label>
                 <?php } ?>
@@ -329,51 +348,49 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
 
 
         <!-- CARD DE FORMA DE COBRO Transferencia -->
-        <div class="card card-warning col-4">
+        <div class="card card-secondary col-4">
             <div class="card-header text-center elevation-3">
                 Cobro con Transferencia
             </div>
             <div class="card-body">
                 <?php if (!empty($cobros_transferencia)) { ?>
-                    <table class="table table-bordered" style="font-size: 12px;">
-                        <thead>
-                            <tr>
-                                <th>Nro. Cuenta</th>
-                                <th>Fecha</th>
-                                <th>Monto</th>
-                                <th>Motivo</th>
-                                <th>Entidad</th>
-                                <th>Tip. Entidad</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $total = 0;
-                            foreach ($detalles as $d) {
-                                $total = $total + $d['tra_monto'] ?>
-                                <tr>            
-                                    <td><?php echo $d['tra_nro_cuenta']; ?></td>
-                                    <td><?php echo $d['fecha']; ?></td>
-                                    <td><?php echo number_format($d['tra_monto'], 0, ",", "."); ?></td>
-                                    <td><?php echo $d['tra_motivo']; ?></td>
-                                    <td><?php echo $d['rason_social_ori']; ?></td>
-                                    <td><?php echo $d['tipo_entidad_ori']; ?></td>
-                                    <td>
-                                        <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-success text-white" onclick="modificar_detalle(<?php echo $d['id_ctra']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-plus"></i></button>
-                                        <?php } ?>
-                                    </td>
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="font-size: 12px;">
+                            <thead>
+                                <tr>
+                                    <th>Nro. Cuenta</th>
+                                    <th>Fecha</th>
+                                    <th>Monto</th>
+                                    <th>Motivo</th>
+                                    <th>Entidad</th>
+                                    <th>Tip. Entidad</th>
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="3">Total</th>
-                                <th><?php echo number_format($total, 0, ",", "."); ?></th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($cobros_transferencia as $d) {
+                                    $total = $total + $d['tra_monto'] ?>
+                                    <tr>
+                                        <td><?php echo $d['tra_nro_cuenta']; ?></td>
+                                        <td><?php echo $d['fecha']; ?></td>
+                                        <td><?php echo number_format($d['tra_monto'], 0, ",", "."); ?></td>
+                                        <td><?php echo $d['tra_motivo']; ?></td>
+                                        <td><?php echo $d['rason_social_ori']; ?></td>
+                                        <td><?php echo $d['tipo_entidad_ori']; ?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total</th>
+                                    <th><?php echo number_format($total, 0, ",", "."); ?></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 <?php } else { ?>
                     <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron cobros...</label>
                 <?php } ?>

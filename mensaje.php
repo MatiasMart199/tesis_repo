@@ -19,7 +19,59 @@
             type: resultado.success ? 'success' : 'error',
             title: resultado.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
         });
+        return true;
     }
+
+// async function verificar_mensaje(resultado) {
+//     try {
+//         // Si resultado es un string JSON, lo convertimos en objeto
+//         if (typeof resultado === "string") {
+//             resultado = JSON.parse(resultado);
+//         }
+
+//         if (!resultado || typeof resultado.message !== "string") {
+//             console.error("El resultado no tiene la estructura esperada:", resultado);
+//             return false; 
+//         }
+
+//         // Limpiamos el mensaje recibido
+//         let mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
+
+//         // Preguntamos al usuario
+//         const confirmacion = await Swal.fire({
+//             title: "Desea realizar esta operación",
+//             text: mensajeSinContexto.replace("NOTICE: ", "").replace("ERROR: ", ""),
+//             icon: "question",
+//             showCancelButton: true,
+//             confirmButtonText: "Sí",
+//             cancelButtonText: "No"
+//         });
+
+//         if (confirmacion.isConfirmed) {
+//             // Mostramos el toast
+//             const Toast = Swal.mixin({
+//                 toast: true,
+//                 position: "top-end",
+//                 showConfirmButton: false,
+//                 timer: 3000
+//             });
+
+//             Toast.fire({
+//                 icon: resultado.success ? "success" : "error",
+//                 title: resultado.success 
+//                     ? mensajeSinContexto.replace("NOTICE: ", "") 
+//                     : mensajeSinContexto.replace("ERROR: ", "")
+//             });
+
+//             return true; 
+//         } else {
+//             return false; 
+//         }
+//     } catch (e) {
+//         console.error("Error al procesar el resultado:", e);
+//         return false;
+//     }
+// }
 
 
     // function verificar_mensaje_prueba(resultado) {

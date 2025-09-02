@@ -193,9 +193,9 @@ function grabar() {
         }
     }).done(function(resultado){
         if(verificar_mensaje(resultado)){
-            //postgrabar(operacion);
+            postgrabar(operacion);
         }
-        postgrabar(operacion);
+        //postgrabar(operacion);
     }).fail(function (a, b, c) {
         //console.error(b);
         console.error("Error:", a, b, c); // Error detallado

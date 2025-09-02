@@ -50,8 +50,8 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
 
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label>Monto en Efectivo</label>
-                        <input type="number" class="form-control" value="0" id="cob_monto_efe">
+                        <label>Monto a Pagar</label>
+                        <input type="number" class="form-control" value="<?= $datos[0]['cue_monto'];?>" id="cob_monto_efe">
                     </div>
                 </div>
 
