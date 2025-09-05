@@ -47,7 +47,7 @@ function panel_datos(id_cob){
     }).done(function(resultado){
         $("#panel-datos").html(resultado);
         refrescar_select();
-        formato_tabla("#tabla_cuentas", 2);
+        //formato_tabla("#tabla_cuentas", 2);
     });
 }
 
@@ -68,7 +68,27 @@ function agregar(){
     $("#btn-panel-datos").click();
 }
 
+//*******************************************   */
+function cuentas(id_vc, id_cob){
+    // console.log(id_vc);
+    // console.log(id_cob);
+    $.ajax({
+        url:"./paneles_cobro/panel_cuentas.php",
+        type:"POST",
+        data:{
+            id_vc: id_vc,
+            id_cob: id_cob
+        }
+    }).done(function(resultado){
+        $("#panel-cuentas").html(resultado);
+        $("#btn-panel-cuentas").click();
+        formato_tabla("#tabla_cuentas", 5);
+    });
+}
+
 function agregar_cuenta(id_vc,id_cue){
+    $("#panel-cuentas").modal("hide"); 
+    //$("#btn-panel-cuenta-cerrar").click();
     $.ajax({
         url:"./paneles_cobro/panel_detalle.php",
         type:"POST",
@@ -105,6 +125,7 @@ function anular(){
 function agregar_detalle_grabar(){
     $("#operacion").val(5);
     grabar();
+    $("#panel-detalle").modal("hide"); 
 }
 
 function eliminar_detalle(id_cue){
@@ -133,7 +154,8 @@ function agregar_transferencia_grabar(){
     $("#operacion").val(10);
     grabar();
 }
-//*******************************************   */
+
+//***************************************** */
 function agregar_cobro(id_cob, id_fc){
     let id_cue = $("#id_cue_f").val();
     //FORMA COBRO CHEQUE
@@ -375,18 +397,45 @@ function postgrabar(operacion){
     }
 }
 
-function autoCompCaja(){
+// function autoCompCaja(){
+//     const idVac = document.getElementById("id_vac").value;
+//     const idCaja = document.getElementById("id_caja");
+
+//     const selecttedOption = apertura.find(a => a.id_vac == idVac);
+//     if (selecttedOption) {
+//         idCaja.value = selecttedOption.id_caja;
+//     } else {
+//         idCaja.value = "";
+//     }  
+// }
+
+function autoCompCaja() { 
     const idVac = document.getElementById("id_vac").value;
     const idCaja = document.getElementById("id_caja");
 
-    const selecttedOption = apertura.find(a => a.id_vac == idVac);
-    if (selecttedOption) {
-        idCaja.value = selecttedOption.id_caja;
+    // Buscar en el array apertura
+    const selectedOption = apertura.find(a => a.id_vac == idVac);
+
+    // Limpiar opciones previas
+    idCaja.innerHTML = "";
+
+    if (selectedOption) {
+        // Crear opción con value=id_caja y visible=caj_descrip
+        const option = document.createElement("option");
+        option.value = selectedOption.id_caja;
+        option.text = selectedOption.caj_descrip;
+        option.selected = true;
+
+        idCaja.appendChild(option);
     } else {
-        idCaja.value = "";
+        // Si no encontró nada, dejar vacío
+        const option = document.createElement("option");
+        option.value = "";
+        option.text = "Seleccione Apertura y Cierre de caja";
+        idCaja.appendChild(option);
     }
-    
 }
+
 
 function autoCompAdherida(){
     const id_ee = document.getElementById("id_ee").value;

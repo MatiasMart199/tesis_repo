@@ -18,13 +18,13 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
             <input type="text" class="form-control" value="<?= $datos[0]['cue_monto']; ?>" id=monto hidden>
             <input type="text" class="form-control" value="<?= $datos[0]['id_cue']; ?>" id=id_cue hidden>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Monto</label>
                             <input type="text" class="form-control" value="<?= number_format($datos[0]['cue_monto'], 0, ",", "."); ?>" disabled>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" hidden>
                         <div class="form-group">
                             <label>Saldo</label>
                             <input type="text" class="form-control" value="<?= number_format($datos[0]['cue_saldo'], 0, ",", "."); ?>" disabled>
@@ -51,7 +51,7 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Monto a Pagar</label>
-                        <input type="number" class="form-control" value="<?= $datos[0]['cue_monto'];?>" id="cob_monto_efe">
+                        <input type="number" class="form-control" value="<?= $datos[0]['cue_saldo'];?>" id="cob_monto_efe">
                     </div>
                 </div>
 

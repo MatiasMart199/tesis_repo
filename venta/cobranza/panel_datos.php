@@ -56,7 +56,9 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Caja</label>
-                        <input type="text" value="" class="form-control" id="id_caja" disabled>
+                        <select class="select2" id="id_caja" disabled>
+                                <option value=""></option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -78,7 +80,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_cab WHERE id_cob = $id_cob;"));
     }
     $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_det WHERE id_cob = " . $cabeceras[0]['id_cob'] . " ORDER BY fc_descrip;"));
-    $cuenta_cobrar = pg_fetch_all(pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc =" . $cabeceras[0]['id_vc'] . "AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob =" . $cabeceras[0]['id_cob'] . " );"));
+    //$cuenta_cobrar = pg_fetch_all(pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc =" . $cabeceras[0]['id_vc'] . "AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob =" . $cabeceras[0]['id_cob'] . " );"));
     // $cuenta_cobrar = [];
     // $result = pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc = {$cabeceras[0]['id_vc']} AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob = {$cabeceras[0]['id_cob']});");
 
@@ -101,6 +103,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         $disabled = '';
     }
 ?>
+
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
@@ -129,7 +132,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Apertura y Cierre</label>
+                            <label>Nro Apertura y Cierre</label>
                             <input type="text" value="<?php echo $cabeceras[0]['id_vac']; ?>" class="form-control" id="id_vac" disabled>
                         </div>
                     </div>
@@ -137,7 +140,9 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Caja</label>
-                            <input type="text" value="<?php echo $cabeceras[0]['caj_descrip']; ?>" class="form-control" id="caj_descrip" disabled>
+                            <select class="select2" id="id_caja" disabled>
+                                <option value="<?= $cabeceras[0]['id_caja'] ?>"><?= $cabeceras[0]['caj_descrip'] ?></option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -153,41 +158,10 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
 
-        <div class="card card-danger col-12">
-            <div class="card-header text-center elevation-3">
-                Cuentas Pendiente
-            </div>
+        <div class="card col-12 card-info">
             <div class="card-body">
-                <?php if (!empty($cuenta_cobrar)) { ?>
-                    <table id="tabla_cuentas" width="100%" class="table table-bordered table-striped" style="font-size: 12px;">
-                        <thead>
-                            <tr>
-                                <th>Nro Cuota</th>
-                                <th>Fecha Intevalo</th>
-                                <th>Monto</th>
-                                <th>Saldo</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($cuenta_cobrar as $c) { ?>
-                                <tr>
-                                    <td>CUOTA <?= $c['nro_cuota'] ?></td>
-                                    <td><?= $c['fecha_intervalo'] ?></td>
-                                    <td><?= number_format($c['cue_monto'], 0, ",", ".") ?></td>
-                                    <td><?= number_format($c['cue_saldo'], 0, ",", ".") ?></td>
-                                    <td><?= $c['estado']; ?></td>
-                                    <td>
-                                        <button class="btn btn-success" title="Agregar" onclick="agregar_cuenta(<?= $c['id_vc'] ?>, <?= $c['id_cue'] ?>);"><i class="fa fa-plus"></i></button>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                <?php } else { ?>
-                    <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron cuentas pendientes...</label>
-                <?php } ?>
+                <button class="btn btn-success" onclick="cuentas(<?= $cabeceras[0]['id_vc']?>, <?= $cabeceras[0]['id_cob']?>)" id="btn-panel-cuenta-cerrar"><i
+                        class="fas fa-regular fa fa-book"></i> Agregar Cuentas</button>
             </div>
         </div>
 
@@ -204,17 +178,20 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                                 <th>#</th>
                                 <th>Form. Cobro</th>
                                 <th>Monto</th>
+                                <th>Saldo</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $total = 0;
                             foreach ($detalles as $d) {
-                                $total = $total + $d['cob_monto_efe'] ?>
+                                $total_monto = $total + $d['cue_monto'];
+                                $total_saldo = $total + $d['cob_monto_efe'] ?>
                                 <input type="hidden" value="<?php echo $d['id_cue']; ?>" id="id_cue_f">
                                 <tr>
                                     <td><?php echo $d['id_cob']; ?></td>
                                     <td><?php echo $d['fc_descrip']; ?></td>
+                                    <td><?php echo number_format($d['cue_monto'], 0, ",", "."); ?></td>
                                     <td><?php echo number_format($d['cob_monto_efe'], 0, ",", "."); ?></td>
                                     <td>
                                         <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { 
@@ -232,9 +209,10 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">Total</th>
-                                <th><?php echo number_format($total, 0, ",", "."); ?></th>
-                                <th></th>
+                                <th colspan="2">Total</th>
+                                <th><?php echo number_format($total_monto, 0, ",", "."); ?></th>
+                                <th><?php echo number_format($total_saldo, 0, ",", "."); ?></th>
+                                
                             </tr>
                         </tfoot>
                     </table>
