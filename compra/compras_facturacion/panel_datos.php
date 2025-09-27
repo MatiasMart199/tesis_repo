@@ -43,18 +43,24 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             <div class="row">
 
 
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Sucursal</label>
-                        <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                        <input type="text" value="<?= $_SESSION['suc_nombre']; ?>" class="form-control" disabled>
                     </div>
                 </div>
 
+                <div class="col-md-3">
+                    <label>Fecha</label>
+                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cc_fecha" disabled>
+                </div>
 
+                <div class="col-md-3">
+                    <label>Fecha de Emisión</label>
+                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cc_fecha_emi" >
+                </div>
 
-
-
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Proveedor</label>
                         <select class="select2" id="id_proveedor">
@@ -66,12 +72,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                             <?php }; ?>
                         </select>
                     </div>
-                </div>
-
-
-                <div class="col-md-4">
-                    <label>Fecha</label>
-                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cc_fecha">
                 </div>
 
                 <div class="col-md-3">
@@ -126,7 +126,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
-
+<script>validarTipoFactura();</script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_cc == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -193,10 +193,10 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                     class="fas fa fa-object-group"></i> Consolidacion</button>
             <button class="btn btn-danger text-white" onclick="generarInforme(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
-            <button class="btn btn-success" onclick="modalLibro(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
+            <!-- <button class="btn btn-success" onclick="modalLibro(<?//= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa fa-book"></i>libro de Compras</button>
-            <button class="btn btn-success" onclick="modalCuenta(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button>
+            <button class="btn btn-success" onclick="modalCuenta(<?//= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
+                    class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button> -->
 
         </div>
     </div>
@@ -219,20 +219,29 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 
                 <div class="row">
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Sucursal</label>
                             <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
                         </div>
                     </div>
 
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" value="<?= $compras[0]['cc_fecha'] ?>" class="form-control" id="cc_fecha" disabled>
+                        </div>
+                    </div>
 
+                    <div class="col-md-3">
+                    <label>Fecha de Emisión</label>
+                    <input type="date" value="<?= $compras[0]['cc_fecha_emi'] ?>" class="form-control" id="cc_fecha_emi" >
+                </div>
 
-
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Proveedor</label>
-                            <select class="select2" id="id_proveedor">
+                            <select class="select2" id="id_proveedor" disabled>
                                 <option disabled="disabled" <?= empty($proveedores[0]['id_proveedor']) ? 'selected' : '' ?>>Seleccione un proveedor</option>
                                 <?php foreach ($listProveedores as $pr) { ?>
                                     <option value="<?php echo $pr['id_proveedor']; ?>" <?= $pr['id_proveedor'] == $proveedores[0]['id_proveedor'] ? 'selected' : '' ?>>
@@ -240,14 +249,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     </option>
                                 <?php } ?>
                             </select>
-                        </div>
-                    </div>
-
-
-                    <div class="col-md-4 mb-4">
-                        <div class="form-group">
-                            <label>Fecha de Emision</label>
-                            <input type="date" value="<?= $compras[0]['cc_fecha'] ?>" class="form-control" id="cc_fecha">
                         </div>
                     </div>
 
@@ -307,6 +308,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 </div>
             </div>
         </div>
+        <script>validarTipoFactura();</script>
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
@@ -375,6 +377,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($compras[0]['estado'] == 'PENDIENTE') {
+            $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
             $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"));
             $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
         ?>
@@ -385,8 +388,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 </div>
                 <div class="card-body">
                     <?php if (!empty($articulos) && !empty($depositos)) { ?>
-
-
                         <div class="form-group">
                             <label>Depositos</label>
                             <select class="select2" id="ag_id_deposito">
@@ -400,7 +401,6 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                             </select>
                         </div>
 
-
                         <div class="form-group">
                             <label>Producto</label>
                             <select class="select2" id="agregar_id_item">
@@ -411,23 +411,31 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Cantidad</label>
-                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Stock</label>
+                                <input type="number" value="1" class="form-control" id="stock_actual" disabled>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Cantidad</label>
+                                <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                            </div>
                         </div>
-
                         <div class="form-group">
                             <label>Precio</label>
                             <input type="number" value="" class="form-control" id="agregar_precio">
                         </div>
-
                         <!-- <input type="number" value="1" id="id_deposito" hidden> -->
 
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
                                 Agregar</button>
                         </div>
-
+                        <!-- ALMACENAR ARTICULOS Y CONVERTIR A JSON -->
+                        <script> 
+                            const articulos = JSON.parse('<?php echo json_encode($articulos); ?>');
+                            const stock = <?= json_encode($stock); ?>;
+                        </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos
                             disponibles...</label>
@@ -514,9 +522,4 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
     </div>
 <?php
 
-}
-?>
-<script>
-    validarTipoFactura();
-    const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
-</script>
+} pg_close($conn);?>

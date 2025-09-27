@@ -20,6 +20,16 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_corden">
+
+            <div class="form-group">
+                <label>Sucursal</label>
+                <input type="text" value="<?= $_SESSION['suc_nombre']; ?>" class="form-control" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="ord_fecha" disabled>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <label>Proveedor</label>
@@ -32,11 +42,6 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                         <?php }; ?>
                     </select>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label>Fecha</label>
-                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="ord_fecha">
             </div>
 
             <div class="row">
@@ -71,7 +76,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
-
+<script>validarTipoFactura();</script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_corden == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -113,6 +118,18 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
 
+                <div class="form-group">
+                    <label>Sucursal</label>
+                    <input type="text" value="<?= $ordenes[0]['suc_nombre']; ?>" class="form-control" disabled>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" value="<?= $ordenes[0]['ord_fecha']; ?>" class="form-control" id="ord_fecha" disabled>
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -126,13 +143,6 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                 <?php }; ?>
                             </select>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-group">
-                        <label>Fecha</label>
-                        <input type="date" value="<?= $ordenes[0]['ord_fecha']; ?>" class="form-control" id="ord_fecha">
                     </div>
                 </div>
 
@@ -178,6 +188,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                 </div>
             </div>
         </div>
+        <script>validarTipoFactura();</script>
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
@@ -242,6 +253,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') {
+            $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
             $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_orden_detalles WHERE id_corden = " . $ordenes[0]['id_corden'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
@@ -261,9 +273,15 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Cantidad</label>
-                            <input type="number" value="" class="form-control" id="agregar_cantidad">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Stock</label>
+                                <input type="number" value="" class="form-control" id="stock_actual" disabled>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Cantidad</label>
+                                <input type="number" value="" class="form-control" id="agregar_cantidad">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Precio</label>
@@ -273,7 +291,11 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
                                 Agregar</button>
                         </div>
-
+                        <!-- ALMACENA Y OBTIENE ARTICULOS -->
+                        <script> 
+                        const artuculos = <?= json_encode($articulos); ?>; 
+                        const stock = <?= json_encode($stock); ?>;
+                        </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos
                             disponibles...</label>
@@ -356,9 +378,4 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
 
 
 <?php
-}
-?>
-<script>
-    validarTipoFactura();
-    const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
-</script>
+} pg_close($conn)?>

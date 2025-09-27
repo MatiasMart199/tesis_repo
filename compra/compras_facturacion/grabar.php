@@ -8,6 +8,7 @@ $conn = $conexion->getConexion();
 
 $id_cc = $_POST['id_cc'];
 $cc_fecha = $_POST['cc_fecha'];
+$cc_fecha_emi = $_POST['cc_fecha_emi'];
 $cc_intervalo = $_POST['cc_intervalo'];
 $cc_nro_factura = $_POST['cc_nro_factura'];
 $cc_timbrado = $_POST['cc_timbrado'];
@@ -32,6 +33,7 @@ $operacion = $_POST['operacion'];
 $grabar = pg_query($conn, "SELECT sp_compras(
     $id_cc,
     '$cc_fecha',
+    '$cc_fecha_emi',
     $cc_intervalo,
     '$cc_nro_factura',
     '$cc_timbrado',

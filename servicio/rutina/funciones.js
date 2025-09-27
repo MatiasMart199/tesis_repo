@@ -171,9 +171,14 @@ function grabar(){
         rut_fecha = $("#rut_fecha").val();
         rut_edad = $("#rut_edad").val();
         rut_observacion = $("#rut_observacion").val();
-        id_plan_servi = $("#id_plan_servi").val();
         id_cliente = $("#id_cliente").val();
         id_personal = $("#id_personal").val();
+        console.log(id_rut);
+        console.log(rut_fecha);
+        console.log(rut_edad);
+        console.log(rut_observacion);
+        console.log(id_cliente);
+        console.log(id_personal);
     }
     if(operacion == '5'){
         id_rut = $("#id_rut").val();
@@ -220,9 +225,9 @@ function grabar(){
         }
     }).done(function(resultado){
         if(verificar_mensaje(resultado)){
-            //postgrabar(operacion);
+            postgrabar(operacion);
         }
-        postgrabar(operacion);
+        //postgrabar(operacion);
     }).fail(function(a,b,c){
         console.error('Error:',a,b, c);
     });

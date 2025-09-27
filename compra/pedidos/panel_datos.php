@@ -18,8 +18,16 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
     <div class="card-body">
         <input type="hidden" value="0" id="id_cp">
         <div class="form-group">
+            <label>Sucursal</label>
+            <input type="text" value="<?= $_SESSION['suc_nombre']; ?>" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cp_fecha" disabled>
+            </div>
+        <div class="form-group">
             <label>Fecha de Aprobacion</label>
-            <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="cp_fecha_aprob">
+            <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="cp_fecha_aprob" disabled>
         </div>
         <div class="form-group">
             <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
@@ -49,14 +57,22 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
             <input type="hidden" value="<?php echo $pedidos[0]['id_cp']; ?>" id="id_cp">
             <input type="hidden" value="0" id="eliminar_id_item">
             <div class="form-group">
-                <label>Fecha Confirmacion</label>
-                <input type="date" value="<?php echo date('Y-m-d'); ?>" <?php echo $disabled; ?> class="form-control" id="cp_fecha_aprob">
+                <label>Sucursal</label>
+                <input type="text" value="<?= $pedidos[0]['suc_nombre']; ?>" class="form-control" disabled>
+            </div>
+            <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" value="<?= $pedidos[0]['cp_fecha']; ?>"  class="form-control" id="cp_fecha" disabled>
+            </div>
+            <div class="form-group">
+                <label>Fecha Aprobacion</label>
+                <input type="date" value="<?= $pedidos[0]['cp_fecha_aprob']; ?>" class="form-control" id="cp_fecha_aprob" disabled>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                 <?php if($pedidos[0]['estado'] == 'PENDIENTE'){ ?>
                     <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
-                    <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
+                    <!-- <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button> -->
                     <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
                 <?php } ?>
             </div>
@@ -108,6 +124,7 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
         </div>
     </div>
         <?php if($pedidos[0]['estado'] == 'PENDIENTE'){
+            $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
             $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from compras_pedidos_detalles WHERE id_cp = ".$pedidos[0]['id_cp'].") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
             ?>
             <div class="card card-primary col-4">
@@ -118,19 +135,30 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
                     <?php if(!empty($articulos)){ ?>
                         <div class="form-group">
                             <label>Producto</label>
-                            <select class="select2" id="agregar_id_item">
+                            <select class="select2" id="agregar_id_item" onchange="stock_actual();" >
+                                <option value="0" disabled selected>Seleccione un producto</option>
                                 <?php foreach($articulos as $a){ ?>
                                 <option value="<?php echo $a['id_item']; ?>"><?php echo $a['item_descrip']." - ".$a['mar_descrip']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="row">
+                        <div class="form-group col-6">
+                            <label>Stock</label>
+                            <input type="text" value="0" class="form-control" id="stock_actual" disabled>
+                        </div>
+                        <div class="form-group col-6">
                             <label>Cantidad</label>
                             <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                        </div>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
                         </div>
+                        <script> 
+                        const stock = <?php echo json_encode($stock); ?>; 
+                        //const artuculos = <?php //echo json_encode($articulos); ?>;
+                        </script>
                     <?php }else{ ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos disponibles...</label>
                     <?php } ?>

@@ -1,26 +1,27 @@
 <script>
 
-    function verificar_mensaje(resultado) {
-        if (!resultado || typeof resultado.message !== "string") {
+function verificar_mensaje(resultado) {
+    if (!resultado || typeof resultado.message !== "string") {
         console.error("El resultado no tiene la estructura esperada:", resultado);
-        return; // Detenemos la ejecución si no es válido
+        return false; // Retorna false en lugar de return sin valor
     }
-        let mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
+    
+    let mensajeSinContexto = resultado.message.replace(/CONTEXT:.*$/g, "");
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+    });
 
-        //var response = JSON.parse(resultado);
-
-        Toast.fire({
-            type: resultado.success ? 'success' : 'error',
-            title: resultado.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
-        });
-        return true;
-    }
+    Toast.fire({
+        type: resultado.success ? 'success' : 'error',
+        title: resultado.success ? mensajeSinContexto.replace("NOTICE: ", "") : mensajeSinContexto.replace("ERROR: ", ""),
+    });
+    
+    // Retorna true si fue exitoso, false si hubo error
+    return resultado.success === true;
+}
 
 // async function verificar_mensaje(resultado) {
 //     try {

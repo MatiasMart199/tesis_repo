@@ -187,6 +187,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_corden = '0';
@@ -210,7 +230,15 @@ function grabar(){
         if (operacion == '3' && $("#id_cpre").val().trim() !== '') {
             id_cpre = $("#id_cpre").val();
         }
-
+        if(!validarCampos([
+            {id: "#ord_fecha", nombre: "Fecha"},
+            {id: "#id_proveedor", nombre: "Proveedor"},
+            {id: "#ord_tipo_factura", nombre: "Tipo de factura"},
+            {id: "#ord_intervalo", nombre: "Intervalo"},
+            {id: "#ord_cuota", nombre: "Cuotas"}
+        ])){
+            return; // Salimos de la función si la validación falla
+        }
         // console.log(id_corden);
         // console.log(ord_fecha);
         // console.log(ord_intervalo);
@@ -224,6 +252,15 @@ function grabar(){
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         precio = $("#agregar_precio").val();
+
+        if (!validarCampos([
+            {id: "#agregar_id_item", nombre: "Item"},
+            {id: "#agregar_cantidad", nombre: "Cantidad"},
+            {id: "#agregar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '6'){
         id_corden = $("#id_corden").val();
@@ -336,8 +373,23 @@ function llenarPrecio() {
     }
 }
 
+function cantidadStock() {
+    // Obtener el ID del producto seleccionado
+    const item = document.getElementById('agregar_id_item');
+    const stockInput = document.getElementById('stock_actual');
+    const selectedItemId = parseInt(item.value);
+    const queryStock = stock.find(s => parseInt(s.id_item) === selectedItemId);
+    if (queryStock){
+        stockInput.value = queryStock.stock_cantidad; // Asignar el valor del stock
+    }else{
+        stockInput.value = '0'; // Limpiar el campo si no se encuentra
+    }
+}
+// Ejecutar la función cuando el documento esté listo
 $(document).ready(function() {
     $(document).on('change', '#agregar_id_item', function() {
         llenarPrecio();
+        cantidadStock();
     });
 });
+

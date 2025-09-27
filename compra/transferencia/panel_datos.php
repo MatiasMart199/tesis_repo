@@ -108,7 +108,7 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
                         <label>Vehiculo</label>
                         <select class="select2" id="id_vehiculo">
                             <?php foreach ($vehiculo as $v) { ?>
-                                <option value="<?= $v['id_vehiculo']; ?>"><?= $v['veh_descrip'] . " - " . $v['mar_descrip']; ?></option>
+                                <option value="<?= $v['id_vehiculo']; ?>"><?= $v['veh_descrip'] . " - " . $v['mar_descrip'] . " - " . $v['veh_chapa']; ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -237,9 +237,9 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <label>Vehiculo</label>
                             <select class="select2" id="id_vehiculo">
-                                <option selected="true" value="<?= $cabecera[0]['id_vehiculo']; ?>"><?= $cabecera[0]['veh_descrip'] . " - " . $cabecera[0]['mar_descrip']; ?></option>
+                                <option selected="true" value="<?= $cabecera[0]['id_vehiculo']; ?>"><?= $cabecera[0]['veh_descrip'] . " - " . $cabecera[0]['mar_descrip'] . " - " . $cabecera[0]['veh_chapa']; ?></option>
                                 <?php foreach ($vehiculo as $v) { ?>
-                                    <option value="<?= $v['id_vehiculo']; ?>"><?= $v['veh_descrip'] . " - " . $v['mar_descrip']; ?></option>
+                                    <option value="<?= $v['id_vehiculo']; ?>"><?= $v['veh_descrip'] . " - " . $v['mar_descrip'] . " - " . $v['veh_chapa']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>

@@ -33,6 +33,7 @@
                     <h1 class="m-0 text-dark">Inscripción de Cliente</h1>
                     <input type="hidden" id="operacion" value="0">
                     <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
+                    <input type="hidden" id="btn-panel-estado_salud" data-toggle="modal" data-target="#panel-estado-salud">
                   </div>
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -63,9 +64,8 @@
                     </div>
                 </div>
             </section>
-            <div class="modal fade" id="panel-modificar">
-                
-            </div>
+            <div class="modal fade" id="panel-modificar"></div>
+            <div class="modal fade" id="panel-estado-salud"></div>
         </div>
         <footer class="main-footer">
           <strong>Copyright &copy; <?php echo date('Y'); ?> <a href="#">TESIS</a></strong>

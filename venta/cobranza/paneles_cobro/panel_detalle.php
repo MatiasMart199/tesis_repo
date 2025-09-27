@@ -32,7 +32,7 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
                     </div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12" hidden>
                     <div class="form-group">
                         <label>Forma de Cobro</label>
                         <select class="form-control" id="id_fc">

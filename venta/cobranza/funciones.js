@@ -47,6 +47,9 @@ function panel_datos(id_cob){
     }).done(function(resultado){
         $("#panel-datos").html(resultado);
         refrescar_select();
+        //$(document).on("change", "#id_vac", function() {
+            autoCompCaja();
+        //});
         //formato_tabla("#tabla_cuentas", 2);
     });
 }
@@ -99,9 +102,24 @@ function agregar_cuenta(id_vc,id_cue){
     }).done(function(resultado){
         $("#panel-detalle").html(resultado);
         $("#btn-panel-detalle").click();
+        agregar_detalle_grabar();
     });
 }
 
+function panel_modificar(id_cob, id_cue){
+    $.ajax({
+        url:"./paneles_cobro/panel_modificar.php",
+        type:"POST",
+        data:{
+            id_cob: id_cob,
+            id_cue: id_cue
+        }
+    }).done(function(resultado){
+        $("#panel-modificar").html(resultado);
+        $("#btn-panel-modificar").click();
+        refrescar_select();
+    });
+}
 function agregar_grabar(){
     $("#operacion").val(1);
     grabar();
@@ -128,6 +146,12 @@ function agregar_detalle_grabar(){
     $("#panel-detalle").modal("hide"); 
 }
 
+function modificar_detalle(){
+    $("#operacion").val(6);
+    grabar();
+    $('#panel-modificar').modal('hide');
+}
+
 function eliminar_detalle(id_cue){
     $("#eliminar_id_cue").val(id_cue);
     $("#operacion").val(7);
@@ -144,15 +168,18 @@ function cancelar(){
 function agregar_cheque_grabar(){
     $("#operacion").val(8);
     grabar();
+    $('#panel-cheque').modal('hide');
 }
 
 function agregar_tarjeta_grabar(){
     $("#operacion").val(9);
     grabar();
+    $('#panel-tarjeta').modal('hide');
 }
 function agregar_transferencia_grabar(){
     $("#operacion").val(10);
     grabar();
+    $('#panel-transferencia').modal('hide');
 }
 
 //***************************************** */
@@ -224,7 +251,26 @@ function validarCampos(campos) {
         }
     }
     return true;
-}
+} 
+function validarApertura(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El cajero no tiene una'" + campos[i].nombre + "' activo",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+} 
 
 function grabar(){
     var operacion = $("#operacion").val();
@@ -256,11 +302,14 @@ function grabar(){
         id_vac = $("#id_vac").val();
         id_caja = $("#id_caja").val();
         id_vc = $("#id_vc").val();
-
+        if(!validarApertura([
+            {id: "#id_vac", nombre: "apertura y cierre"}
+            ])) {
+                return; // ❌ corta si falta un campo
+            }
         if (!validarCampos([
             {id: "#id_cob", nombre: "Codigo"},
             {id: "#cob_fecha", nombre: "Fecha"},
-            {id: "#id_vac", nombre: "apertura y cierre"},
             {id: "#id_caja", nombre: "Caja"},
             {id: "#id_vc", nombre: "Nro Factura"}
             ])) {
@@ -271,21 +320,15 @@ function grabar(){
     if(operacion == '5'){
         id_cob = $("#id_cob").val();
         id_cue = $("#id_cue").val();
-        id_fc = $("#id_fc").val();
+        //id_fc = $("#id_fc").val();
         cob_monto_efe = $("#cob_monto_efe").val();
         monto = $("#monto").val();
-        // console.log(id_cob);
-        // console.log(id_cue);
-        // console.log(id_fc);
-        // console.log(cob_monto_efe);
-        // console.log(monto);
     }
     if(operacion == '6'){
         id_cob = $("#id_cob").val();
-        id_cue = $("#modificar_id_cue").val();
+        id_cue = $("#id_cue").val();
         id_fc = $("#modificar_id_fc").val();
         cob_monto_efe = $("#modificar_cob_monto_efe").val();
-        monto = $("#modificar_monto").val();
     }
     if(operacion == '7'){
         id_cob = $("#id_cob").val();
@@ -299,13 +342,6 @@ function grabar(){
         che_vencimiento = $("#che_vencimiento").val();
         che_monto = $("#che_monto").val();
         che_tipo_cheque = $("#che_tipo_cheque").val();
-        // console.log(che_tipo_cheque);
-        // console.log(che_nro_cheque);
-        // console.log(che_vencimiento);
-        // console.log(che_monto);
-        // console.log(id_ee);
-        // console.log(id_cue);
-        // console.log(id_cob);
         
     }
     if(operacion == '9'){
@@ -317,14 +353,6 @@ function grabar(){
         tar_monto = $("#tar_monto").val();
         id_mt = $("#id_mt").val();
         id_fc = $("#id_fc_f").val();
-        // console.log(id_cob);
-        // console.log(id_cue);
-        // console.log(id_ee);
-        // console.log(tar_nro_tarjeta);
-        // console.log(tar_vencimiento);
-        // console.log(tar_monto);
-        // console.log(id_mt);
-        // console.log(id_fc);
     }
     // cobro tranferencia
     if(operacion == '10'){
@@ -334,12 +362,6 @@ function grabar(){
         tra_nro_cuenta = $("#tra_nro_cuenta").val();
         tra_monto = $("#tra_monto").val();
         tra_motivo = $("#tra_motivo").val();
-        console.log(id_cob);
-        console.log(id_ee);
-        console.log(id_ee_des);
-        console.log(tra_nro_cuenta);
-        console.log(tra_monto);
-        console.log(tra_motivo);
        
     }
     $.ajax({
@@ -385,7 +407,7 @@ function postgrabar(operacion){
     if(operacion == '1'){
         panel_datos(-2);
     }
-    if(operacion == '2' || operacion == '5' || operacion == '6' || operacion == '7'){
+    if(operacion == '2' || operacion == '5' || operacion == '6' || operacion == '7' || operacion == '8' || operacion == '9' || operacion == '10'){
         panel_datos($("#id_cob").val());
         if(operacion == '6'){
             $("#btn-panel-modificar-cerrar").click();
@@ -410,30 +432,24 @@ function postgrabar(operacion){
 // }
 
 function autoCompCaja() { 
-    const idVac = document.getElementById("id_vac").value;
-    const idCaja = document.getElementById("id_caja");
+const select = document.getElementById('id_vac');
+    let option = select.options[select.selectedIndex];
 
-    // Buscar en el array apertura
-    const selectedOption = apertura.find(a => a.id_vac == idVac);
+    // Recuperar los atributos con dataset
+    let id_vac = option.value;
+    let id_funcionario = option.dataset.id_funcionario;
+    let funcionario = option.dataset.funcionario;
+    let id_caja = option.dataset.id_caja;
+    let caj_descrip = option.dataset.caj_descrip;
 
-    // Limpiar opciones previas
-    idCaja.innerHTML = "";
+    // Asignar valores
+    document.getElementById('id_funcionario').innerHTML = `<option value="${id_funcionario}" selected>${funcionario}</option>`;
+    document.getElementById('id_caja').innerHTML = `<option value="${id_caja}" selected>${caj_descrip}</option>`;
 
-    if (selectedOption) {
-        // Crear opción con value=id_caja y visible=caj_descrip
-        const option = document.createElement("option");
-        option.value = selectedOption.id_caja;
-        option.text = selectedOption.caj_descrip;
-        option.selected = true;
-
-        idCaja.appendChild(option);
-    } else {
-        // Si no encontró nada, dejar vacío
-        const option = document.createElement("option");
-        option.value = "";
-        option.text = "Seleccione Apertura y Cierre de caja";
-        idCaja.appendChild(option);
-    }
+    // Opcional: setear tooltip (title)
+    document.getElementById('id_funcionario').setAttribute("title", funcionario);
+    document.getElementById('id_caja').setAttribute("title", caj_descrip);
+    console.log(id_funcionario, funcionario, id_caja, caj_descrip);
 }
 
 
@@ -462,3 +478,18 @@ $(document).ready(function() {
     });
 });
 
+function habilitar_monto(){
+    let id_fc = $("#modificar_id_fc").val();
+    if(id_fc != 4){
+        $("#modificar_cob_monto_efe").prop("disabled", true);
+        //$("#monto_f").val($("#cob_monto_efe").val());
+    }else{
+        $("#modificar_cob_monto_efe").prop("disabled", false);
+        //$("#monto_f").val(0);
+    }
+}
+$(document).ready(function() {
+    $(document).on('change', '#modificar_id_fc', function() {
+        habilitar_monto();
+    });
+});

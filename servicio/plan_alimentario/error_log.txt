@@ -1,0 +1,2 @@
+[13-Sep-2025 01:44:57 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\servicio\plan_alimentario\grabar.php on line 51
+[13-Sep-2025 01:45:01 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\servicio\plan_alimentario\grabar.php on line 51

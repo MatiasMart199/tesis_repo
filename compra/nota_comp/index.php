@@ -30,7 +30,7 @@
               <div class="container-fluid">
                 <div class="row mb-2">
                   <div class="col-sm-6">
-                    <h1 class="m-0 text-dark">Notas de Crédito y Debito</h1>
+                    <h1 class="m-0 text-dark">Notas de Compra</h1>
                     <input type="hidden" id="operacion" value="0">
                     <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
                   </div>

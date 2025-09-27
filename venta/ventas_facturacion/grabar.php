@@ -19,6 +19,7 @@ $monto = $_POST['monto'];
 $saldo = $_POST['saldo'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_tim = $_POST['id_tim'];
+$id_tm = $_POST['id_tm'];
 $id_funcionario = $_SESSION['id_funcionario'];
 $id_cliente = $_POST['id_cliente'];
 $id_item = $_POST['id_item'];
@@ -42,6 +43,7 @@ $grabar = pg_query($conn, "SELECT sp_ventas(
     $saldo,
     $id_sucursal,
     $id_tim,
+    $id_tm,
     $id_funcionario ,
     $id_cliente,
     $id_item,
@@ -74,11 +76,19 @@ iva10 numeric,
 exenta numeric,
 monto numeric,
 saldo numeric,
+id_sucursal integer,
 id_tim integer,
+id_tm integer,
+id_funcionario integer,
 id_cliente integer,
+------DETALLE PRODUCTO
 id_item integer, 
 cantidad integer, 
 precio integer, 
+------DETALLE SERVICIO
+id_cm int,
+nro_cuota int,
+-------------------
 id_vped integer, 
 usuario character varying,
 operacion integer)

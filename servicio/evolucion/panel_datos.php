@@ -43,7 +43,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
 
             <div class="form-group">
                 <label>Fecha</label>
-                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="evo_fecha">
+                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="evo_fecha" disabled>
             </div>
 
             <div class="row">
@@ -69,7 +69,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Genero</label>
-                        <select class="select2" id="id_genero">
+                        <select class="select2" id="id_genero" disabled>
                             <option value=""></option>
                         </select>
                     </div>
@@ -97,7 +97,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Personal Trainer</label>
                 <select class="select2" id="id_personal">
                     <?php foreach ($personal_trainer as $cl) { ?>
@@ -134,10 +134,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Pedidos</button>
-            <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $cabecera[0]['id_evo']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
             <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-
         </div>
     </div>
 
@@ -161,14 +158,14 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
 
                 <div class="form-group">
                     <label>Fecha</label>
-                    <input type="date" value="<?= $cabecera[0]['evo_fecha']; ?>" class="form-control" id="evo_fecha">
+                    <input type="date" value="<?= $cabecera[0]['evo_fecha']; ?>" class="form-control" id="evo_fecha" disabled>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
                         <div>
                             <label>Clientes</label>
-                            <select class="select2" id="id_cliente">
+                            <select class="select2" id="id_cliente" disabled>
                                 <option selected="true" value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente'] ?></option>
                                 <?php foreach ($cliente as $cl) { ?>
                                     <option value="<?php echo $cl['id_cliente']; ?>"><?php echo $cl['cliente'] . " " . $cl['per_ci']; ?></option>
@@ -178,7 +175,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
                     </div>
 
                     <div class="col-md-3">
-                        <div class="form-group">
+                        <div class="form-group" disabled>
                             <label>Edad</label>
                             <input type="text" value="<?= $cabecera[0]['evo_edad']; ?>" class="form-control" id="evo_edad" disabled>
                         </div>
@@ -215,7 +212,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Personal Trainer</label>
                     <select class="select2" id="id_personal">
                         <option selected="true" value="<?= $cabecera[0]['id_personal']; ?>"><?= $cabecera[0]['personal'] ?></option>

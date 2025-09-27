@@ -26,7 +26,7 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
                 <?php }; ?>
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label>Fecha de Aprobacion</label>
             <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="vped_aprobacion">
         </div>
@@ -69,7 +69,7 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
                 <?php }; ?>
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label>Fecha de Aprobacion</label>
             <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="vped_aprobacion">
         </div>

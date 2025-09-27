@@ -194,8 +194,6 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                 <input type="number" value="" class="form-control" id="agregar_id_motivo" hidden>
                     <?php if (!empty($articulos)) { ?>
 
-
-
                         <div class="form-group">
                             <label>Depósito</label>
                             <select class="select2" id="agregar_id_deposito" onchange="actualizarProductos()">
@@ -226,7 +224,8 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
 
                         <div class="form-group">
                             <label>Motivo</label>
-                            <select class="select2" id="agregar_mot_descrip" onchange="mostrarIdMotivo()">
+                            <!-- <select class="select2" id="agregar_mot_descrip" onchange="mostrarIdMotivo()"> -->
+                            <select class="select2" id="agregar_mot_descrip">
                             <option selected="true" disabled="disabled">Seleccione Motivo</option>
                             </select>
                         </div>
@@ -238,6 +237,11 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
                         </div>
+                        <script>
+                            // Convertimos la lista de productos a un objeto JSON
+                            const productosPorDeposito = <?php echo json_encode($productosPorDeposito); ?>;
+                            const motivos = <?= json_encode($motivos); ?>;
+                        </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos disponibles...</label>
                     <?php } ?>
@@ -246,10 +250,5 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
         <?php } ?>
     </div>
 <?php
-} ?>
-<script>
-    // Convertimos la lista de productos a un objeto JSON
-    const productosPorDeposito = <?php echo json_encode($productosPorDeposito); ?>;
-    const motivos = <?= json_encode($motivos); ?>;
+} pg_close($conn)?>
 
-</script>

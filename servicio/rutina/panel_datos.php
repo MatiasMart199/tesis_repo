@@ -31,7 +31,7 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos de la Medición
+            Datos de la Rutina
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_rut">
@@ -64,21 +64,21 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Edad</label>
-                        <input type="text" value="" class="form-control" id="rut_edad">
+                        <input type="text" value="" class="form-control" id="rut_edad" disabled>
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Genero</label>
-                        <select class="select2" id="id_genero">
+                        <select class="select2" id="id_genero" disabled>
                             <option value=""></option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Servicio</label>
                 <select class="select2" id="id_plan_servi">
                     <option selected="true" disabled>Seleccione...</option>
@@ -133,7 +133,7 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-                Datos de la Medición
+                Datos de la Rutina
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $cabecera[0]['id_rut']; ?>" id="id_rut">
@@ -156,8 +156,8 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                     <div class="col-md-6">
                         <div>
                             <label>Clientes</label>
-                            <select class="select2" id="id_cliente">
-                                <option selected="true" disabled value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente']; ?></option>
+                            <select class="select2" id="id_cliente" disabled>
+                                <option selected="true" value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente']; ?></option>
                                 <?php foreach ($cliente as $cl) { ?>
                                     <option value="<?= $cl['id_cliente']; ?>"><?= $cl['cliente'] . " " . $cl['per_ci']; ?></option>
                                 <?php }; ?>
@@ -168,21 +168,21 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Edad</label>
-                            <input type="text" value="<?php echo $cabecera[0]['rut_edad']; ?>" class="form-control" id="rut_edad">
+                            <input type="text" value="<?php echo $cabecera[0]['rut_edad']; ?>" class="form-control" id="rut_edad" disabled>
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Genero</label>
-                            <select class="select2" id="id_genero">
+                            <select class="select2" id="id_genero" disabled>
                                 <option value="<?php echo $cabecera[0]['id_genero']; ?>"><?= $cabecera[0]['gen_descrip']; ?></option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Servicio</label>
                     <select class="select2" id="id_plan_servi">
                         <option selected="<?php echo $cabecera[0]['id_plan_servi']; ?>" disabled><?= $cabecera[0]['ps_descrip']; ?></option>
@@ -216,7 +216,7 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles de la Medición
+                Detalles de la Rutina
             </div>
             <div class="card-body">
                 <?php if (!empty($detalles)) { ?>

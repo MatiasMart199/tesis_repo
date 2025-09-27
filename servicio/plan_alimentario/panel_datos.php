@@ -31,7 +31,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos de la Medición
+            Datos del Plan Alimentario
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_ali">
@@ -68,11 +68,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Dias de la Semana</label>
-                        <select class="select2" id="ali_dias">
-                            <option value="L,M,Mi,J,V,S,D">Lunes a Domingo</option>
-                            <option value="L,M,Mi,J,V">Lunes a Viernes</option>
-                            <option value="L,M,Mi">Lunes a Miércoles</option>
-                        </select>
+                        <input type="text" value="" class="form-control" id="ali_dias" placeholder="Ejem: Lunes a Domingo, Lunes a Viernes, Lunes a Miércoles">
                     </div>
                 </div>
             </div>
@@ -101,14 +97,14 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Servicio</label>
                 <select class="select2" id="id_plan_servi">
                     <option selected="true" disabled>Seleccione...</option>
                 </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Nutriologo</label>
                 <select class="select2" id="id_nutriologo">
                     <?php foreach ($nutriologos as $cl) { ?>
@@ -128,6 +124,9 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
+    <script>
+        const datoServicio = <?= json_encode($servicio) ?>;
+    </script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_ali == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -156,7 +155,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-                Datos de la Medición
+                Datos deL Plan Alimentario
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $cabecera[0]['id_ali']; ?>" id="id_ali">
@@ -195,12 +194,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Dias de la Semana</label>
-                            <select class="select2" id="ali_dias">
-                            <option value="<?= $cabecera[0]['ali_dias']; ?>" selected><?= $cabecera[0]['ali_dias']; ?></option>
-                            <option value="Lunes a Domingo">Lunes a Domingo</option>
-                            <option value="Lunes a Viernes">Lunes a Viernes</option>
-                            <option value="Lunes a Miércoles">Lunes a Miércoles</option>
-                            </select>
+                            <input type="text" value="<?= $cabecera[0]['ali_dias']; ?>" class="form-control" id="ali_dias" placeholder="Ejem: Lunes a Domingo, Lunes a Viernes, Lunes a Miércoles">
                         </div>
                     </div>
                 </div>
@@ -229,14 +223,14 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Servicio</label>
                     <select class="select2" id="id_plan_servi">
                         <option selected="true" value="<?= $cabecera[0]['id_plan_servi']; ?>"><?= $cabecera[0]['ps_descrip']; ?></option>
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Nutriologo</label>
                     <select class="select2" id="id_nutriologo">
                         <option value="<?= $cabecera[0]['id_nutriologo']; ?>" selected><?= $cabecera[0]['nutriologo']; ?></option>
@@ -264,15 +258,15 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles de la Medición
+                Detalles del Plan Alimentario
             </div>
             <div class="card-body">
                 <?php if (!empty($detalles)) { ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <th>T. Comida</th>
                                 <th>Comida</th>
-                                <th>Alimento</th>
                                 <th>Cant.(g)</th>
                                 <th>Cal.(kcal)</th>
                                 <th>Carb.(g)</th>
@@ -339,12 +333,12 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">
-                    Agregar Plan
+                    Agregar Plan Alimentario
                 </div>
                 <div class="card-body">
                     <?php if (!empty($actividades)) { ?>
                         <div class="form-group">
-                            <label>Comida</label>
+                            <label>Tipo de Comida</label>
                             <select class="select2" id="agregar_id_act">
                                 <option selected="true" disabled>Seleccione...</option>
                                 <?php foreach ($actividades as $a) { ?>
@@ -354,7 +348,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                         </div>
 
                         <div class="form-group">
-                            <label>Alimento</label>
+                            <label>Comida</label>
                             <input type="text" value="" class="form-control" id="agregar_alimento">
                         </div>
 
@@ -415,7 +409,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
 <?php } ?>
 <script>
     const datoCliente = <?= json_encode($cliente) ?>;
-    const datoServicio = <?= json_encode($servicio) ?>;
+    
 </script>
 
 <?php

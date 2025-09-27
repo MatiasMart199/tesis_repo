@@ -10,7 +10,10 @@ $not_fecha_elab = $_POST['not_fecha_elab'];
 $not_fecha_emis = $_POST['not_fecha_emis'];
 $not_tipo_nota = $_POST['not_tipo_nota'];
 $not_observacion = $_POST['not_observacion'];
+$not_nro_documento = $_POST['not_nro_documento'];
 $id_vc = $_POST['id_vc'];
+$id_tm = $_POST['id_tm'];
+$id_tim = $_POST['id_tim'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
 $id_cliente = $_POST['id_cliente'];
@@ -24,7 +27,10 @@ $grabar = pg_query($conn, "SELECT sp_vent_nota($id_not,
                                                     '$not_fecha_emis', 
                                                     UPPER('$not_tipo_nota'), 
                                                     '$not_observacion',
+                                                    '$not_nro_documento',
                                                     $id_vc,
+                                                    $id_tm,
+                                                    $id_tim,
                                                     $id_sucursal, 
                                                     $id_funcionario,
                                                     $id_cliente, 
@@ -33,11 +39,6 @@ $grabar = pg_query($conn, "SELECT sp_vent_nota($id_not,
                                                     $monto,
                                                     '$usuario', 
                                                     $operacion);");
-// if($grabar){
-//     echo pg_last_notice($conn);
-// }else{
-//     echo pg_last_error();
-// }
 
 $response = array();
 if ($grabar) {

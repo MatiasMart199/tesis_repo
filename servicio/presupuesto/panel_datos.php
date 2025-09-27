@@ -41,7 +41,7 @@ if ($id_pre == '-1') { //CUANDO SE RESETEA
 
             <div class="form-group">
                 <label>Fecha</label>
-                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="pre_fecha">
+                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="pre_fecha" disabled>
             </div>
 
             <div class="form-group">
@@ -90,8 +90,6 @@ if ($id_pre == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Pedidos</button>
-            <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $cabecera[0]['id_pre']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
             <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
 
         </div>
@@ -117,13 +115,13 @@ if ($id_pre == '-1') { //CUANDO SE RESETEA
 
                 <div class="form-group">
                     <label>Fecha</label>
-                    <input type="date" value="<?= $cabecera[0]['pre_fecha']; ?>" class="form-control" id="pre_fecha">
+                    <input type="date" value="<?= $cabecera[0]['pre_fecha']; ?>" class="form-control" id="pre_fecha" disabled>
                 </div>
 
 
                 <div class="form-group">
                     <label>Clientes</label>
-                    <select class="select2" id="id_cliente">
+                    <select class="select2" id="id_cliente" disabled>
                         <option selected="true" value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente'] ?></option>
                         <?php foreach ($cliente as $cl) { ?>
                             <option value="<?php echo $cl['id_cliente']; ?>"><?php echo $cl['cliente'] . " " . $cl['per_ci']; ?></option>

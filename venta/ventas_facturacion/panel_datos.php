@@ -9,16 +9,15 @@ $conn = $conexion->getConexion();
 
 $sucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
 
-//$comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre, id_proveedor FROM v_compras_cab WHERE id_vc = (SELECT max(id_vc) FROM compras_cabecera WHERE id_sucursal = $id_sucursal);"));
-
 // Fetching the active provider for the last recorded purchase
 $clientes = pg_fetch_all(pg_query($conn, "SELECT id_cliente, cliente, per_ruc FROM v_clientes WHERE estado = 'ACTIVO';"));
 
 // Fetching a list of active providers not associated with the current purchase
 $listClientes = pg_fetch_all(pg_query($conn, "SELECT id_cliente, cliente, per_ruc FROM v_clientes WHERE estado = 'ACTIVO' AND id_cliente NOT IN (SELECT id_cliente FROM v_ventas_cab WHERE id_vc = $id_vc) ORDER BY cliente, per_ruc;"));
 
-$timbrados = pg_fetch_all(pg_query($conn, "SELECT * FROM v_timbrados WHERE estado = 'ACTIVO';"));
+$timbrados = pg_fetch_all(pg_query($conn, "SELECT * FROM v_timbrados WHERE estado = 'ACTIVO' and tim_documento = 'FACTURA';"));
 
+$tipos_movimiento = pg_fetch_all(pg_query($conn, "SELECT * FROM tipos_movimientos WHERE tm_codigo = 'VTA' and estado = 'ACTIVO' ORDER BY id_tm DESC;"));
 
 // Initialize arrays to store total IVA 10%, 5%, and Exentos
 // and total to pay
@@ -30,7 +29,7 @@ $totalPagar = array(0); // Total to pay
 $impuestos = "";
 if ($id_vc == '-1') { //CUANDO SE RESETEA
 ?>
-    <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione un presupuesto</label>
+    <label class="text-danger"><i class="fa fa-exclamation-circle"></i> Seleccione una factura</label>
 <?php
 } else if ($id_vc == '0') { //CUANDO SE PRESIONA EL BOTON AGREGAR
     //global $timbrados;
@@ -38,7 +37,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-            Datos del presupuesto
+            Datos de la Venta
         </div>
         <input type="hidden" value="0" id="id_vc">
         <div class="card-body">
@@ -48,7 +47,30 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-2">
                     <div class="form-group">
                         <label>Sucursal</label>
-                        <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                        <input type="text" value="<?= $_SESSION['suc_nombre']; ?>" class="form-control" disabled>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Fecha de Emision</label>
+                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="vc_fecha" disabled>
+                </div>
+
+                <div class="col-md-2" hidden>
+                    <label>Fecha Emision</label>
+                    <input type="date" value="" class="form-control" id="tim_fecha_inicio" readonly>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Tipo de Movimiento</label>
+                        <select class="form-control" id="id_tm">
+                            <?php foreach ($tipos_movimiento as $pr) { ?>
+                                <option value="<?php echo $pr['id_tm']; ?>">
+                                    <?= $pr['tm_descrip']; ?>
+                                </option>
+                            <?php }; ?>
+                        </select>
                     </div>
                 </div>
 
@@ -66,33 +88,18 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-
-                <div class="col-md-3">
-                    <label>Fecha</label>
-                    <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="vc_fecha">
-                </div>
-
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Tipo Doc</label>
-                        <select class="select2" id="tip_doc">
-                            <option selected="true" disabled="disabled">SELECCIONE EL DOCUMENTO</option>
-                            <option value="FACTURA">FACTURA</option>
-                            <option value="RECIBO">RECIBO</option>
-                        </select>
-                    </div>
-                </div>
-
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Timbrados</label>
-                        <select class="select2" id="id_tim">
-                            <option selected="true" disabled="disabled">SELECCIONE EL TIMBRADO</option>
+                        <select class="form-control" id="id_tim" disabled>
                             <?php foreach ($timbrados as $pr) { ?>
-                                <option value="<?php echo $pr['id_tim']; ?>">
-                                    <?= $pr['tim_num_timbrado'] . " " . $pr['tim_documento']; ?>
+                                <option
+                                    value="<?= $pr['id_tim']; ?>"
+                                    data-numfactura="<?= $pr['numero_factura']; ?>"
+                                    data-emision="<?= $pr['tim_fecha_inicio']; ?>" selected="true">
+                                    <?= $pr['tim_num_timbrado']; ?>
                                 </option>
-                            <?php }; ?>
+                            <?php } ?>
                         </select>
                     </div>
                 </div>
@@ -100,9 +107,10 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-3">
                     <div class="form-group">
                         <label>Nro Factura</label>
-                        <input type="text" value="0" class="form-control" id="vc_nro_factura">
+                        <input type="text" value="0" class="form-control" id="vc_nro_factura" readonly>
                     </div>
                 </div>
+
 
                 <div class="col-md-4">
                     <div class="form-group">
@@ -125,7 +133,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <div class="col-md-1 mb-2">
                     <div class="form-group">
                         <label>Cuota</label>
-                        <input type="number" value="0" class="form-control" id="vc_cuota" disabled>
+                        <input type="number" value="1" class="form-control" id="vc_cuota" disabled>
                     </div>
                 </div>
 
@@ -163,8 +171,9 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
         //$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_consolidacion WHERE  id_vc = $id_vc;"));
 
     }
-    $ventas_detalles_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_det WHERE id_vc = $id_vc ORDER BY item_descrip, mar_descrip;"));
-    $ventas_pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_pedidos_factu where id_vc = $id_vc ORDER BY  item_descrip, mar_descrip;"));
+    $ventas_servicios_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_servicio_det WHERE id_vc = " . $ventas[0]['id_vc'] . ";"));
+    $ventas_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_det WHERE id_vc = " . $ventas[0]['id_vc'] . " ORDER BY item_descrip, mar_descrip;"));
+    $ventas_pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_pedidos_factu where id_vc = " . $ventas[0]['id_vc'] . " ORDER BY  item_descrip, mar_descrip;"));
     $disabled = 'disabled';
     if ($ventas[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
@@ -206,17 +215,21 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-plus-circle"></i> Ordenes</button>
-            <button class="btn btn-primary text-white"
-                onclick="modalConsolidacion(<?= $ventas[0]['id_vc']; ?>);" id="btn-modal-secund-cerrar"><i
-                    class="fas fa fa-object-group"></i> Consolidacion</button>
+            <?php if ($ventas[0]['id_tm'] == 4) { ?>
+                <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
+                        class="fas fa-plus-circle"></i> Pedidos</button>
+                <button class="btn btn-primary text-white"
+                    onclick="modalConsolidacion(<?= $ventas[0]['id_vc']; ?>);" id="btn-modal-secund-cerrar"><i
+                        class="fas fa fa-object-group"></i> Consolidacion</button>
+            <?php } ?>
             <button class="btn btn-danger text-white" onclick="generarInforme(<?= $ventas[0]['id_vc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
-            <button class="btn btn-success" onclick="modalLibro(<?= $ventas[0]['id_vc']; ?>)" id="btn-modal-secund-cerrar"><i
+            <!-- <button class="btn btn-success" onclick="modalLibro(<? //= $ventas[0]['id_vc']; 
+                                                                        ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa fa-book"></i>libro de Compras</button>
-            <button class="btn btn-success" onclick="modalCuenta(<?= $ventas[0]['id_vc']; ?>)" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button>
+            <button class="btn btn-success" onclick="modalCuenta(<? //= $ventas[0]['id_vc']; 
+                                                                    ?>)" id="btn-modal-secund-cerrar"><i
+                    class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button> -->
 
         </div>
     </div>
@@ -224,7 +237,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
-                Datos de la Compra
+                Datos de la Venta
             </div>
             <div class="card-body">
                 <input type="number" id="total_pagar" value="<?= $totalGrav ?>" hidden>
@@ -236,6 +249,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                 <input type="hidden" value="<?php echo $id_vped; ?>" id="id_vped">
                 <input type="hidden" value="0" id="eliminar_id_item">
                 <input type="hidden" value="0" id="eliminar_id_items">
+                <input type="hidden" value="<?= $ventas_servicios_detalles[0]['precio']; ?>" id="total_servicio">
 
                 <div class="row">
 
@@ -246,10 +260,23 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                         </div>
                     </div>
 
-
-
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Fecha de Emision</label>
+                            <input type="date" value="<?= $ventas[0]['vc_fecha'] ?>" class="form-control" id="vc_fecha" disabled>
+                        </div>
+                    </div>
 
                     <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Tipo de Movimiento</label>
+                            <select class="form-control" id="id_tm" disabled>
+                                    <option value="<?php echo $ventas[0]['id_tm']; ?>" selected><?= $ventas[0]['tm_descrip']; ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label>Cliente</label>
                             <select class="select2" id="id_cliente">
@@ -263,26 +290,13 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                         </div>
                     </div>
 
-
-                    <div class="col-md-4 mb-3">
-                        <div class="form-group">
-                            <label>Fecha de Emision</label>
-                            <input type="date" value="<?= $ventas[0]['vc_fecha'] ?>" class="form-control" id="vc_fecha">
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>Tipo Doc</label>
-                            <input type="text" value="<?= $ventas[0]['tim_documento'] ?>" class="form-control" id="tip_doc" disabled>
-                        </div>
-                    </div>
-
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Timbrado</label>
                             <select class="form-control" id="id_tim" disabled>
-                                <option value="<?= $ventas[0]['id_tim'] ?>" selected><?= $ventas[0]['tim_num_timbrado'] ?></option>
+                                <option value="<?= $ventas[0]['id_tim'] ?>"
+                                    data-numfactura="<?= $ventas[0]['vc_nro_factura']; ?>"
+                                    selected><?= $ventas[0]['tim_num_timbrado'] ?></option>
                             </select>
                         </div>
                     </div>
@@ -339,203 +353,262 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
-                Detalles de la Compra
+                Detalles de la Venta
             </div>
             <div class="card-body">
-                <?php if (!empty($ventas_detalles_detalles)) { ?>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Stock</th>
-                                <th>Precio Unitario</th>
-                                <th>Subtotal</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $total = 0;
-                            foreach ($ventas_detalles_detalles as $d) {
-                                $total = $total + ($d['precio'] * $d['cantidad']) ?>
+                <!-- ================================================================== -->
+                <!-- TABLA DE DETALLE DE PRODUCTO -->
+                <?php if ($ventas[0]['id_tm'] == 4) {
+                    if (!empty($ventas_detalles)) { ?>
+                        <table class="table table-bordered">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['stock_cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['precio']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['precio'] * $d['cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php if ($ventas[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?= $d['id_vc'] ?>, <?= $d['id_item'] ?>);"
-                                                id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i
-                                                    class="fa fa-minus-circle"></i></button>
-                                            <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; 
-                                                                                                            ?>);"><i class="fa fa-minus-circle"></i></button> -->
-                                        <?php } ?>
-                                    </td>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                    <th>Acciones</th>
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="4">Total</th>
-                                <th>
-                                    <?php echo number_format($total, 0, ",", "."); ?>
-                                </th>
-                                <th></th>
-                            </tr>
-                        </tfoot>
-                    </table>
-                <?php } else { ?>
-                    <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
-                <?php } ?>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($ventas_detalles as $d) {
+                                    $total = $total + ($d['precio'] * $d['cantidad']) ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['stock_cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['precio']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['precio'] * $d['cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($ventas[0]['estado'] == 'PENDIENTE') { ?>
+                                                <button class="btn btn-warning text-white"
+                                                    onclick="modificar_detalle(<?= $d['id_vc'] ?>, <?= $d['id_item'] ?>);"
+                                                    id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                                <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i
+                                                        class="fa fa-minus-circle"></i></button>
+                                                <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; 
+                                                                                                                ?>);"><i class="fa fa-minus-circle"></i></button> -->
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Total</th>
+                                    <th>
+                                        <?php echo number_format($total, 0, ",", "."); ?>
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    <?php } else { ?>
+                        <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
+                    <?php }
+                } elseif ($ventas[0]['id_tm'] == 3) { ?>
+                    <!-- ================================================================== -->
+                    <!-- TABLA DE DETALLE DE SERVICIOS -->
+                    <?php if (!empty($ventas_servicios_detalles)) { ?>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Concepto</th>
+                                    <th>Vence</th>
+                                    <th>DNI</th>
+                                    <th>Precio</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($ventas_servicios_detalles as $d) {
+                                    $total = $total + $d['precio'] ?>
+                                    <tr>
+                                        <td>
+                                            <?php echo $d['id_cm']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['concepto']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['fecha_vence']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['cm_dni']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['precio']; ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Total</th>
+                                    <th>
+                                        <?php echo number_format($total, 0, ",", "."); ?>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    <?php } else { ?>
+                        <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
+                <?php }
+                } ?>
             </div>
         </div>
         <?php if ($ventas[0]['estado'] == 'PENDIENTE') {
             $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_ventas_det WHERE id_vc = " . $ventas[0]['id_vc'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"));
             $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
-        ?>
-            <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
-            <div class="card card-primary col-4">
+
+
+            if ($ventas[0]['id_tm'] == 4) { ?>
+                <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
+                <div class="card card-primary col-4">
+                    <div class="card-header text-center elevation-3">
+                        Agregar Producto
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($articulos) && !empty($depositos)) { ?>
+
+
+                            <div class="form-group">
+                                <label>Depositos</label>
+                                <select class="select2" id="ag_id_deposito">
+                                    <!-- <option selected="true" disabled="disabled"></option> -->
+
+                                    <?php foreach ($depositos as $pr) { ?>
+                                        <option value="<?= $pr['id_sucursal']; ?>">
+                                            <?= $pr['dep_descrip']; ?>
+                                        </option>
+                                    <?php }; ?>
+                                </select>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label>Producto</label>
+                                <select class="select2" id="agregar_id_item">
+                                    <?php foreach ($articulos as $a) { ?>
+                                        <option value="<?php echo $a['id_item']; ?>">
+                                            <?php echo $a['item_descrip'] . " - " . $a['mar_descrip']; ?>
+                                        </option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Cantidad</label>
+                                <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Precio</label>
+                                <input type="number" value="" class="form-control" id="agregar_precio">
+                            </div>
+
+                            <!-- <input type="number" value="1" id="id_deposito" hidden> -->
+
+                            <div class="form-group">
+                                <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
+                                    Agregar</button>
+                            </div>
+
+                        <?php } else { ?>
+                            <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos
+                                disponibles...</label>
+                        <?php } ?>
+                    </div>
+                </div>
+        <?php }
+        } ?>
+
+        <?php if ($ventas[0]['id_tm'] == 4) { ?>
+            <!-- TABLA DE PEDIDOS CONFIRMADOS -->
+            <div class="card card-success col-12">
                 <div class="card-header text-center elevation-3">
-                    Agregar Producto
+                    Detalles de Pedidos Confirmados
                 </div>
                 <div class="card-body">
-                    <?php if (!empty($articulos) && !empty($depositos)) { ?>
+                    <?php if (!empty($ventas_pedidos)) { ?>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Stock</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $total = 0;
+                                foreach ($ventas_pedidos as $d) {
+                                    $total = $total + ($d['precio'] * $d['cantidad']) ?>
 
-
-                        <div class="form-group">
-                            <label>Depositos</label>
-                            <select class="select2" id="ag_id_deposito">
-                                <!-- <option selected="true" disabled="disabled"></option> -->
-
-                                <?php foreach ($depositos as $pr) { ?>
-                                    <option value="<?= $pr['id_sucursal']; ?>">
-                                        <?= $pr['dep_descrip']; ?>
-                                    </option>
-                                <?php }; ?>
-                            </select>
-                        </div>
-
-
-                        <div class="form-group">
-                            <label>Producto</label>
-                            <select class="select2" id="agregar_id_item">
-                                <?php foreach ($articulos as $a) { ?>
-                                    <option value="<?php echo $a['id_item']; ?>">
-                                        <?php echo $a['item_descrip'] . " - " . $a['mar_descrip']; ?>
-                                    </option>
+                                    <tr>
+                                        <td>
+                                            <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['stock_cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['precio']; ?>
+                                        </td>
+                                        <td>
+                                            <?php echo $d['precio'] * $d['cantidad']; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($ventas[0]['estado'] == 'PENDIENTE') { ?>
+                                                <button class="btn btn-warning text-white"
+                                                    onclick="modificar_detalle_ord(<?= $d['id_vc'] ?>, <?= $d['id_item'] ?>);"
+                                                    id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
+                                                <button class="btn btn-danger"
+                                                    onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i
+                                                        class="fa fa-minus-circle"></i></button>
+                                                <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; 
+                                                                                                                ?>);"><i class="fa fa-minus-circle"></i></button> -->
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
                                 <?php } ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Cantidad</label>
-                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
-                        </div>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="4">Total</th>
+                                    <th>
+                                        <?php echo number_format($total, 0, ",", "."); ?>
+                                    </th>
+                                    <th>
 
-                        <div class="form-group">
-                            <label>Precio</label>
-                            <input type="number" value="" class="form-control" id="agregar_precio">
-                        </div>
-
-                        <!-- <input type="number" value="1" id="id_deposito" hidden> -->
-
-                        <div class="form-group">
-                            <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i>
-                                Agregar</button>
-                        </div>
-
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     <?php } else { ?>
-                        <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos
-                            disponibles...</label>
+                        <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
                     <?php } ?>
                 </div>
             </div>
         <?php } ?>
-        <!-- TABLA DE PEDIDOS CONFIRMADOS -->
-        <div class="card card-success col-12">
-            <div class="card-header text-center elevation-3">
-                Detalles de Ordenes a Compras
-            </div>
-            <div class="card-body">
-
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Stock</th>
-                            <th>Precio Unitario</th>
-                            <th>Subtotal</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <?php if (!empty($ventas_pedidos)) { ?>
-                        <tbody>
-                            <?php $total = 0;
-                            foreach ($ventas_pedidos as $d) {
-                                $total = $total + ($d['precio'] * $d['cantidad']) ?>
-                                
-                                <tr>
-                                    <td>
-                                        <?php echo $d['item_descrip'] . " - " . $d['mar_descrip']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['stock_cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['precio']; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $d['precio'] * $d['cantidad']; ?>
-                                    </td>
-                                    <td>
-                                        <?php if ($ventas[0]['estado'] == 'PENDIENTE') { ?>
-                                            <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle_ord(<?= $d['id_vc'] ?>, <?= $d['id_item'] ?>);"
-                                                id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-danger"
-                                                onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i
-                                                    class="fa fa-minus-circle"></i></button>
-                                            <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; 
-                                                                                                            ?>);"><i class="fa fa-minus-circle"></i></button> -->
-                                        <?php } ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colspan="4">Total</th>
-                                <th>
-                                    <?php echo number_format($total, 0, ",", "."); ?>
-                                </th>
-                                <th>
-
-                                </th>
-                            </tr>
-                        </tfoot>
-                </table>
-            <?php } else { ?>
-                <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
-            <?php } ?>
-            </div>
-        </div>
 
         <!-- MONTOS TOTALES DE PEDIDOS Y PRESUPUESTO -->
 

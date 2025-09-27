@@ -176,18 +176,15 @@ function grabar(){
         ali_objetivo = $("#ali_objetivo").val();
         ali_dias = $("#ali_dias").val();
         ali_observacion = $("#ali_observacion").val();
-        id_plan_servi = $("#id_plan_servi").val();
+        //id_plan_servi = $("#id_plan_servi").val();
         id_cliente = $("#id_cliente").val();
-        id_nutriologo = $("#id_nutriologo").val();
         console.log(id_ali);
         console.log(ali_fecha);
         console.log(ali_fecha_fin);
         console.log(ali_objetivo);
         console.log(ali_dias);
         console.log(ali_observacion);
-        console.log(id_plan_servi);
         console.log(id_cliente);
-        console.log(id_nutriologo);
     }
     if(operacion == '5'){
         id_ali = $("#id_ali").val();

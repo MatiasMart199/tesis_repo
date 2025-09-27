@@ -243,6 +243,26 @@ function cancelar() {
     mensaje("CANCELADO", "error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar() {
     var operacion = $("#operacion").val();
     var id_cc = '0';
@@ -266,6 +286,7 @@ function grabar() {
     if (operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4') {
         id_cc = $("#id_cc").val();
         cc_fecha = $("#cc_fecha").val();
+        cc_fecha_emi = $("#cc_fecha_emi").val();
         cc_intervalo = $("#cc_intervalo").val();
         cc_nro_factura = $("#cc_nro_factura").val();
         cc_timbrado = $("#cc_timbrado").val();
@@ -273,6 +294,18 @@ function grabar() {
         cc_cuota = $("#cc_cuota").val();
         id_proveedor = $("#id_proveedor").val();
 
+        if(!validarCampos([
+            {id: "#cc_fecha", nombre: "Fecha"},
+            {id: "#cc_fecha_emi", nombre: "Fecha de Emisión"},
+            {id: "#id_proveedor", nombre: "Proveedor"},
+            {id: "#cc_tipo_factura", nombre: "Tipo de factura"},
+            {id: "#cc_intervalo", nombre: "Intervalo"},
+            {id: "#cc_cuota", nombre: "Cuotas"},
+            {id: "#cc_nro_factura", nombre: "Número de factura"},
+            {id: "#cc_timbrado", nombre: "Timbrado"}
+        ])){
+            return; // Salimos de la función si la validación falla
+        }
         // iva5 = $("#total_iva5").val();
         // iva10 = $("#total_iva10").val();
         // exenta = $("#total_exenta").val();
@@ -320,6 +353,20 @@ function grabar() {
         precio = $("#agregar_precio").val();
         id_deposito = $("#ag_id_deposito").val();
 
+        // if (!validarCampos([
+        //     {id: "#agregar_id_item", nombre: "Item"},
+        //     {id: "#agregar_cantidad", nombre: "Cantidad"},
+        //     {id: "#agregar_precio", nombre: "Precio"},
+        //     {id: "#ag_id_deposito", nombre: "Depósito"}
+        // ]))
+        // {
+        //     return; // ❌ corta si falta un campo
+        // }
+        console.log("id_cc",id_cc);
+        console.log("id_item",id_item);
+        console.log("Cantidad: ",cantidad);
+        console.log("Precio: ",precio);
+        console.log("Deposito: ",id_deposito);
     }
     if (operacion == '6') {
         id_cc = $("#id_cc").val();
@@ -359,41 +406,48 @@ function grabar() {
     }
     if (operacion == '12') {// INSERTAR LIBRO DE COMPRAS Y CUENTA A PAGAR
         id_cc = $("#id_cc").val();
-        cc_fecha = $("#cc_fecha").val();
-        
-        
+        cc_fecha = $("#cc_fecha").val();   
     }
+    const datos = {
+    id_cc,
+    cc_fecha,
+    cc_fecha_emi,
+    cc_intervalo,
+    cc_nro_factura,
+    cc_timbrado,
+    cc_tipo_factura,
+    cc_cuota,
+    iva5,
+    iva10,
+    exenta,
+    monto,
+    saldo,
+    id_proveedor,
+    id_deposito,
+    id_item,
+    cantidad,
+    precio,
+    id_corden,
+    operacion
+};
+
+// Verificar si algo es null o undefined
+Object.entries(datos).forEach(([key, value]) => {
+    if (value === null || value === undefined) {
+        console.warn(`⚠️ La variable ${key} está vacía:`, value);
+    }
+});
     $.ajax({
         url: "grabar.php",
         type: "POST",
-        data: {
-            id_cc: id_cc,
-            cc_fecha: cc_fecha,
-            cc_intervalo: cc_intervalo,
-            cc_nro_factura: cc_nro_factura,
-            cc_timbrado: cc_timbrado,
-            cc_tipo_factura: cc_tipo_factura,
-            cc_cuota: cc_cuota,
-            iva5: iva5,
-            iva10: iva10,
-            exenta: exenta,
-            monto: monto,
-            saldo: saldo,
-            id_proveedor: id_proveedor,
-            id_deposito: id_deposito,
-            id_item: id_item,
-            cantidad: cantidad,
-            precio: precio,
-            id_corden: id_corden,
-            operacion: operacion
-        }
+        data:datos
     }).done(function (resultado) {
         console.log(resultado); // Agregado para verificar la respuesta del servidor
         //let result = JSON.parse(resultado);
         if (verificar_mensaje(resultado)) {
-            
+            postgrabar(operacion);    
         }
-        postgrabar(operacion);
+        
     }).fail(function (a, b, c) {
         //console.error(b);
         console.error("Error:", a, b, c); // Error detallado
@@ -443,7 +497,7 @@ function llenarPrecio() {
     const articuloId = document.getElementById('agregar_id_item').value;
     const precio = document.getElementById('agregar_precio');
     // Buscar el producto correspondiente en el objeto datoStock
-    const itemSeleccionado = artuculos.find(d => d.id_item == articuloId);
+    const itemSeleccionado = articulos.find(d => d.id_item == articuloId);
 
     if (itemSeleccionado) {
         precio.value = itemSeleccionado.precio_compra; // Asignar el valor del stock
@@ -452,9 +506,22 @@ function llenarPrecio() {
     }
 }
 
+function stock_actual(){
+    const item = document.getElementById('agregar_id_item');
+    const stockInput = document.getElementById('stock_actual');
+    const selectedItemId = parseInt(item.value);
+    const itemStock = stock.find(s => parseInt(s.id_item) === selectedItemId);
+    if (itemStock) {
+        stockInput.value = itemStock.stock_cantidad;
+    } else {
+        stockInput.value = '0';
+    }
+ }
+
 $(document).ready(function() {
     $(document).on('change', '#agregar_id_item', function() {
         llenarPrecio();
+        stock_actual();
     });
 });
 

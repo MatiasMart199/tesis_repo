@@ -123,6 +123,27 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        //console.log("Validando campo:", campos[i]); // Depuración
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_not = '0';
@@ -141,7 +162,16 @@ function grabar(){
         not_tipo_nota = $("#not_tipo_nota").val();
         id_cc = $("#id_cc").val();
         id_proveedor = $("#id_proveedor").val();
-        console.log(id_not, not_fecha, not_fecha_docu, not_tipo_nota, id_cc, id_proveedor);
+        //console.log(id_not, not_fecha, not_fecha_docu, not_tipo_nota, id_cc, id_proveedor);
+        if(!validarCampos([
+            {id: "#not_fecha", nombre: "Fecha"},
+            {id: "#not_fecha_docu", nombre: "Fecha del documento"},
+            {id: "#not_tipo_nota", nombre: "Tipo de nota"},
+            {id: "#id_cc", nombre: "Factura/Compra"},
+            {id: "#id_proveedor", nombre: "Proveedor"}
+        ])){
+            return; // Salimos de la función si la validación falla
+        }
     }
     if(operacion == '5'){
         id_not = $("#id_not").val();
@@ -149,6 +179,14 @@ function grabar(){
         cantidad = $("#agregar_cantidad").val();
         monto = $("#agregar_monto").val();
         //console.log(id_not, id_item, cantidad, monto);
+        if (!validarCampos([
+            {id: "#agregar_id_item", nombre: "Item"},
+            {id: "#agregar_cantidad", nombre: "Cantidad"},
+            {id: "#agregar_monto", nombre: "Monto"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '6'){
         id_not = $("#id_not").val();

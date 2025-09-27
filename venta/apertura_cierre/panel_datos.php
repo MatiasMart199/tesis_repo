@@ -7,7 +7,7 @@ $conexion = new Conexion();
 $conn = $conexion->getConexion();
 date_default_timezone_set('America/Asuncion');
 
-$cajas = pg_fetch_all(pg_query($conn, "SELECT * FROM cajas WHERE estado = 'ACTIVO';"));
+$cajas = pg_fetch_all(pg_query($conn, "SELECT * FROM cajas WHERE estado = 'ACTIVO' and id_caja not in (select id_caja from vent_aperturas_cierres where estado ='ABIERTO' and id_sucursal = $id_sucursal);"));
 
 if ($id_vac == '-1') { //CUANDO SE RESETEA
 ?>
@@ -83,36 +83,32 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Monto Efectivo</label>
                         <input type="number" value="0" class="form-control" id="vac_monto_efec" disabled>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Monto Cheque</label>
                         <input type="number" value="0" class="form-control" id="vac_monto_cheq" disabled>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label>Monto Tarjeta</label>
                         <input type="number" value="0" class="form-control" id="vac_monto_tarj" disabled>
                     </div>
                 </div>
-
-                <div class="col-md-12">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label>Entidad Emisora</label>
-                        <select class="select2" id="id_ee" disabled>
-                            <option value="0"></option>
-                        </select>
+                        <label>Monto Transferencia</label>
+                        <input type="number" value="0" class="form-control" id="vac_monto_tranf" disabled>
                     </div>
                 </div>
 
             </div>
-
 
             <div class="row">
                 <div class="form-group">
@@ -126,13 +122,12 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_vac == '-2') { //SE TRATA DEL ULTIMO PEDIDO
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_aperturas_cierres WHERE id_vac = (select max(id_vac) from vent_aperturas_cierres where id_sucursal = $id_sucursal);"));
-        $emisora = pg_fetch_all(pg_query($conn, "SELECT * FROM entidades_emisoras;"));
         $funcionario = pg_fetch_all(pg_query($conn, "SELECT * FROM v_funcionarios WHERE estado = 'ACTIVO';"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_aperturas_cierres WHERE id_vac = $id_vac;"));
-        $emisora = pg_fetch_all(pg_query($conn, "SELECT * FROM entidades_emisoras;"));
         $funcionario = pg_fetch_all(pg_query($conn, "SELECT * FROM v_funcionarios WHERE estado = 'ACTIVO';"));
     }
+    $arqueos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_arqueo_resumen WHERE id_vac = " . $cabeceras[0]['id_vac'] . ";"));
     $disabled = 'disabled';
     if ($cabeceras[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
@@ -149,14 +144,14 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
         }
     }
 
-    function verificarEntidad($id_ee)
-    {
-        if ($id_ee == null) {
-            return 0;
-        } else {
-            return $id_ee;
-        }
-    }
+    // function verificarEntidad($id_ee)
+    // {
+    //     if ($id_ee == null) {
+    //         return 0;
+    //     } else {
+    //         return $id_ee;
+    //     }
+    // }
     // $fecha_cierre = null;
     // if ($cabeceras[0]['vac_fecha_cie'] != null) {
     //     $fecha_cierre = $cabeceras[0]['vac_fecha_cie'];
@@ -172,7 +167,6 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?php echo $cabeceras[0]['id_vac']; ?>" id="id_vac">
-
 
                 <div class="row">
                     <div class="col-md-6">
@@ -229,121 +223,179 @@ if ($id_vac == '-1') { //CUANDO SE RESETEA
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Monto Efectivo</label>
-                            <input type="number" value="<?= $cabeceras[0]['vac_monto_efec'] ?>" class="form-control" id="vac_monto_efec">
+                            <input type="number" value="<?= $cabeceras[0]['vac_monto_efec'] ?>" class="form-control" id="vac_monto_efec" disabled>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Monto Cheque</label>
-                            <input type="number" value="<?= $cabeceras[0]['vac_monto_cheq'] ?>" class="form-control" id="vac_monto_cheq">
+                            <input type="number" value="<?= $cabeceras[0]['vac_monto_cheq'] ?>" class="form-control" id="vac_monto_cheq" disabled>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Monto Tarjeta</label>
-                            <input type="number" value="<?= $cabeceras[0]['vac_monto_tarj'] ?>" class="form-control" id="vac_monto_tarj">
+                            <input type="number" value="<?= $cabeceras[0]['vac_monto_tarj'] ?>" class="form-control" id="vac_monto_tarj" disabled>
                         </div>
                     </div>
-
-                    <div class="col-md-12">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label>Entidad Emisora</label>
-                            <select class="select2" id="id_ee">
-                                <?php foreach ($emisora as $e) { ?>
-                                    <option value="<?= $e['id_ee'] ?>"><?= $e['ee_razon_social'] . " - " . $e['ee_tipo_entidad'] ?></option>
-                                <?php } ?>
-                            </select>
+                            <label>Monto Transferencia</label>
+                            <input type="number" value="<?= $cabeceras[0]['vac_monto_tranf'] ?>" class="form-control" id="vac_monto_tranf" disabled>
                         </div>
                     </div>
-                </div>
-                <?php if ($cabeceras[0]['estado'] == 'CONFIRMADO') { ?>
-                    <hr>
-                    <legend>Detalle de Arqueo</legend>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Solicitante</label>
-                                <select class="select2" id="id_fun_solicitante">
-                                    <?php foreach ($funcionario as $f) { ?>
-                                        <option value="<?= $f['id_funcionario'] ?>"><?= $f['funcionario'] ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Estado de Arqueo</label>
-                                <select class="select2" id="estado_arqueo">
-                                    <option value="">OBSERVACIÓN</option>
-                                    <option value="">IMPRESIÓN</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" value="" class="form-check-input" id="check_tarjeta">
-                                <label>Tarjeta</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" value="" class="form-check-input" id="check_cheque">
-                                <label>Cheque</label>
-
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" value="" class="form-check-input" id="check_efectivo">
-                                <label>Efectivo</label>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
+                        <?php if ($cabeceras[0]['estado'] == 'ABIERTO') { ?>
+                            <button hidden class="btn btn-info" onclick=""><i class="fa fa-check-circle"></i>Generar Arqueo</button>
+                        <?php } ?>
+                        <?php if ($cabeceras[0]['estado'] == 'ABIERTO') { ?>
+                            <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
+                            <button class="btn btn-success" onclick="modificar();"><i class="fa fa-edit"></i> Cierra Caja</button>
+                            <button hidden class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar Cierre</button>
+                        <?php } ?>
                     </div>
-                    <hr>
-                    
-                <?php } ?>
-                <div class="form-group">
-                    <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
-                    <?php if ($cabeceras[0]['estado'] == 'CONFIRMADO') { ?>
-                        <button class="btn btn-info" onclick=""><i class="fa fa-check-circle"></i>Generar Arqueo</button>
-                    <?php } ?>
-                    <?php if ($cabeceras[0]['estado'] == 'ABIERTO' || $cabeceras[0]['estado'] == 'CERRADO') { ?>
-                        <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
-                        <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Cierre</button>
-                        <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar Cierre</button>
-                    <?php } ?>
                 </div>
             </div>
         </div>
-    </div>
-    <script>
-        $(document).ready(function() {
-            // Función que calcula el total y lo asigna al campo "vac_monto_cie"
-            function calcularTotal() {
-                const efectivo = parseFloat($('#vac_monto_efec').val()) || 0;
-                const cheque = parseFloat($('#vac_monto_cheq').val()) || 0;
-                const tarjeta = parseFloat($('#vac_monto_tarj').val()) || 0;
+        <script>
+            $(document).ready(function() {
+                // Función que calcula el total y lo asigna al campo "vac_monto_cie"
+                function calcularTotal() {
+                    const efectivo = parseFloat($('#vac_monto_efec').val()) || 0;
+                    const cheque = parseFloat($('#vac_monto_cheq').val()) || 0;
+                    const tarjeta = parseFloat($('#vac_monto_tarj').val()) || 0;
+                    const transferencia = parseFloat($('#vac_monto_tranf').val()) || 0;
 
-                const total = efectivo + cheque + tarjeta;
-                // Actualiza el campo Monto Cierre con dos decimales
-                //$('#vac_monto_cie').val(total.toFixed(2));
-                $('#vac_monto_cie').val(total);
-            }
+                    const total = efectivo + cheque + tarjeta + transferencia;
+                    // Actualiza el campo Monto Cierre con dos decimales
+                    //$('#vac_monto_cie').val(total.toFixed(2));
+                    $('#vac_monto_cie').val(total);
+                }
 
-            // Asigna los eventos 'input' y 'change' a los campos de monto
-            $('#vac_monto_efec, #vac_monto_cheq, #vac_monto_tarj').on('input change', calcularTotal);
+                // Asigna los eventos 'input' y 'change' a los campos de monto
+                $('#vac_monto_efec, #vac_monto_cheq, #vac_monto_tarj', '#vac_monto_tranf').on('input change', calcularTotal);
+                $('#arq_monto_efec, #arq_monto_cheq, #arq_monto_tarj', '#arq_monto_tranf').on('input change', calcularTotal);
 
-            // Ejecuta el cálculo al cargar para establecer el valor inicial
-            calcularTotal();
-        });
-    </script>
+                // Ejecuta el cálculo al cargar para establecer el valor inicial
+                calcularTotal();
+            });
+        </script>
 
-<?php
-}
-pg_close($conn);
+        <?php if ($cabeceras[0]['estado'] == 'ABIERTO') { ?>
+            <!-- PARA AGREGAR ARQUEO -->
+            <div class="card card-primary col-12">
+                <div class="card-header text-center elevation-3">
+                    Cargar Arqueo de Caja
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Solicitante</label>
+                                    <select class="select2" id="id_fun_solicitante">
+                                        <?php foreach ($funcionario as $f) { ?>
+                                            <option value="<?= $f['id_funcionario'] ?>"><?= $f['funcionario'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Monto Efectivo</label>
+                                <input type="number" value="" class="form-control" id="arq_monto_efec">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Monto Cheque</label>
+                                <input type="number" value="" class="form-control" id="arq_monto_cheq">
+                            </div>
+                            <div class="form-group  col-md-3">
+                                <label>Monto Tarjeta</label>
+                                <input type="number" value="" class="form-control" id="arq_monto_tarj">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label>Monto Transferencia</label>
+                                <input type="number" value="" class="form-control" id="arq_monto_tranf">
+                            </div>
+                            <div class="form-group">
+                            <?php    
+                                $disabled = '';
+                                if ($arqueos[0]['id_varq'] != null){ 
+                                $disabled = 'disabled';
+                                }?>
+                                <button <?= $disabled ?> class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+            </div>
+
+            <!-- TABLA DE ARQUEO -->
+            <div class="card card-primary col-12">
+                <div class="card-header text-center elevation-3">
+                    Arqueo de Caja
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($arqueos) && $arqueos[0]['id_varq'] != null) { ?>
+                        <table class="table table-bordered" font-size="10px">
+                            <thead>
+                                <tr> 
+                                    <th>#</th>
+                                    <th>Cajero</th>
+                                    <th>Caja</th>
+                                    <th>Fecha</th>
+                                    <th>Efectivo</th>
+                                    <th>Cheque</th>
+                                    <th>Tarjeta</th>
+                                    <th>Transferencia</th>
+                                    <th>Dif. Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $total_monto = 0;
+                                foreach ($arqueos as $d) {
+                                    $total_monto += $d['fisico_efectivo'] + $d['fisico_cheque'] + $d['fisico_tarjeta'] + $d['fisico_tranf'];
+                                ?>
+                                    <tr>
+                                        <td><?= $d['id_varq']; ?></td>
+                                        <td><?= $d['funcionario']; ?></td>
+                                        <td><?= $d['caj_descrip'] . " " . $d['suc_nombre']; ?></td>
+                                        <td><?= $d['fecha_arquo']; ?></td>
+                                        <td><?= $d['fisico_efectivo']; ?></td>
+                                        <td><?= $d['fisico_cheque']; ?></td>
+                                        <td><?= $d['fisico_tarjeta']; ?></td>
+                                        <td><?= $d['fisico_tranf']; ?></td>
+                                        <td><?= $d['dif_total']; ?></td>
+                                        <td>
+                                            <?php if ($cabeceras[0]['estado'] == 'ABIERTO') { ?>
+                                                <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_vac']; ?>);"><i class="fa fa-minus-circle"></i></button>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="8">Total monto real:</th>
+                                    <th> <?= number_format($total_monto, 0, ',', '.')  ?></th>
+                                    <th></th>
+                                </tr>
+
+                            </tfoot>
+                        </table>
+                    <?php } else { ?>
+                        <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron arqueos...</label>
+                    <?php } ?>
+                </div>
+            </div>
+        <?php
+    }
+    pg_close($conn);

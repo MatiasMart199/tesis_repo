@@ -62,13 +62,18 @@
     </ul>
 
 
-
+<?php 
+// Obtener la URL base del sitio web
+$base_url = "http://" . $_SERVER['HTTP_HOST'] . "/tesis/";
+$ubicacion = $base_url . "listar_paginas.php";
+?>
 
 </nav>
 <script>
     document.getElementById('buscador').addEventListener('input', function() {
         const filtro = this.value.trim();
         const resultContainer = document.getElementById('resultado');
+        const ubicacion = <?php echo json_encode($ubicacion); ?>
 
         if (!filtro) {
             resultContainer.style.display = 'none';
@@ -76,7 +81,7 @@
             return;
         }
 
-        fetch(`listar_paginas.php?filtro=${encodeURIComponent(filtro)}`)
+        fetch(`${ubicacion}?filtro=${encodeURIComponent(filtro)}`)
             .then(res => res.json())
             .then(data => {
                 resultContainer.innerHTML = data.length ?

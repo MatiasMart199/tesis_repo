@@ -18,7 +18,7 @@ foreach ($lista_paginas as $l) {
 //var_dump($modulos);
 //var_dump($paginas);
 //FIN AGREGADO
-$permisos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_permisos where id_grupo=" . $_SESSION['id_grupo'] . "AND estado= 'ACTIVO' AND id_accion= 1 order by mod_orden, id_pagina"));
+$permisos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_permisos where id_grupo=" . $_SESSION['id_grupo'] . "AND estado= 'ACTIVO' AND id_accion= 1 order by mod_orden, pag_orden;"));
 
 $modulos = null;
 $paginas = null;
@@ -100,13 +100,16 @@ if (!empty($permisos)) {
                         <div class="input-group-text"><i class="fas fa-search"></i></div>
                     </div>
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"> -->
-                    <!-- <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button> -->
-                <!-- </div>
+            <!-- <button class="btn btn-light" type="submit"><i class="fas fa-search"></i></button> -->
+            <!-- </div>
             </form> -->
 
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <?php if (!empty($modulos)) {
                     foreach ($modulos as $m) { // Recorremos los módulos
+                        if ($m['id_modulo'] == 5 || $m['id_modulo'] == 6 || $m['id_modulo'] == 7) {
+                            continue;
+                        }
                 ?>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -150,46 +153,63 @@ if (!empty($permisos)) {
 
             <!-- ----------------------------------------------------------------------------------------------- -->
 
-            <!-- <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false"> -->
-            <!-- Menú principal: REFERENCIALES -->
-            <!-- <li class="nav-item has-treeview">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Menú principal: REFERENCIALES -->
+                <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-file"></i>
+                        <i class="nav-icon fas fa-database"></i>
                         <p>
                             REFERENCIALES
                             <i class="right fas fa-angle-down"></i>
                         </p>
-                    </a> -->
+                    </a>
 
-            <!-- Submenú: COMPRAS -->
-            <!-- <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-shopping-cart"></i>
-                                <p>
-                                    COMPRAS
-                                    <i class="right fas fa-angle-down"></i>
-                                </p>
-                            </a> -->
-            <!-- Submenú dentro de COMPRAS -->
-            <!-- <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="nav-icon fas fa-circle"></i>
-                                        <p>Opción 1 de COMPRAS</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <ul class="nav nav-treeview">
+                        <?php
+                        if (!empty($modulos)) {
+                            $modulosReferenciales = [5, 6, 7]; // IDs de módulos referenciales
+
+                            foreach ($modulos as $m) {
+                                if (in_array($m['id_modulo'], $modulosReferenciales)) {
+                        ?>
+                                    <li class="nav-item has-treeview">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon <?= $m['mod_icono']; ?>"></i>
+                                            <p>
+                                                <?= $m['mod_descrip']; ?>
+                                                <?php if (!empty($paginas[$m['id_modulo']])) { ?>
+                                                    <i class="right fas fa-angle-down"></i>
+                                                <?php } ?>
+                                            </p>
+                                        </a>
+
+                                        <?php if (!empty($paginas[$m['id_modulo']])) { ?>
+                                            <ul class="nav nav-treeview">
+                                                <?php foreach ($paginas[$m['id_modulo']] as $p) { ?>
+                                                    <li class="nav-item">
+                                                        <a href="<?= $p['pag_ubicacion']; ?>" class="nav-link">
+                                                            <i class="nav-icon <?= $p['pag_icono']; ?>"></i>
+                                                            <p><?= $p['pag_descrip']; ?></p>
+                                                        </a>
+                                                    </li>
+                                                <?php } ?>
+                                            </ul>
+                                        <?php } ?>
+                                    </li>
+                            <?php
+                                }
+                            }
+                        } else {
+                            ?>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-exclamation-circle text-danger"></i>
+                                    <p class="text-danger">No se encuentran módulos</p>
+                                </a>
+                            </li>
+                        <?php } pg_close($conn); ?>
                     </ul>
-
-                    
-                </li> -->
-
-            <!-- Mensaje de módulos no encontrados -->
-
-
-
+                </li>
             </ul>
 
         </nav>

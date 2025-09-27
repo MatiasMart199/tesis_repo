@@ -13,8 +13,8 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 // Establecer la información del documento
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Your Name');
-$pdf->SetTitle('Compra #' . $cabecera[0]['id_vc'] . ' ');
-$pdf->SetSubject('Detalles de la compra');
+$pdf->SetTitle('Venta #' . $cabecera[0]['id_vc'] . ' ');
+$pdf->SetSubject('Detalles de la Venta');
 $pdf->SetKeywords('TCPDF, PDF, example, test, guide');
 
 $pdf->setPrintHeader(false);
@@ -154,3 +154,5 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
 //Close and output PDF document
 $pdf->Output('example_002.pdf', 'I');
+
+$pg_close($conn);

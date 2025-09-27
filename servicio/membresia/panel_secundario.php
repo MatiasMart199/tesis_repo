@@ -1,15 +1,12 @@
 <?php
-$id_inscrip = $_POST['id_inscrip'];
+$id_cliente = $_POST['id_cliente'];
 include '../../Conexion.php';
 include '../../session.php';
 $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
-$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE  estado = 'CONFIRMADO' order by id_inscrip;"));
-
-
+$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE  estado = 'CONFIRMADO' AND id_cliente = $id_cliente order by id_inscrip;"));
 ?>
-
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="card card-primary">
@@ -28,7 +25,7 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripcione
 
                 foreach ($cabecera as $c) {
                     echo '<div class="custom-container">';
-                    echo '<label class="custom-container__label">#' . $c['id_inscrip'] . ' Nº-----( ' . $c['fecha'] . ' )</label>';
+                    echo '<label class="custom-container__label">#' . $c['id_inscrip'] . ' Nº-----( ' . $c['fecha'] . ' ) '.$c['cliente'].'</label>';
                     echo '<button class="btn btn-success" onclick="agregar_membresia_inscripcion(' . $c['id_inscrip'] . ');"><i class="fa fa-plus-circle"></i> Agregar</button>';
                     echo '</div>';
 

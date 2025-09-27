@@ -9,7 +9,7 @@ $conn = $conexion->getConexion();
 
 $comprasSucursal = pg_fetch_all(pg_query($conn, "SELECT id_sucursal, suc_nombre FROM sucursales WHERE id_sucursal = $id_sucursal;"));
 
-$cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_cliente, cliente, per_ci
+$cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_cliente, cliente, per_ci, id_inscrip
                                         FROM v_servicios_inscripciones
                                         WHERE estado = 'CONFIRMADO'
                                         ORDER BY id_cliente, cliente, per_ci;
@@ -40,6 +40,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_mem">
+            <input type="number" value="" id="id_inscrip_f" hidden>
 
             <div class="col-md-2">
                 <div class="form-group">
@@ -51,6 +52,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             <div>
                 <label>Clientes Inscritos</label>
                 <select class="select2" id="id_cliente">
+                    <option selected="true" disabled>Seleccione un cliente</option>
                     <?php foreach ($cliente as $cl) { ?>
                         <option value="<?php echo $cl['id_cliente']; ?>"><?php echo $cl['cliente'] . " " . $cl['per_ci']; ?></option>
                     <?php }; ?>
@@ -64,12 +66,12 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
 
             <div class="form-group">
                 <label>Vencimiento</label>
-                <input type="date" value="" class="form-control" id="mem_vence">
+                <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="mem_vence">
             </div>
 
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label>Observación</label>
-                <textarea class="form-control" id="mem_observacion"></textarea>
+                <textarea class="form-control" id="mem_observacion">N/A</textarea>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
@@ -77,6 +79,9 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
+    <script>
+        const inscripcion = <?= json_encode($cliente); ?>;
+    </script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_mem == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -84,10 +89,11 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
         //$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE id_cp = (select max(id_cp) from compras_pedidos_cabecera where id_sucursal = $id_sucursal);"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $membresias = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_cab WHERE id_mem = $id_mem;"));
+        $inscripcion_cliente = pg_fetch_all(pg_query($conn, "SELECT * FROM v_servicios_inscripciones WHERE  estado = 'CONFIRMADO' AND id_cliente = ".$membresias[0]['id_cliente']." order by id_inscrip;"));
         //$consolidacion = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_consolidacion WHERE  id_mem = $id_mem;"));
     }
-    $membresias_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_det WHERE id_mem = $id_mem ORDER BY ps_descrip;"));
-    $inscripcionMembresias = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_inscripciones_membresias where id_mem = $id_mem ORDER BY  ps_descrip;"));
+    $membresias_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_membresias_det WHERE id_mem = ".$membresias[0]['id_mem']." ORDER BY ps_descrip;"));
+    $inscripcionMembresias = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_inscripciones_membresias where id_mem = ".$membresias[0]['id_mem']." ORDER BY  ps_descrip;"));
     $disabled = 'disabled';
     if ($membresias[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
@@ -109,8 +115,8 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <input type="hidden" value="<?= $membresias[0]['id_mem'] ?>" id="id_mem">
-                <input type="hidden" value="<?= $pedidos[0]['id_cp'] ?>" id="id_cp">
                 <input type="hidden" value="0" id="eliminar_id_plan_servi">
+                <input type="number" value="<?= $inscripcion_cliente[0]['id_inscrip'] ?>" id="id_inscrip_f" hidden>
                 <!-- <input type="hidden" value="0" id="eliminar_id_plan_servis"> -->
 
                 <div class="col-md-2">
@@ -129,15 +135,15 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
 
                 <div class="form-group">
                     <label>Fecha</label>
-                    <input type="date" value="<?= $membresias[0]['mem_fecha'] ?>" class="form-control" id="mem_fecha">
+                    <input type="date" value="<?= $membresias[0]['mem_fecha'] ?>" class="form-control" id="mem_fecha" disabled>
                 </div>
 
                 <div class="form-group">
                     <label>Vencimiento</label>
-                    <input type="date" value="<?= $membresias[0]['mem_vence'] ?>" class="form-control" id="mem_vence">
+                    <input type="date" value="<?= $membresias[0]['mem_vence'] ?>" class="form-control" id="mem_vence" disabled>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Observación</label>
                     <textarea type="text" class="form-control" id="mem_observacion"><?=  $membresias[0]['mem_observacion'] ?></textarea>
                 </div>
@@ -145,7 +151,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                     <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                     <?php if ($membresias[0]['estado'] == 'PENDIENTE') { ?>
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
-                        <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
+                        <!-- <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button> -->
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
                     <?php } ?>
                 </div>
@@ -162,7 +168,8 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                         <thead>
                             <tr>
                                 <th>Servicio</th>
-                                <th>Dias</th>
+                                <th>Duración</th>
+                                <th>Tip. Duración</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
                                 <th>Acciones</th>
@@ -175,6 +182,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                                 <tr>
                                     <td><?php echo $d['ps_descrip']; ?></td>
                                     <td><?php echo $d['dias']; ?></td>
+                                    <td><?php echo $d['td_descrip']; ?></td>
                                     <td><?php echo $d['precio']; ?></td>
                                     <td><?php echo $d['precio'] * $d['dias']; ?></td>
                                     <td>
@@ -190,7 +198,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="3">Total</th>
+                                <th colspan="4">Total</th>
                                 <th><?php echo number_format($total, 0, ",", "."); ?></th>
                                 <th></th>
                             </tr>
@@ -202,7 +210,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($membresias[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM planes_servicios WHERE estado = 'ACTIVO' AND id_plan_servi NOT IN (select id_plan_servi from v_serv_membresias_det WHERE id_mem = " . $membresias[0]['id_mem'] . ") ORDER BY ps_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_planes_servicios WHERE estado = 'ACTIVO' AND id_plan_servi NOT IN (select id_plan_servi from v_serv_membresias_det WHERE id_mem = " . $membresias[0]['id_mem'] . ") ORDER BY ps_descrip;"))
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -217,13 +225,17 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                             <select class="select2" id="agregar_id_plan_servi">
                                 <option selected="true" disabled>Seleccione un servicio</option>
                                 <?php foreach ($articulos as $a) { ?>
-                                    <option value="<?= $a['id_plan_servi']; ?>" data_precio="<?= $a['precio_servicio']; ?>"><?= $a['ps_descrip']; ?></option>
+                                    <option value="<?= $a['id_plan_servi']; ?>" data_precio="<?= $a['precio_servicio']; ?>"><?= $a['td_descrip'] . " - " . $a['ps_descrip']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Dias</label>
-                            <input type="number" value="<?= getFechaDays($membresias[0]['mem_fecha'], $membresias[0]['mem_vence']) ?>" class="form-control" id="agregar_dias" disabled>
+                            <label>Duracion</label>
+                            <input type="number" disabled value="" class="form-control" id="agregar_dia">
+                        </div>
+                        <div class="form-group">
+                            <label>Promociones</label>
+                            <input type="text" disabled  class="form-control" id="promociones">
                         </div>
                         <div class="form-group">
                             <label>Precio</label>
@@ -232,7 +244,9 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
                         </div>
-
+                        <script>
+                            const articulos = <?= json_encode($articulos); ?>;
+                        </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran servicios disponibles...</label>
                     <?php } ?>
@@ -250,7 +264,8 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                     <thead>
                         <tr>
                             <th>Servicio</th>
-                            <th>Dias</th>
+                            <th>Duración</th>
+                            <th>Tip. Duración</th>
                             <th>Precio Unitario</th>
                             <th>Subtotal</th>
                             <th>Acciones</th>
@@ -267,6 +282,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                                 <tr>
                                     <td><?php echo $d['ps_descrip']; ?></td>
                                     <td><?php echo $d['dias']; ?></td>
+                                    <td><?php echo $d['td_descrip']; ?></td>
                                     <td><?php echo $d['precio']; ?></td>
                                     <td><?php echo $d['precio'] * $d['dias']; ?></td>
                                     <td>

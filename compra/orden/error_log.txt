@@ -9,3 +9,7 @@
 [27-Dec-2024 17:38:30 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
 [30-Dec-2024 01:37:12 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
 [30-Dec-2024 01:43:29 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
+[06-Sep-2025 01:22:11 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
+[06-Sep-2025 12:09:46 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
+[06-Sep-2025 12:10:07 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31
+[07-Sep-2025 20:33:25 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\compra\orden\grabar.php on line 31

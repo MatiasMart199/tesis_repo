@@ -123,6 +123,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_cp = '0';
@@ -132,12 +152,25 @@ function grabar(){
     if(operacion == '1' || operacion == '2' || operacion == '3' || operacion == '4'){
         id_cp = $("#id_cp").val();
         cp_fecha_aprob = $("#cp_fecha_aprob").val();
+
+        if (!validarCampos([
+            {id: "#id_cp", nombre: "Codigo"},
+            {id: "#cp_fecha_aprob", nombre: "Fecha de aprobación"}
+            ])) {
+                return; // ❌ corta si falta un campo
+            }
     }
     if(operacion == '5'){
         id_cp = $("#id_cp").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
-        //item_precio = 0;$("#agregar_precio").val();
+        if (!validarCampos([
+            {id: "#agregar_id_item", nombre: "Item"},
+            {id: "#agregar_cantidad", nombre: "Cantidad"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '6'){
         id_cp = $("#id_cp").val();
@@ -184,3 +217,16 @@ function postgrabar(operacion){
         $("#btn-panel-pedidos").click();
     }
 }
+
+function stock_actual(){
+    const item = document.getElementById('agregar_id_item');
+    const stockInput = document.getElementById('stock_actual');
+    const selectedItemId = parseInt(item.value);
+    const itemStock = stock.find(s => parseInt(s.id_item) === selectedItemId);
+    if (itemStock) {
+        stockInput.value = itemStock.stock_cantidad;
+    } else {
+        stockInput.value = '0';
+    }
+ }
+

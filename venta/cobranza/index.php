@@ -38,6 +38,7 @@
                     <input type="hidden" id="btn-panel-tarjeta" data-toggle="modal" data-target="#panel-tarjeta">
                     <input type="hidden" id="btn-panel-transferencia" data-toggle="modal" data-target="#panel-transferencia">
                     <input type="hidden" id="btn-panel-cuentas" data-toggle="modal" data-target="#panel-cuentas">
+                    <input type="hidden" id="btn-panel-modificar" data-toggle="modal" data-target="#panel-modificar">
                   </div>
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -68,15 +69,15 @@
                     </div>
                 </div>
             </section>
-            <div class="modal fade" id="panel-detalle">
-                
-            </div>
+            <div class="modal fade" id="panel-detalle"></div>
+            <div class="modal fade" id="panel-modificar"></div>
 
             <!-- PANELES COBROS -->
              <div class="modal fade" id="panel-cheque"></div>
              <div class="modal fade" id="panel-tarjeta"></div>
              <div class="modal fade" id="panel-transferencia"></div>
              <div class="modal fade" id="panel-cuentas"></div>
+
         </div>
         <footer class="main-footer">
           <strong>Copyright &copy; <?php echo date('Y'); ?> <a href="#">TESIS</a></strong>

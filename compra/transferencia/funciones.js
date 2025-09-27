@@ -128,6 +128,26 @@ function cancelar() {
     mensaje("CANCELADO", "error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar() {
     var operacion = $("#operacion").val();
     var id_tra = '0';
@@ -156,12 +176,29 @@ function grabar() {
         id_chofer = $("#id_chofer").val();
         observacion = $("#observacion").val();
         //console.log(id_tra, tra_fecha_elabo, tra_fecha_salida, tra_fecha_recep, id_sucursal_ori, id_sucursal_des, id_deposito_ori, id_deposito_des, id_vehiculo, id_chofer, observacion);
+        if (!validarCampos([
+            { id: "#tra_fecha_elabo", nombre: "Fecha de elaboración" },
+            { id: "#id_sucursal_ori", nombre: "Sucursal origen" },
+            { id: "#id_deposito_ori", nombre: "Depósito origen" },
+            { id: "#id_sucursal_des", nombre: "Sucursal destino" },
+            { id: "#id_deposito_des", nombre: "Depósito destino" },
+            { id: "#id_vehiculo", nombre: "Vehículo" },
+            { id: "#id_chofer", nombre: "Chofer" }
+        ])) {
+            return; // Salimos de la función si la validación falla
+        }
     }
     if (operacion == '5') {
         id_tra = $("#id_tra").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         //item_precio = 0;$("#agregar_precio").val();
+        if (!validarCampos([
+            { id: "#agregar_id_item", nombre: "Item" },
+            { id: "#agregar_cantidad", nombre: "Cantidad" }
+        ])) {
+            return; // ❌ corta si falta un campo
+        }
     }
     if (operacion == '6') {
         id_tra = $("#id_tra").val();

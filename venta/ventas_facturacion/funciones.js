@@ -27,6 +27,7 @@ function formato_tabla(tabla, item_cantidad) {
         "lengthChange": false,
         responsive: "true",
         "iDisplayLength": item_cantidad,
+        "order": [[0, "desc"]], // 👈 Ordena la primera columna (índice 0) de mayor a menor
         language: {
             "sSearch": "Buscar: ",
             "sInfo": "Mostrando resultados del _START_ al _END_ de un total de _TOTAL_ registros",
@@ -61,6 +62,7 @@ function panel_datos(id_vc) {
         $("#panel-datos").html(resultado);
         panel_ventas();
         refrescar_select();
+        autoNroFactura();
         //tipoFactura.addEventListener("change", validarTipoFactura);
     });
 }
@@ -242,6 +244,26 @@ function cancelar() {
     mensaje("CANCELADO", "error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar() {
     var operacion = $("#operacion").val();
     var id_vc = '0';
@@ -257,6 +279,7 @@ function grabar() {
     var saldo = '0';
     var id_tim = '0';
     var id_cliente = '0';
+    var id_tm = '0';
     var id_item = '0';
     var cantidad = '0';
     var precio = '0';
@@ -271,17 +294,19 @@ function grabar() {
         vc_cuota = $("#vc_cuota").val();
         id_cliente = $("#id_cliente").val();
         id_vped = $("#id_vped").val() || 0;
+        id_tm = $("#id_tm").val();
+console.log("cliente " + id_cliente);
+        if(!validarCampos([
+            {id: '#vc_fecha', nombre: 'Fecha'},
+            {id: '#id_tim', nombre: 'Timbrado'},
+            {id: '#vc_nro_factura', nombre: 'Nro de Factura'},
+            {id: '#vc_tipo_factura', nombre: 'Tipo de Factura'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#id_tm', nombre: 'Tipo de Movimiento'}
+        ])) {
+            return; // Si algún campo no es válido, salir de la función
+        }
 
-        // iva5 = $("#total_iva5").val();
-        // iva10 = $("#total_iva10").val();
-        // exenta = $("#total_exenta").val();
-        // monto = $("#total_pagar").val();
-        // saldo = $("#total_pagar").val(); // SE RESTATA EL MONTO MENOS EL SALDO
-
-        // Solo asignamos id_cp si el input tiene un valor válido y operacion == 3
-        // if (operacion == '3' && $("#id_vped").val().trim() !== '') {
-        //     id_vped = $("#id_vped").val();
-        // }
         if (operacion == '3' && $("#total_iva5").val().trim() !== '') {
             iva5 = $("#total_iva5").val();
         }
@@ -291,31 +316,36 @@ function grabar() {
         if (operacion == '3' && $("#total_exenta").val().trim() !== '') {
             exenta = $("#total_exenta").val();
         }
-        if (operacion == '3' && $("#total_pagar").val().trim() !== '') {
-            monto = $("#total_pagar").val();
-            saldo = $("#total_pagar").val();
+        if (id_tm == '4'){
+            if (operacion == '3' && $("#total_pagar").val().trim() !== '') {
+                monto = $("#total_pagar").val();
+                saldo = $("#total_pagar").val();
+                console.log("Monto de producto " + monto);
+            }
+        } else if (id_tm == '3'){
+            if (operacion == '3' && $("#total_servicio").val().trim() !== '') {
+                monto = $("#total_servicio").val();
+                saldo = $("#total_servicio").val();
+                console.log("Monto de servicio " + monto);
+            }
         }
-        // console.log("id_vc " + id_vc);
-        // console.log("vc_fecha " + vc_fecha);
-        // console.log("vc_intervalo " + vc_intervalo);
-        // console.log("vc_nro_factura " + vc_nro_factura);
-        // console.log("id_tim " + id_tim);
-        // console.log("vc_tipo_factura " + vc_tipo_factura);
-        // console.log("vc_cuota " + vc_cuota);
-        // console.log("id_cliente " + id_cliente);
-        // console.log("id_vped " + id_vped);
-        // console.log("iva5 " + iva5);
-        // console.log("iva10 " + iva10);
-        // console.log("exenta " + exenta);
-        // console.log("monto " + monto);
-        // console.log("saldo " + saldo);
     }
     if (operacion == '5') {
         id_vc = $("#id_vc").val();
+        id_tm = $("#id_tm").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         precio = $("#agregar_precio").val();
         id_deposito = $("#ag_id_deposito").val();
+
+            if(!validarCampos([
+                {id: '#agregar_id_item', nombre: 'Artículo'},
+                {id: '#agregar_cantidad', nombre: 'Cantidad'},
+                {id: '#agregar_precio', nombre: 'Precio'}
+            ])) {
+                return; // Si algún campo no es válido, salir de la función
+            }
+
 
     }
     if (operacion == '6') {
@@ -323,10 +353,6 @@ function grabar() {
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
-        console.log(id_vc);
-        console.log(id_item);
-        console.log(cantidad);
-        console.log(precio);
     }
     if (operacion == '7') {
         id_vc = $("#id_vc").val();
@@ -335,7 +361,6 @@ function grabar() {
     if (operacion == '8') {
         id_vc = $("#id_vc").val();
         id_vped = $("#id_vped").val();
-        //id_deposito = $("#id_deposito").val();
     }
     if (operacion == '9') {
         id_vc = $("#id_vc").val();
@@ -377,6 +402,7 @@ function grabar() {
             saldo: saldo,
             id_cliente: id_cliente,
             id_tim: id_tim,
+            id_tm: id_tm,
             id_item: id_item,
             cantidad: cantidad,
             precio: precio,
@@ -387,9 +413,8 @@ function grabar() {
         console.log(resultado); // Agregado para verificar la respuesta del servidor
         //let result = JSON.parse(resultado);
         if (verificar_mensaje(resultado)) {
-              
-        }
-        postgrabar(operacion); 
+            postgrabar(operacion);
+        } 
     }).fail(function (a, b, c) {
         //console.error(b);
         console.error("Error:", a, b, c); // Error detallado
@@ -427,7 +452,7 @@ function validarTipoFactura() {
                 $('#vc_cuota').prop('disabled', false).val(''); // Habilita el campo cuota
                 $('#vc_intervalo').prop('disabled', false).val(''); // Habilita el campo
             } else {
-                $('#vc_cuota').prop('disabled', true).val('0'); // Deshabilita y limpia el campo cuota
+                $('#vc_cuota').prop('disabled', true).val('1'); // Deshabilita y limpia el campo cuota
                 $('#vc_intervalo').prop('disabled', true).val('0');
             }
         });
@@ -455,49 +480,44 @@ $(document).ready(function() {
     });
 });
 
-function llenarNroFactura() { 
-    // Obtener el ID del producto seleccionado
-    const timId = document.getElementById('id_tim').value;
-    const nroFactura = document.getElementById('vc_nro_factura');
-    // Buscar el producto correspondiente en el objeto datoStock
-    const timbradoSelect = timbrados.find(d => d.id_tim == timId);
+function autoNroFactura() {  
+    const select = document.getElementById('id_tim');
+    let option = select.options[select.selectedIndex];
 
-    if (timbradoSelect) {
-        nroFactura.value = timbradoSelect.numero_factura; // Asignar el valor del stock
-    } else {
-        nroFactura.value = ''; // Limpiar el campo si no se encuentra
-    }
+    let idTim = option.value;
+    let numFactura = option.getAttribute("data-numfactura");
+    let fechaEmision = option.getAttribute("data-emision");
+
+    document.getElementById('vc_nro_factura').value = numFactura;
+    document.getElementById('tim_fecha_inicio').value = fechaEmision;
 }
 
-$(document).ready(function() {
-    $(document).on('change', '#id_tim', function() {
-        llenarNroFactura();
-    });
-});
 
-function filtrarTimbrado() {
-    const tipoDocumento = document.getElementById('tip_doc').value;
-    const selectTimbrado = document.getElementById('id_tim');
 
-    // Limpiar las opciones actuales
-    selectTimbrado.innerHTML = '<option selected disabled>SELECCIONE EL TIMBRADO</option>';
 
-    // Filtrar timbrados según el tipo de documento seleccionado
-    timbrados
-        .filter(timbrado => timbrado.tim_documento == tipoDocumento)
-        .forEach(timbrado => {
-            const option = document.createElement('option');
-            option.value = timbrado.id_tim;
-            option.textContent = timbrado.tim_num_timbrado;
-            selectTimbrado.appendChild(option);
-        });
+// function filtrarTimbrado() {
+//     const tipoDocumento = document.getElementById('tip_doc').value;
+//     const selectTimbrado = document.getElementById('id_tim');
 
-    // Actualizar select2 si está en uso
-    //console.log(timbrados);
-}
+//     // Limpiar las opciones actuales
+//     selectTimbrado.innerHTML = '<option selected disabled>SELECCIONE EL TIMBRADO</option>';
 
-$(document).ready(function () {
-    $(document).on('change', '#tip_doc', function () {
-        filtrarTimbrado();
-    });
-});
+//     // Filtrar timbrados según el tipo de documento seleccionado
+//     timbrados
+//         .filter(timbrado => timbrado.tim_documento == tipoDocumento)
+//         .forEach(timbrado => {
+//             const option = document.createElement('option');
+//             option.value = timbrado.id_tim;
+//             option.textContent = timbrado.tim_num_timbrado;
+//             selectTimbrado.appendChild(option);
+//         });
+
+//     // Actualizar select2 si está en uso
+//     //console.log(timbrados);
+// }
+
+// $(document).ready(function () {
+//     $(document).on('change', '#tip_doc', function () {
+//         filtrarTimbrado();
+//     });
+// });

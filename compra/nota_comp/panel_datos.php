@@ -40,6 +40,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                 <select class="select2" id="not_tipo_nota">
                     <option value="CREDITO">CRÉDITO</option>
                     <option value="DEBITO">DEBITO</option>
+                    <option value="DEBITO">REMISION</option>
                 </select>
             </div>
 
@@ -114,6 +115,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                         <option value="<?= $cabecera[0]['not_tipo_nota']; ?>" selected="true" disabled="disabled"><?= $cabecera[0]['not_tipo_nota']; ?></option>
                         <option value="CREDITO">CRÉDITO</option>
                         <option value="DEBITO">DEBITO</option>
+                        <option value="DEBITO">REMISION</option>
                     </select>
                 </div>
 

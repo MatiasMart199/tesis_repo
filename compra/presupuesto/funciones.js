@@ -186,6 +186,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     let operacion = $("#operacion").val();
     let id_cpre = '0';
@@ -210,29 +230,40 @@ function grabar(){
             id_cp = $("#id_cp").val();
         }
         
-        console.log(id_cpre);
-        console.log(cpre_fecha);
-        console.log(cpre_validez);
-        console.log(cpre_numero);
-        console.log(cpre_observacion);
-        console.log(id_proveedor);
-        console.log(id_cp);
+        if(!validarCampos([
+            {id: "#cpre_fecha", nombre: "Fecha"},
+            {id: "#cpre_validez", nombre: "fecha de Validez"},
+            {id: "#cpre_numero", nombre: "Número de proveedor"},
+            {id: "#id_proveedor", nombre: "Proveedor"}
+        ])){
+            return; // Salimos de la función si la validación falla
+        }
+        // console.log("id_cp "+id_cp);
     }
     if(operacion == '5'){
         id_cpre = $("#id_cpre").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
         precio = $("#agregar_precio").val();
+        
+        if (!validarCampos([
+            {id: "#agregar_id_item", nombre: "Item"},
+            {id: "#agregar_cantidad", nombre: "Cantidad"},
+            {id: "#agregar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '6'){
         id_cpre = $("#id_cpre").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
-        console.log("id_cpre "+id_cpre);
-        console.log("id_item "+ id_item);
-        console.log("cantidad "+cantidad);
-        console.log("precio "+precio);
+        // console.log("id_cpre "+id_cpre);
+        // console.log("id_item "+ id_item);
+        // console.log("cantidad "+cantidad);
+        // console.log("precio "+precio);
     }
     if(operacion == '7'){
         id_cpre = $("#id_cpre").val();

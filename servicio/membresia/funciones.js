@@ -2,8 +2,6 @@
 $(function(){
     panel_membresia();
     panel_datos(-1);
-    
-    
 });
 
 function refrescar_select(){
@@ -101,9 +99,13 @@ function modificar_detalle_ins(id_mem, id_plan_servi){
 }
 
 function modalSecund(){
+    let id_cliente = $('#id_cliente').val();
     $.ajax({
         type:"POST",
-        url:"./panel_secundario.php"
+        url:"./panel_secundario.php",
+        data:{
+            id_cliente: id_cliente
+        }
      // ejecuta el llamado
     }).done(function(resultado){
         $("#panel-secund").html(resultado);
@@ -188,6 +190,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_mem = '0';
@@ -205,13 +227,24 @@ function grabar(){
         mem_vence = $("#mem_vence").val();
         mem_observacion = $("#mem_observacion").val();
         id_cliente = $("#id_cliente").val();
-        
+        //if (operacion == '3' && $("#id_inscrip_f").val().trim() !== '') {
+        id_inscrip = $("#id_inscrip_f").val();
+        //}
+        console.log(id_inscrip);
+        if(!validarCampos([
+            {id:"#mem_fecha", nombre:"Fecha Inicio"},
+            {id:"#mem_vence", nombre:"Fecha Vence"},
+            {id:"#id_cliente", nombre:"Cliente"}])){return;}
     }
     if(operacion == '5'){
         id_mem = $("#id_mem").val();
         id_plan_servi = $("#agregar_id_plan_servi").val();
-        dias = $("#agregar_dias").val();
+        dias = $("#agregar_dia").val();
         precio = $("#agregar_precio").val();
+        if(!validarCampos([
+            {id:"#agregar_id_plan_servi", nombre:"Plan Servicio"},
+            {id:"#agregar_dia", nombre:"Días"},
+            {id:"#agregar_precio", nombre:"Precio"}])){return;}
     }
     if(operacion == '6'){
         id_mem = $("#id_mem").val();
@@ -260,9 +293,9 @@ function grabar(){
         }
     }).done(function(resultado){
         if(verificar_mensaje(resultado)){
-            //postgrabar(operacion);
+            postgrabar(operacion);
         }
-        postgrabar(operacion);
+        //postgrabar(operacion);
     }).fail(function(a,b,c){
         console.error("Error:", a, b, c);
     });
@@ -285,7 +318,7 @@ function postgrabar(operacion){
     }
     if(operacion == '3' || operacion == '4'){
         panel_datos(-1);
-    
+        //$("#btn-panel-membresia").click();
     }
 }
 
@@ -299,9 +332,53 @@ function autoCompletePrecio(){
     });
 }
 
+function autCompletarInscripcion(){
+    let id_cliente = document.getElementById('id_cliente').value;
+    let id_inscrip = document.getElementById('id_inscrip_f');
+    let selected = inscripcion.find(ins => ins.id_cliente == id_cliente).id_inscrip;
+    if(selected){
+        id_inscrip.value = selected;
+    }
+}
+
+$(document).ready(function(){
+    $(document).on('change', '#id_cliente', function() {
+        //autCompletaEdad();
+        autCompletarInscripcion();
+    });
+});
+
     // document.getElementById('agregar_id_plan_servi').addEventListener('change', function() {
     //     const selectOption = this.options[this.selectedIndex];
-    //     const precio = selectOption.getAttribute('data-precio');
+    //     const precio = selectOptin.getAttribute('data-precio');
     //     document.getElementById('agregar_precio').value = precio;
     // });    
 
+function autCompletaPromo(){
+    let id_plan_servi = document.getElementById('agregar_id_plan_servi').value;
+    let promociones = document.getElementById('promociones');
+    let plan = articulos.find(p => p.id_plan_servi == id_plan_servi).pro_nombre;
+    if (plan) {
+        promociones.value = plan;
+    } else {
+        promociones.value = 'SIN PROMOCIÓN';
+    }
+}
+
+function autCompletaDuracion(){
+    let id_plan_servi = document.getElementById('agregar_id_plan_servi').value;
+    let dia = document.getElementById('agregar_dia');
+    let duracion = articulos.find(p => p.id_plan_servi == id_plan_servi).td_duracion;
+    if (duracion) {
+        dia.value = duracion;
+    } else {
+        dia.value = '0';
+    }
+}
+
+$(document).ready(function(){
+    $(document).on('change', '#agregar_id_plan_servi', function() {
+        autCompletaPromo();
+        autCompletaDuracion();
+    });
+});

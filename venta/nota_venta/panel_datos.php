@@ -6,11 +6,14 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 
-$sucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
+//$sucursal = pg_fetch_all(pg_query($conn, "SELECT suc_nombre FROM sucursales WHERE id_sucursal=$id_sucursal;"));
+
+$motivos = pg_fetch_all(pg_query($conn, "SELECT * FROM tipos_movimientos WHERE estado = 'ACTIVO';"));
 
 $ventas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab 
                                                     WHERE estado = 'CONFIRMADO';"));
 
+$timbrados = pg_fetch_all(pg_query($conn, "SELECT * FROM v_timbrados WHERE estado = 'ACTIVO' and id_tim = 4 or id_tim = 5;"));
 
 if ($id_not == '-1') { //CUANDO SE RESETEA
 ?>
@@ -20,57 +23,72 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card card-primary">
         <div class="card-header text-center elevation-3">
-        Datos de la Nota
+            Datos de la Nota
         </div>
         <div class="card-body">
             <input type="hidden" value="0" id="id_not">
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label>Sucursal</label>
-                    <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+            <input type="text" value="0" id="id_tim" hidden>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Sucursal</label>
+                        <input type="text" value="<?= $_SESSION['suc_nombre']; ?>" class="form-control" disabled>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Fecha Elaboracion</label>
-                <input type="datetime" value="<?= date('Y-m-d H:i:s'); ?>" class="form-control" id="not_fecha_elab" disabled>
-            </div>
 
-            <div class="form-group">
-                <label>Tipo de Nota</label>
-                <select class="select2" id="not_tipo_nota">
-                    <option value="CREDITO">CRÉDITO</option>
-                    <option value="DEBITO">DEBITO</option>
-                    <option value="REMISION">REMISION</option>
-                </select>
-            </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nro de Documento</label>
+                        <input type="text" value="" class="form-control" id="not_nro_documento" disabled>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Fecha de la Factura</label>
+                    <input type="datetime" value="<?= date('Y-m-d H:i:s'); ?>" class="form-control" id="not_fecha_emis" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Fecha de Emision</label>
+                    <input type="date" value="<?= date('Y-m-d'); ?>" class="form-control" id="not_fecha_elab" disabled>
+                </div>
 
-            <div class="form-group">
-                <label>Nro. Factura</label>
-                <select class="select2" id="id_vc" onchange="autollenar()">
-                    <option selected="true" disabled="disabled">Seleccione Factura</option>
-                    <?php foreach ($ventas as $a) { ?>
-                        <option value="<?php echo $a['id_vc']; ?>"><?= $a['vc_nro_factura']; ?></option>
-                    <?php } ?>
-                </select>
-            </div>
+                <div class="form-group col-md-6">
+                    <label>Tipo de Nota</label>
+                    <select class="select2" id="not_tipo_nota">
+                        <option selected="true" disabled="disabled">Seleccione Tipo de Nota</option>
+                        <option value="CREDITO">CRÉDITO</option>
+                        <option value="DEBITO">DEBITO</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label>Fecha Emision</label>
-                <input type="date" value="<?= date('Y-m-d'); ?>" class="form-control" id="not_fecha_emis" disabled>
-            </div>
+                <div class="form-group col-md-6">
+                    <label>Motivos</label>
+                    <select class="select2" id="id_tm">
+                        <option selected="true" disabled="disabled">Seleccione un motivo</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label>Cliente</label>
-                <select class="select2" id="id_cliente" disabled>
-                    <option value="" disabled="disabled">Seleccione Proveedor</option>
-                </select>
-            </div>
+                <div class="form-group col-md-6">
+                    <label>Nro. Factura</label>
+                    <select class="select2" id="id_vc" onchange="autollenar()">
+                        <option selected="true" disabled="disabled">Seleccione Factura</option>
+                        <?php foreach ($ventas as $a) { ?>
+                            <option value="<?php echo $a['id_vc']; ?>"><?= $a['vc_nro_factura']; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                    <label>Observación</label>
+                <div class="form-group col-md-6">
+                    <label>Cliente</label>
+                    <select class="select2" id="id_cliente" disabled>
+                        <option value="" disabled="disabled">Seleccione Proveedor</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label>Concepto</label>
                     <textarea class="form-control" id="not_observacion"></textarea>
                 </div>
-
+            </div>
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                 <button class="btn btn-success" onclick="agregar_grabar();"><i class="fa fa-save"></i> Grabar</button>
@@ -78,6 +96,8 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
         </div>
     </div>
     <script>
+        const timbradoFiltro = <?= json_encode($timbrados); ?>;
+        const motivosFiltro = <?= json_encode($motivos); ?>;
         autollenar();
     </script>
 <?php
@@ -99,54 +119,85 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                 Datos de la Nota
             </div>
             <div class="card-body">
-                <input type="hidden" value="<?php echo $cabecera[0]['id_not']; ?>" id="id_not">
+                <input type="hidden" value="<?= $cabecera[0]['id_not']; ?>" id="id_not">
                 <input type="hidden" value="0" id="eliminar_id_item">
+                <input type="hidden" value="<?= $cabecera[0]['id_tim']; ?>" id="id_tim">
+                <div class="row">
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        <label>Sucursal</label>
-                        <input type="text" value="<?= $sucursal[0]['suc_nombre']; ?>" class="form-control" disabled>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Sucursal</label>
+                            <input type="text" value="<?= $cabecera[0]['suc_nombre']; ?>" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nro de Documento</label>
+                            <input type="text" value="<?= $cabecera[0]['not_nro_documento']; ?>" class="form-control" id="not_nro_documento" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Fecha de la Factura</label>
+                            <input type="date" value="<?= $cabecera[0]['vc_fecha']; ?>" class="form-control" id="not_fecha_emis" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Fecha de Emision</label>
+                            <input type="date" value="<?= $cabecera[0]['f_sin_hora']; ?>" class="form-control" id="not_fecha_elab" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Tipo de Nota</label>
+                            <select class="select2" id="not_tipo_nota" disabled>
+                                <option value="<?= $cabecera[0]['not_tipo_nota']; ?>" selected="true"><?= $cabecera[0]['not_tipo_nota']; ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Motivos</label>
+                            <select class="select2" id="id_tm" disabled>
+                                <option value="<?= $cabecera[0]['id_tm']; ?>" selected="true"><?= $cabecera[0]['tm_descrip']; ?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-5">
+                        <label>Nro. Factura</label>
+                        <select class="select2" id="id_vc" disabled>
+                            <option selected="true" value="<?= $cabecera[0]['id_vc']; ?>"><?= $cabecera[0]['vc_nro_factura']; ?></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-5">
+                        <label>Cliente</label>
+                        <select class="select2" id="id_cliente" disabled>
+                            <option value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente']; ?></option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>Cuotas</label>
+                            <input type="text" value="<?= $cabecera[0]['vc_cuota']; ?>" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label>Intervalos</label>
+                            <input type="text" value="<?= $cabecera[0]['vc_intervalo']; ?>" class="form-control"  disabled>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label>Concepto</label>
+                        <textarea class="form-control" id="not_observacion"><?= $cabecera[0]['not_observacion']; ?></textarea>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label>Fecha Elaboracion</label>
-                    <input type="datetime" value="<?= $cabecera[0]['not_fecha_elab']; ?>" class="form-control" id="not_fecha_elab" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label>Tipo de Nota</label>
-                    <select class="select2" id="not_tipo_nota">
-                        <option value="<?= $cabecera[0]['not_tipo_nota']; ?>" selected="true" disabled="disabled"><?= $cabecera[0]['not_tipo_nota']; ?></option>
-                        <option value="CREDITO">CRÉDITO</option>
-                        <option value="DEBITO">DEBITO</option>
-                        <option value="REMISION">REMISION</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Nro. Factura</label>
-                    <select class="select2" id="id_vc" disabled>
-                        <option selected="true" value="<?= $cabecera[0]['id_vc']; ?>"><?= $cabecera[0]['vc_nro_factura']; ?></option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Fecha Emision</label>
-                    <input type="datetime" value="<?= $cabecera[0]['not_fecha_emis']; ?>" class="form-control" id="not_fecha_emis" disabled>
-                </div>
-
-                <div class="form-group">
-                    <label>Cliente</label>
-                    <select class="select2" id="id_cliente" disabled>
-                        <option value="<?= $cabecera[0]['id_cliente']; ?>"><?= $cabecera[0]['cliente']; ?></option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Observación</label>
-                    <textarea class="form-control" id="not_observacion"><?= $cabecera[0]['not_observacion']; ?></textarea>
-                </div>
-
                 <div class="form-group">
                     <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
                     <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
@@ -157,23 +208,19 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                 </div>
             </div>
         </div>
-        <div class="card card-primary col-8">
+        <div class="card card-primary col-9">
             <div class="card-header text-center elevation-3">
                 Detalles de la Nota
             </div>
-
-            <?php
-
-
-            ?>
             <div class="card-body">
                 <?php if (!empty($detalles)) { ?>
                     <table class="table table-bordered" style="font-size: 12px;">
                         <thead>
                             <tr>
-                                <th>Producto</th>
+                                <th>Detalle</th>
                                 <th>Cant</th>
                                 <th>P.Unit</th>
+                                <th>Stock</th>
                                 <th>Monto</th>
                                 <th>SubTotal</th>
                                 <th>Exenta</th>
@@ -205,7 +252,9 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                                     <td><?= $d['mar_descrip'] . ": " . $d['item_descrip']; ?></td>
                                     <td><?= $d['cantidad']; ?></td>
                                     <td><?= number_format($d['precio'], 0, ",", ".") ?></td>
-                                    <td><?= number_format($d['monto'], 0, ",", ".") ?></td>
+                                    <td><?= $d['stock_cantidad'] ?></td>
+                                    <td><?= number_format($d['monto'], 0, ",", ".") 
+                                                ?></td>
                                     <td><?= number_format($precioTotal, 0, ",", ".") ?></td>
                                     <td><?= ($iva == 3) ? number_format($d['totalexenta'], 0, ",", ".") : '0'; ?></td>
                                     <td><?= ($iva == 1) ? number_format($d['totaliva5'], 0, ",", ".") : '0'; ?></td>
@@ -217,10 +266,10 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                                         <?php } ?>
                                     </td>
                                 </tr>
-                            <?php 
-                            
-                            $sumaIva += $d['totaliva5'] + $d['totaliva10'];    
-                        } 
+                            <?php
+
+                                $sumaIva += $d['totaliva5'] + $d['totaliva10'];
+                            }
                             ?>
                         </tbody>
                         <tfoot>
@@ -243,9 +292,9 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from comp_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . ") AND id_tip_item = 7 ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items_conceptos WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from vent_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . ") AND id_tip_item = 7 AND item_concepto =  '" . $cabecera[0]['not_tipo_nota'] . "' ORDER BY item_descrip;"))
         ?>
-            <div class="card card-primary col-4">
+            <div class="card card-primary col-3">
                 <div class="card-header text-center elevation-3">
                     Agregar Concepto
                 </div>
@@ -259,9 +308,9 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" hidden>
                             <label>Cantidad</label>
-                            <input type="number" value="" class="form-control" id="agregar_cantidad">
+                            <input type="number" value="0" class="form-control" id="agregar_cantidad">
                         </div>
 
                         <div class="form-group">

@@ -123,6 +123,26 @@ function cancelar() {
     mensaje("CANCELADO", "error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar() {
     var operacion = $("#operacion").val();
     var id_caju = '0';
@@ -138,6 +158,13 @@ function grabar() {
         id_caju = $("#id_caju").val();
         aju_fecha = $("#aju_fecha").val();
         aju_observacion = $("#aju_observacion").val();
+
+        if (!validarCampos([
+            { id: "#aju_fecha", nombre: "Fecha" },
+            { id: "#aju_observacion", nombre: "Observación" }
+        ])) {
+            return; // Salimos de la función si la validación falla
+        }
     }
     if (operacion == '5') {
         id_caju = $("#id_caju").val();
@@ -148,6 +175,15 @@ function grabar() {
         mot_descrip = $("#agregar_mot_descrip").val();
         mot_tipo_ajuste = $("#agregar_mot_tipo_ajuste").val();
         //item_precio = 0;$("#agregar_precio").val();
+        if (!validarCampos([
+            { id: "#agregar_id_item", nombre: "Item" },
+            { id: "#agregar_cantidad", nombre: "Cantidad" },
+            { id: "#agregar_id_deposito", nombre: "Depósito" },
+            { id: "#agregar_mot_tipo_ajuste", nombre: "Tipo de ajuste" },
+            { id: "#agregar_mot_descrip", nombre: "Motivo" }
+        ])) {
+            return; // ❌ corta si falta un campo
+        }
     }
     if (operacion == '6') {
         id_caju = $("#id_caju").val();
