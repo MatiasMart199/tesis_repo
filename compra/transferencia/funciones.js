@@ -192,10 +192,12 @@ function grabar() {
         id_tra = $("#id_tra").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
+        id_deposito_des = $("#id_deposito_des").val();
         //item_precio = 0;$("#agregar_precio").val();
         if (!validarCampos([
             { id: "#agregar_id_item", nombre: "Item" },
-            { id: "#agregar_cantidad", nombre: "Cantidad" }
+            { id: "#agregar_cantidad", nombre: "Cantidad" },
+            { id: "#id_deposito_des", nombre: "Depósito destino" }
         ])) {
             return; // ❌ corta si falta un campo
         }

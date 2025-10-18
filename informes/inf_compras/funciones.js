@@ -256,6 +256,8 @@ function mostrarDatosEnTabla(datos) {
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>N° Factura</th>
+                    <th>Tipo Factura</th>
                     <th>Proveedor</th>
                     <th>Fecha</th>
                     <th>Monto Total</th>
@@ -280,6 +282,8 @@ function mostrarDatosEnTabla(datos) {
             lineas += `
                 <tr>
                     <td>${escapeHtml(rs.id_cc)}</td>
+                    <td>${escapeHtml(rs.cc_nro_factura || '')}</td>
+                    <td>${escapeHtml(rs.cc_tipo_factura)}</td>
                     <td>${escapeHtml(rs.proveedor)}</td>
                     <td>${escapeHtml(rs.fecha)}</td>
                     <td>${escapeHtml(rs.monto_total)}</td>

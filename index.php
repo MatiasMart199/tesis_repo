@@ -182,8 +182,11 @@ unset($_SESSION['mensaje']);
     </div>
     <?php if ($mensaje): ?>
         <script src="/tesis/estilo/plugins/sweetalert2/sweetalert2.min.js"></script>
+		<!-- <script src="/tesis/referenciales/accesos/funciones.js"></script> -->
         <script>
             Swal.fire({ icon: 'error', title: 'Error', text: '<?= htmlspecialchars($mensaje) ?>' });
+
+			
         </script>
     <?php endif; ?>
 </body>

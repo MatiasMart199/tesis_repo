@@ -1,0 +1,15 @@
+[25-Feb-2025 00:06:44 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 48
+[25-Feb-2025 01:32:09 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 48
+[25-Sep-2025 02:43:22 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 47
+[25-Sep-2025 02:45:01 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 47
+[27-Sep-2025 11:47:29 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 49
+[27-Sep-2025 11:55:31 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 49
+[27-Sep-2025 11:55:50 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_venta\grabar.php on line 49
+[01-Oct-2025 18:37:54 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:40:17 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:41:21 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:42:09 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:42:14 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:42:43 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:45:32 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51
+[01-Oct-2025 18:49:10 UTC] PHP Deprecated:  pg_last_error(): Automatic fetching of PostgreSQL connection is deprecated in C:\laragon\www\tesis\venta\nota_remision\grabar.php on line 51

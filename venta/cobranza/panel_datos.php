@@ -94,8 +94,9 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_cab WHERE id_cob = (select max(id_cob) from vent_cobros_cab where id_sucursal = $id_sucursal);"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $cabeceras = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_cab WHERE id_cob = $id_cob;"));
-        $cabeceras_monto = pg_fetch_all(pg_query($conn, "SELECT total_efectivo,total_cheque,total_tarjeta,total_transfe,total_general FROM v_vent_cobros_montos WHERE id_cob = $id_cob;"));
     }
+    $cabeceras_monto = pg_fetch_all(pg_query($conn, "SELECT total_efectivo,total_cheque,total_tarjeta,total_transfe,total_general FROM v_vent_cobros_montos WHERE id_cob = ".$cabeceras[0]['id_cob'].";"));
+
     $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_det WHERE id_cob = " . $cabeceras[0]['id_cob'] . " ORDER BY fc_descrip;"));
     //$cuenta_cobrar = pg_fetch_all(pg_query($conn, "SELECT * FROM vent_cuentas_cobrar WHERE id_vc =" . $cabeceras[0]['id_vc'] . "AND id_cue NOT IN (SELECT id_cue FROM v_vent_cobros_det WHERE id_cob =" . $cabeceras[0]['id_cob'] . " );"));
     // $cuenta_cobrar = [];
@@ -174,7 +175,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
 
                     <div class="form-group col">
                         <label>Total Efectivo</label>
-                        <input type="text" value="<?= number_format($cabeceras_monto[0]['total_efectivo'], 0, ",", "."); ?>" class="form-control" id="total_efectivo" disabled>
+                        <input type="text" value="<?= number_format($cabeceras_monto[0]['total_efectivo'], 0, ",", ".") ?>" class="form-control" id="total_efectivo" disabled>
                     </div>
                     <div class="form-group col">
                         <label>Total Cheque</label>
@@ -228,6 +229,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                                 <th>Concecto</th>
                                 <th>Monto</th>
                                 <th>Mont. Efectivo</th>
+                                <th>Saldo</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -248,6 +250,7 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                                                 ?></td>
                                     <td><?php echo number_format($d['cue_monto'], 0, ",", "."); ?></td>
                                     <td><?php echo number_format($d['cob_monto_efe'], 0, ",", "."); ?></td>
+                                    <td><?php echo number_format($d['cue_saldo'], 0, ",", "."); ?></td>
                                     <td>
                                         <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning" title="Agregar forma de cobro" onclick="panel_modificar(<?= $d['id_cob'] ?>,<?= $d['id_cue'] ?>);"><i class="fa fa-credit-card"></i></button>

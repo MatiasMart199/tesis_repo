@@ -41,7 +41,8 @@ $entidad_adherida = pg_fetch_all(pg_query($conn, "SELECT * FROM v_entidades_adhe
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Monto</label>
-                            <input type="text" class="form-control" value="<?= $datos[0]['cob_monto_efe']; ?>" id="tar_monto">
+                            <input type="number" min="0" max="<?= $datos[0]['cue_saldo']; ?>" class="form-control" value="<?= $datos[0]['cue_saldo']; ?>" id="tar_monto">
+                            <small>Monto máximo permitido: <?= number_format($datos[0]['cue_saldo'], 0, ',', '.') ?> Gs.</small>
                         </div>
                     </div>
 

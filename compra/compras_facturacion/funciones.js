@@ -267,6 +267,7 @@ function grabar() {
     var operacion = $("#operacion").val();
     var id_cc = '0';
     var cc_fecha = '2023-03-03';
+    var cc_fecha_emi = '2023-03-03';
     var cc_intervalo = '0';
     var cc_nro_factura = '0';
     var cc_timbrado = '0';
@@ -381,6 +382,9 @@ function grabar() {
     if (operacion == '7') {
         id_cc = $("#id_cc").val();
         id_item = $("#eliminar_id_item").val();
+        console.log(id_cc);
+        console.log(id_item);
+        console.log(id_corden);
     }
     if (operacion == '8') {
         id_cc = $("#id_cc").val();
@@ -430,7 +434,7 @@ function grabar() {
     id_corden,
     operacion
 };
-
+//console.log("Datos a enviar:", datos);
 // Verificar si algo es null o undefined
 Object.entries(datos).forEach(([key, value]) => {
     if (value === null || value === undefined) {

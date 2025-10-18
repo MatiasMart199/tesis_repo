@@ -256,7 +256,7 @@ function mostrarDatosEnTabla(datos) {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Proveedor</th>
+                    <th>Cliente</th>
                     <th>Fecha</th>
                     <th>Monto Total</th>
                 </tr>
@@ -279,8 +279,8 @@ function mostrarDatosEnTabla(datos) {
         datos.forEach(rs => {
             lineas += `
                 <tr>
-                    <td>${escapeHtml(rs.id_cc)}</td>
-                    <td>${escapeHtml(rs.proveedor)}</td>
+                    <td>${escapeHtml(rs.id_mem)}</td>
+                    <td>${escapeHtml(rs.cliente)}</td>
                     <td>${escapeHtml(rs.fecha)}</td>
                     <td>${escapeHtml(rs.monto_total)}</td>
                 </tr>

@@ -15,7 +15,7 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
                 Agregar Detalle
             </div>
             <div class="card-body">
-            <input type="text" class="form-control" value="<?= $datos[0]['cue_monto']; ?>" id=monto hidden>
+            <input type="text" class="form-control" value="<?= $datos[0]['cue_saldo']; ?>" id=monto hidden>
             <input type="text" class="form-control" value="<?= $datos[0]['id_cue']; ?>" id=id_cue hidden>
                 <div class="row">
                     <div class="col-md-12">

@@ -2,7 +2,7 @@
 $id_cob = $_POST['id_cob'];
 $id_cue = $_POST['id_cue'];
 include '../../../Conexion.php';
-include '../../../session.php';
+include '../../../session.php'; 
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_cobros_det WHERE id_cob = $id_cob AND id_cue = $id_cue;"));
@@ -37,7 +37,8 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Inporte Efectivo</label>
-                        <input type="number" class="form-control" value="<?= $datos[0]['cob_monto_efe'];?>" id="modificar_cob_monto_efe" disabled>
+                        <input type="number" min="0" max="<?= $datos[0]['cue_saldo'];?>" class="form-control" value="<?= $datos[0]['cob_monto_efe'];?>" id="modificar_cob_monto_efe" class="form-control" step="1" disabled>
+                        <small>Monto máximo permitido: <?= number_format($datos[0]['cue_saldo'], 0, ',', '.') ?> Gs.</small>
                     </div>
                 </div>
 

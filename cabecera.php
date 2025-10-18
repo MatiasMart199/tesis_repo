@@ -1,3 +1,9 @@
+<?php
+// Obtener la URL base del sitio web
+$base_url = "http://" . $_SERVER['HTTP_HOST'] . "/tesis/";
+$ubicacion = $base_url . "listar_paginas.php";
+?>
+
 <nav class="main-header navbar navbar-expand border-bottom navbar-dark navbar-primary">
     <ul class="navbar-nav">
         <!-- Botón de Menú -->
@@ -8,6 +14,22 @@
 
     <!-- Buscador -->
     <ul class="navbar-nav ml-auto">
+
+        <!-- Example single danger button -->
+        <!-- Botón con sintaxis de AdminLTE/Bootstrap 4 -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-question-circle"></i> Ayuda
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" onclick="contacto()">Contacto</a>
+                <a class="dropdown-item" href="<?= $base_url; ?>ayuda/ManualUsuario.pdf" target="_blank">Manual de Usuario</a>
+                <a class="dropdown-item" href="<?= $base_url; ?>ayuda/ManualSeguridad.pdf" target="_blank">Manual de Seguridad</a>
+                <a class="dropdown-item" href="<?= $base_url; ?>ayuda/errores_frecue.php">Errores Frecuentes</a>
+            </div>
+        </div>
+
+
         <li class="nav-item">
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -60,20 +82,13 @@
 
 
     </ul>
-
-
-<?php 
-// Obtener la URL base del sitio web
-$base_url = "http://" . $_SERVER['HTTP_HOST'] . "/tesis/";
-$ubicacion = $base_url . "listar_paginas.php";
-?>
-
 </nav>
+
 <script>
     document.getElementById('buscador').addEventListener('input', function() {
         const filtro = this.value.trim();
         const resultContainer = document.getElementById('resultado');
-        const ubicacion = <?php echo json_encode($ubicacion); ?>
+        const ubicacion = <?= json_encode($ubicacion); ?>
 
         if (!filtro) {
             resultContainer.style.display = 'none';
@@ -95,4 +110,31 @@ $ubicacion = $base_url . "listar_paginas.php";
                 resultContainer.style.display = 'block';
             });
     });
+
+
+    function contacto() {
+        Swal.fire({
+            title: 'Contacto',
+            html: `
+                <div style="text-align: left; font-size: 16px;">
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px;">
+                            <strong>👤 Funcionario a cargo:</strong><br>
+                            <span>Juan Pérez García</span>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>📞 Teléfono:</strong><br>
+                            <a href="tel:+021567890">(021) 567 890</a>
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            <strong>📧 Correo electrónico:</strong><br>
+                            <a href="mailto:juan.perez@empresa.com.py">juan.perez@empresa.com.py</a>
+                        </li>
+                    </ul>
+                </div>
+            `,
+            confirmButtonText: 'Cerrar',
+            confirmButtonColor: '#6c757d'
+        });
+    }
 </script>

@@ -2,7 +2,7 @@
 header('Content-type: application/json; charset=utf-8');
 
 // Deshabilitar la salida de errores y registrar en archivo
-//include '../../deshabilitar_error.php';
+include '../../deshabilitar_error.php';
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();

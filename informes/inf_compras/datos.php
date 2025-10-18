@@ -16,7 +16,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin)) {
     $parametros = array($fecha_inicio, $fecha_fin);
 }
 
-$sql = "SELECT id_cc, proveedor, fecha, monto_total
+$sql = "SELECT id_cc, proveedor, fecha, monto_total, cc_tipo_factura,cc_nro_factura
         FROM v_compras_cab WHERE estado = 'CONFIRMADO' " . $filtro_fecha . " 
         ORDER BY id_cc ASC";
 
@@ -31,6 +31,8 @@ while ($row = pg_fetch_assoc($result)) {
     // ✅ CORRECTO: Mantener claves asociativas
     $data[] = [
         'id_cc' => $row['id_cc'],
+        'cc_nro_factura' => $row['cc_nro_factura'],
+        'cc_tipo_factura' => $row['cc_tipo_factura'],
         'proveedor' => $row['proveedor'],
         'fecha' => $row['fecha'],
         'monto_total' => number_format($row['monto_total'], 0, ',', '.')

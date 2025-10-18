@@ -4,7 +4,7 @@ include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 $id_sucursal = $_SESSION['id_sucursal'];
-$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_nota_cab WHERE id_sucursal = $id_sucursal ORDER BY id_not;"));
+$cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_nota_cab WHERE id_sucursal = $id_sucursal AND not_tipo_nota ='CREDITO' OR not_tipo_nota ='DEBITO' ORDER BY id_not;"));
 ?>
 <button class="btn btn-success" onclick="agregar();"><i class="fa fa-plus-circle"></i> Agregar</button>
 <table width="100%" class="table table-bordered" id="tabla_panel_notas">

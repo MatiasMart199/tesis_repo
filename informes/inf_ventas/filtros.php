@@ -36,7 +36,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Proveedor</th>
+                        <th>N° Factura</th>
+                        <th>Cliente</th>
                         <th>Fecha</th>
                         <th>Monto Total</th>
                     </tr>

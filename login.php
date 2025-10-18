@@ -81,8 +81,8 @@
 // } 
 
 
-require_once 'Conexion.php';
-session_start();
+//require_once 'Conexion.php';
+//session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -94,80 +94,103 @@ require 'phpmailer/SMTP.php';
 //Create an instance; passing `true` enables exceptions
 $mail = new PHPMailer(true);
 
+require "{$_SERVER['DOCUMENT_ROOT']}/tesis/Conexion.php";
+//require "{$_SERVER['DOCUMENT_ROOT']}/tesis/session.php";
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
     $usuario = trim($_POST['usuario']);
     $contrasena = trim($_POST['contrasena']);
-    $hashedPassword = md5($contrasena); // Hash de la contraseña con md5
+    $hashedPassword = md5($contrasena);
 
     $conexion = new Conexion();
     $conn = $conexion->getConexion();
 
-    $query = "SELECT id_usuario, usu_contrasena, per_correo FROM v_usuarios WHERE usu_login = $1";
+    // 🔹 Obtener IP del cliente
+    function obtenerIP() {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) return $_SERVER['HTTP_CLIENT_IP'];
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    }
+
+    $ip = obtenerIP();
+    $fecha = date('Y-m-d H:i:s');
+    $id_usuario = null;
+    $usu_login = null;
+
+    $query = "SELECT id_usuario, usu_contrasena, per_correo, usu_login FROM v_usuarios WHERE usu_login = $1";
     $result = pg_query_params($conn, $query, [$usuario]);
 
     if ($result && $user = pg_fetch_assoc($result)) {
         if ($hashedPassword === $user['usu_contrasena']) {
-            $_SESSION['id_usuario'] = $user['id_usuario'];
+            // ✅ Login correcto
+            $id_usuario = $user['id_usuario'];
+            $usu_login = $user['usu_login'];
+            $_SESSION['id_usuario'] = $id_usuario;
             $_SESSION['per_correo'] = $user['per_correo'];
-            
+
+            // 🔸 Registrar acceso correcto
+            pg_query_params($conn,
+                "SELECT sp_acceso($1, $2, $3, $4, $5, $6)",
+                [$id_usuario, $usuario, $contrasena, $ip, $fecha, $usu_login]
+            );
+
             $vericationCode = rand(100000, 999999);
             $expirationTime = date("Y-m-d H:i:s", strtotime('+10 minutes'));
 
-            //Guardar codigo para verificar en la base de datos
             $queryUpdate = "UPDATE auth_2fa SET codigo = $1, fecha_expiracion = $2 WHERE id_usuario = $3";
-            pg_query_params($conn, $queryUpdate, [$vericationCode, $expirationTime, $_SESSION['id_usuario']]);
-
-            // if (!isset($_SESSION['per_correo']) || empty($_SESSION['per_correo'])) {
-            //    $_SESSION['mensaje'] = "Error: La dirección de correo no está configurada correctamente.";
-            // } else {
-            //     $_SESSION['mensaje'] = "Si llega el correo.";
-            // }
-
-            // Enviar el código al correo del usuario (aquí usarías una función de envío de correo)
+            pg_query_params($conn, $queryUpdate, [$vericationCode, $expirationTime, $id_usuario]);
 
             try {
-                //Server settings
-                $mail->SMTPDebug = SMTP::DEBUG_OFF;                      //Enable verbose debug output
-                $mail->isSMTP();                                            //Send using SMTP
-                $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-                $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                $mail->Username   = 'laragonmathias@gmail.com';                     //SMTP username
-                $mail->Password   = 'vsxf eofx zsgj pcsd';                               //SMTP password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
-                $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-                //Recipients
+                $mail->SMTPDebug = SMTP::DEBUG_OFF;
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'laragonmathias@gmail.com';
+                $mail->Password = 'crvu yisr zyai jhka';
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
                 $mail->setFrom('laragonmathias@gmail.com', 'ENERGYM');
-                $mail->addAddress($_SESSION['per_correo']);     //Add a recipient
-                
-                 // Ajustar codificación
+                $mail->addAddress($_SESSION['per_correo']);
                 $mail->CharSet = 'UTF-8';
                 $mail->Encoding = 'base64';
-
-                //Content
-                $mail->isHTML(true);                                  //Set email format to HTML
+                $mail->isHTML(true);
                 $mail->Subject = 'Código de Verificación de ENERGYM';
                 $mail->Body = 'Tu código de verificación es: ' . $vericationCode;
-
                 $mail->send();
-                //$_SESSION['mensaje'] = "Se envió el código a tu correo.";
             } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                echo "Mailer Error: {$mail->ErrorInfo}";
             }
 
-            // Redirigir a la página de verificación
             header('Location: /tesis/autentificacion/index.php');
             exit();
         }
+
+        // ❌ Contraseña incorrecta
+        pg_query_params($conn,
+            "SELECT sp_acceso(NULL, $1, $2, $3, $4, $5)",
+            [$usuario, $contrasena, $ip, $fecha, null]
+        );
         $_SESSION['mensaje'] = "La contraseña no coincide.";
+
     } else {
+        // ❌ Usuario no existe
+        pg_query_params($conn,
+            "SELECT sp_acceso(NULL, $1, $2, $3, $4, $5)",
+            [$usuario, $contrasena, $ip, $fecha, null]
+        );
         $_SESSION['mensaje'] = "No existe el usuario.";
     }
+
     header('Location: /tesis/index.php');
     exit();
+
 } else {
     $_SESSION['mensaje'] = "Credenciales incompletas.";
     header('Location: /tesis/index.php');
     exit();
 }
+?>

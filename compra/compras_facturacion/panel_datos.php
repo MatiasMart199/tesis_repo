@@ -316,12 +316,13 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
             </div>
             <div class="card-body">
                 <?php if (!empty($compras_detalles)) { ?>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered" style="font-size: 14px;">
                         <thead>
                             <tr>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
                                 <th>Stock</th>
+                                <th>Deposito</th>
                                 <th>Precio Unitario</th>
                                 <th>Subtotal</th>
                                 <th>Acciones</th>
@@ -340,6 +341,9 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                                     </td>
                                     <td>
                                         <?php echo $d['stock_cantidad']; ?>
+                                    </td>
+                                    <td>
+                                        <?php echo $d['dep_descrip']; ?>
                                     </td>
                                     <td>
                                         <?php echo $d['precio']; ?>
@@ -388,7 +392,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                 </div>
                 <div class="card-body">
                     <?php if (!empty($articulos) && !empty($depositos)) { ?>
-                        <div class="form-group">
+                        <div class="form-group" hidden>
                             <label>Depositos</label>
                             <select class="select2" id="ag_id_deposito">
                                 <!-- <option selected="true" disabled="disabled"></option> -->
@@ -433,7 +437,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
                         </div>
                         <!-- ALMACENAR ARTICULOS Y CONVERTIR A JSON -->
                         <script> 
-                            const articulos = JSON.parse('<?php echo json_encode($articulos); ?>');
+                            const articulos = <?= json_encode($articulos); ?>;
                             const stock = <?= json_encode($stock); ?>;
                         </script>
                     <?php } else { ?>

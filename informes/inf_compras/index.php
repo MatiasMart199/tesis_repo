@@ -1,7 +1,7 @@
 <?php
 include '../../Conexion.php';
 include '../../session.php';
-$_SESSION['id_pagina'] = '1';
+//$_SESSION['id_pagina'] = '1';
 //include "../../permiso.php";
 ?>
 <!DOCTYPE html>

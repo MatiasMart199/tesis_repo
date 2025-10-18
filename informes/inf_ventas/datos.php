@@ -12,13 +12,13 @@ $filtro_fecha = "";
 $parametros = [];
 
 if (!empty($fecha_inicio) && !empty($fecha_fin)) {
-    $filtro_fecha = "AND cc_fecha BETWEEN $1 AND $2";
+    $filtro_fecha = "AND vc_fecha BETWEEN $1 AND $2";
     $parametros = array($fecha_inicio, $fecha_fin);
 }
 
-$sql = "SELECT id_cc, proveedor, fecha, monto_total
-        FROM v_compras_cab WHERE estado = 'CONFIRMADO' " . $filtro_fecha . " 
-        ORDER BY id_cc ASC";
+$sql = "SELECT id_vc, cliente, fecha, monto_total,vc_nro_factura
+        FROM v_ventas_cab WHERE estado = 'CONFIRMADO' " . $filtro_fecha . " 
+        ORDER BY id_vc ASC";
 
 if (!empty($parametros)) {
     $result = pg_query_params($conn, $sql, $parametros);
@@ -30,8 +30,9 @@ $data = [];
 while ($row = pg_fetch_assoc($result)) {
     // ✅ CORRECTO: Mantener claves asociativas
     $data[] = [
-        'id_cc' => $row['id_cc'],
-        'proveedor' => $row['proveedor'],
+        'id_vc' => $row['id_vc'],
+        'vc_nro_factura' => $row['vc_nro_factura'],
+        'cliente' => $row['cliente'],
         'fecha' => $row['fecha'],
         'monto_total' => number_format($row['monto_total'], 0, ',', '.')
     ];

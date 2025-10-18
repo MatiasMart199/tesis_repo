@@ -1,6 +1,6 @@
 <?php
 header('Content-type: application/json; charset=utf-8');
-include '../../deshabilitar_error.php';
+//include '../../deshabilitar_error.php';
 include '../../Conexion.php';
 include '../../session.php';
 $conexion = new Conexion();
@@ -13,6 +13,10 @@ $id_cc = $_POST['id_cc'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
 $id_proveedor = $_POST['id_proveedor'];
+$not_vehiculo = $_POST['not_vehiculo'];
+$not_chofer = $_POST['not_chofer'];
+$not_nro_documento = $_POST['not_nro_documento'];
+$id_tm = $_POST['id_tm']; // Nuevo campo para id_tm
 $id_item = $_POST['id_item'];
 $cantidad = $_POST['cantidad'];
 $monto = $_POST['monto'];
@@ -26,6 +30,10 @@ $grabar = pg_query($conn, "SELECT sp_comp_nota($id_not,
                                                     $id_sucursal, 
                                                     $id_funcionario,
                                                     $id_proveedor, 
+                                                    '$not_vehiculo',
+                                                    '$not_chofer',
+                                                    '$not_nro_documento',
+                                                    $id_tm,
                                                     $id_item,
                                                     $cantidad, 
                                                     $monto,

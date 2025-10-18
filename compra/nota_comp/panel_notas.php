@@ -11,11 +11,12 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_nota_cab WHERE id
     <thead>
         <tr>
             <th>#</th>
+            <th>Tip. Nota</th>
             <th>Funcionario</th>
             <th>Empresa</th>
             <th>Sucursal</th>
             <th>Fecha</th>
-            <th>Fecha Documento</th>
+            <!-- <th>Fecha Docu</th> -->
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
@@ -24,11 +25,12 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_nota_cab WHERE id
         <?php if(!empty($cabecera)){ foreach($cabecera as $p){ ?>
         <tr>
             <td><?php echo $p['id_not'];?></td>
+            <td><?php echo $p['not_tipo_nota'];?></td>
             <td><?php echo $p['funcionario'];?></td>
             <td><?php echo $p['emp_denominacion'];?></td>
             <td><?php echo $p['suc_nombre'];?></td>
             <td><?php echo $p['fecha'];?></td>
-            <td><?php echo $p['fecha_docu'];?></td>
+            <!-- <td><?php //echo $p['fecha_docu'];?></td> -->
             <td><?php echo $p['estado'];?></td>
             <td>
                 <button class="btn btn-primary" onclick="datos(<?php echo $p['id_not']; ?>);"><i class="fa fa-list-alt"></i></button>

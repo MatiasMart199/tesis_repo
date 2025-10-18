@@ -10,8 +10,7 @@ $conn = $conexion->getConexion();
 
 $motivos = pg_fetch_all(pg_query($conn, "SELECT * FROM tipos_movimientos WHERE estado = 'ACTIVO';"));
 
-$ventas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab 
-                                                    WHERE estado = 'CONFIRMADO';"));
+$ventas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab WHERE estado = 'CONFIRMADO' AND id_tm = 4 ORDER BY vc_nro_factura ASC;"));
 
 $timbrados = pg_fetch_all(pg_query($conn, "SELECT * FROM v_timbrados WHERE estado = 'ACTIVO' and id_tim = 4 or id_tim = 5;"));
 

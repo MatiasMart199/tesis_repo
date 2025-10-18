@@ -18,7 +18,7 @@ $entidad_emisora = pg_fetch_all(pg_query($conn, "SELECT id_ee, ee_razon_social F
             <div class="card-body">
                 <input type="text" class="form-control" value="<?= $id_cob ?>" id=id_cob hidden>
                 <input type="text" class="form-control" value="" id=id_che hidden>
-                <input type="text" class="form-control" value="<?= $id_cue ?>" id=id_cue hidden>
+                <input type="text" class="form-control" value="<?= $datos[0]['id_cue']; ?>" id=id_cue hidden>
                 <input type="text" class="form-control" value="<?= $id_fc ?>" id=id_fc_f hidden>
                 <div class="row">
 
@@ -39,7 +39,8 @@ $entidad_emisora = pg_fetch_all(pg_query($conn, "SELECT id_ee, ee_razon_social F
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Monto</label>
-                            <input type="text" class="form-control" value="<?= $datos[0]['cob_monto_efe']; ?>" id="che_monto">
+                            <input type="number" min="0" max="<?= $datos[0]['cue_saldo']; ?>" class="form-control" value="<?= $datos[0]['cue_saldo']; ?>" id="che_monto">
+                            <small>Monto máximo permitido: <?= number_format($datos[0]['cue_saldo'], 0, ',', '.') ?> Gs.</small>
                         </div>
                     </div>
 
