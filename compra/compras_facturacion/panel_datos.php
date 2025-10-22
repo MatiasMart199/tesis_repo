@@ -144,7 +144,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 
     }
     $compras_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_detalles WHERE id_cc = $id_cc ORDER BY item_descrip, mar_descrip;"));
-    $compras_ordenes = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item, mar_descrip) * FROM v_compras_orden_factu where id_cc = $id_cc ORDER BY  id_item, mar_descrip;"));
+    $compras_ordenes = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_compras_orden_factu where id_cc = $id_cc ORDER BY  id_item;"));
     $disabled = 'disabled';
     if ($compras[0]['estado'] == 'PENDIENTE') {
         $disabled = '';

@@ -13,7 +13,7 @@ $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_clie
                                             per_edad, id_genero, gen_descrip
                                         FROM v_serv_mediciones_cab
                                         WHERE estado = 'CONFIRMADO'
-                                        ORDER BY id_cliente, cliente, per_ci;
+                                        ORDER BY id_cliente;
                                         "));
 
 $personal_trainer = pg_fetch_all(pg_query($conn, "SELECT * from  v_personal_trainers where estado = 'ACTIVO' order by personal_trainer;"));

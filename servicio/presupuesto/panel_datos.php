@@ -9,9 +9,17 @@ $conn = $conexion->getConexion();
 
 $querySucursal = pg_fetch_all(pg_query($conn, "SELECT id_sucursal, suc_nombre FROM sucursales WHERE id_sucursal = $id_sucursal;"));
 
+// $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_cliente, cliente, per_ci,
+//                                             per_edad, id_genero, gen_descrip
+//                                         FROM v_serv_mediciones_cab
+//                                         WHERE estado = 'CONFIRMADO'
+//                                         ORDER BY id_cliente, cliente, per_ci;
+//                                         "));
+
+
 $cliente = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_cliente) id_cliente, cliente, per_ci,
                                             per_edad, id_genero, gen_descrip
-                                        FROM v_serv_mediciones_cab
+                                        FROM v_servicios_inscripciones
                                         WHERE estado = 'CONFIRMADO'
                                         ORDER BY id_cliente, cliente, per_ci;
                                         "));

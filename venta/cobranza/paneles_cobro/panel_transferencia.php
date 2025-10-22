@@ -1,5 +1,6 @@
 <?php
 $id_cob = $_POST['id_cob'];
+$id_fc = $_POST['id_fc'];
 include '../../../Conexion.php';
 include '../../../session.php';
 $conexion = new Conexion();
@@ -17,7 +18,7 @@ $entidad_emisora = pg_fetch_all(pg_query($conn, "SELECT id_ee, ee_razon_social F
                 <input type="text" class="form-control" value="<?= $id_cob ?>" id=id_cob hidden>
                 <input type="text" class="form-control" value="" id=id_ctra hidden>
                 <input type="text" class="form-control" value="<?= $datos[0]['id_cue']; ?>" id=id_cue hidden>
-                <input type="text" class="form-control" value="<?= $datos[0]['id_fc']; ?>" id=id_fc_f hidden>
+                <input type="text" class="form-control" value="<?= $id_fc ?>" id=id_fc_f hidden>
                 <div class="row">
 
                     <div class="col-md-12">

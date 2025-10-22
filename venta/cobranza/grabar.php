@@ -26,6 +26,7 @@ $id_ee = $_POST['id_ee'];
 $id_ee_des = $_POST['id_ee_des'];
 $tar_nro_tarjeta = $_POST['tar_nro_tarjeta'];
 $tar_vencimiento = $_POST['tar_vencimiento'];
+$tar_autorizacion = $_POST['tar_autorizacion'];
 $tar_monto = $_POST['tar_monto'];
 $id_mt = $_POST['id_mt'];
 $tra_nro_cuenta = $_POST['tra_nro_cuenta'];
@@ -52,6 +53,7 @@ $grabar = pg_query($conn, "SELECT sp_vent_cobros($id_cob,
                                                 $id_ee_des,
                                                 '$tar_nro_tarjeta',
                                                 '$tar_vencimiento',
+                                                '$tar_autorizacion',
                                                 $tar_monto,
                                                 $id_mt,
                                                 '$tra_nro_cuenta',  

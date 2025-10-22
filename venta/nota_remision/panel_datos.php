@@ -115,7 +115,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_nota_cab WHERE id_not = $id_not;"));
     }
-    $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . " ORDER BY id_item, item_descrip, mar_descrip ASC;"));
+    $detalles = pg_fetch_all(pg_query($conn, "SELECT distinct on (id_item, item_descrip, mar_descrip) * FROM v_vent_nota_det WHERE id_not = " . $cabecera[0]['id_not'] . " ORDER BY id_item, item_descrip, mar_descrip ASC;"));
     $disabled = 'disabled';
     if ($cabecera[0]['estado'] == 'PENDIENTE') {
         $disabled = '';

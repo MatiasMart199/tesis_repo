@@ -30,11 +30,16 @@ $entidad_adherida = pg_fetch_all(pg_query($conn, "SELECT * FROM v_entidades_adhe
                             <input type="date" class="form-control" value="<?= date('Y-m-d'); ?>" id="tar_vencimiento">
                         </div>
                     </div>
-
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Nro. Voucher</label>
+                            <input type="text" class="form-control" value="" id="tar_nro_tarjeta">
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Nro Tarjeta</label>
-                            <input type="text" class="form-control" value="" id="tar_nro_tarjeta">
+                            <label>Cod. Autorizacion</label>
+                            <input type="text" class="form-control" value="" id="tar_autorizacion">
                         </div>
                     </div>
 

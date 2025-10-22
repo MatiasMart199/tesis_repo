@@ -368,6 +368,7 @@ function grabar() {
     var id_ee_des = '0';
     var tar_nro_tarjeta = '0';
     var tar_vencimiento = '2021-01-01';
+    var tar_autorizacion = '0';
     var tar_monto = '0';
     var id_mt = '0';
     var tra_nro_cuenta = '0';
@@ -437,6 +438,7 @@ function grabar() {
         id_ee = $("#id_ee").val();
         tar_nro_tarjeta = $("#tar_nro_tarjeta").val();
         tar_vencimiento = $("#tar_vencimiento").val();
+        tar_autorizacion = $("#tar_autorizacion").val();
         tar_monto = $("#tar_monto").val();
         id_mt = $("#id_mt").val();
         id_fc = $("#id_fc_f").val();
@@ -475,6 +477,7 @@ function grabar() {
             id_ee_des: id_ee_des,
             tar_nro_tarjeta: tar_nro_tarjeta,
             tar_vencimiento: tar_vencimiento,
+            tar_autorizacion: tar_autorizacion,
             tar_monto: tar_monto,
             id_mt: id_mt,
             tra_nro_cuenta: tra_nro_cuenta,

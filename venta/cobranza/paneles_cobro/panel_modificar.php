@@ -37,7 +37,7 @@ $forma_cobros = pg_fetch_all(pg_query($conn, "SELECT * FROM formas_cobros WHERE 
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Inporte Efectivo</label>
-                        <input type="number" min="0" max="<?= $datos[0]['cue_saldo'];?>" class="form-control" value="<?= $datos[0]['cob_monto_efe'];?>" id="modificar_cob_monto_efe" class="form-control" step="1" disabled>
+                        <input type="number" min="0" max="<?= $datos[0]['cob_monto_efe'];?>" class="form-control" value="<?= $datos[0]['cob_monto_efe'];?>" id="modificar_cob_monto_efe" class="form-control" step="1" disabled>
                         <small>Monto máximo permitido: <?= number_format($datos[0]['cue_saldo'], 0, ',', '.') ?> Gs.</small>
                     </div>
                 </div>

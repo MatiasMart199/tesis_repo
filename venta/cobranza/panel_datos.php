@@ -301,7 +301,8 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                         <table class="table table-bordered" style="font-size: 12px;">
                             <thead>
                                 <tr>
-                                    <th>Nro Tarjeta</th>
+                                    <th>Nro Vaucher</th>
+                                    <th>Cod. Autorizacion</th>
                                     <th>Vencimiento</th>
                                     <th>Monto</th>
                                     <th>Entidad</th>
@@ -314,7 +315,8 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
                                 foreach ($cobros_tarjetas as $d) {
                                     $total = $total + $d['tar_monto'] ?>
                                     <tr>
-                                        <td><?php echo ocultar_tarjeta($d['tar_nro_tarjeta']); ?></td>
+                                        <td><?php echo $d['tar_nro_tarjeta']; ?></td>
+                                        <td><?php echo $d['tar_autorizacion']; ?></td>
                                         <td><?php echo $d['fecha_vencimiento']; ?></td>
                                         <td><?php echo number_format($d['tar_monto'], 0, ",", "."); ?></td>
                                         <td><?php echo $d['ee_razon_social'] . " - " . $d['mt_descrip']; ?></td>
