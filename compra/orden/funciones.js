@@ -134,6 +134,11 @@ function agregar_orden_presupuesto(id_cpre){
     //$("html, body").animate({ scrollTop: 0}, "slow");
 }
 
+function generarInforme(id_corden) {
+    window.open('documento.php?id_corden=' + id_corden, '_blank');
+}
+
+
 function agregar_grabar(){
     $("#operacion").val(1);
     grabar();
@@ -267,6 +272,14 @@ function grabar(){
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '7'){
         id_corden = $("#id_corden").val();
@@ -282,6 +295,14 @@ function grabar(){
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
         
     }
     if(operacion == '10'){

@@ -209,7 +209,6 @@ function grabar() {
             { id: "#id_cc", nombre: "Factura/Compra" },
             { id: "#id_proveedor", nombre: "Proveedor" },
             { id: "#not_nro_documento", nombre: "Nro. Documento" },
-            { id: "#id_tm", nombre: "Motivo" }
         ])) {
             return; // Salimos de la función si la validación falla
         }
@@ -233,6 +232,12 @@ function grabar() {
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val() || '0';
         monto = $("#modificar_monto").val();
+        if (!validarCampos([
+            { id: "#modificar_id_item", nombre: "Item" },
+            { id: "#modificar_monto", nombre: "Monto" }
+        ])) {
+            return; // ❌ corta si falta un campo
+        }
     }
     if (operacion == '7') {
         id_not = $("#id_not").val();
@@ -323,6 +328,7 @@ function habilitarCampos() {
         $("#not_chofer").prop("disabled", true);
         $("#not_vehiculo").val('N/A');
         $("#not_chofer").val('N/A');
+        $("#id_tm").prop("disabled", false);
     }
 }
 

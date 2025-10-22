@@ -130,6 +130,11 @@ function modalConsolidacion(id_mem){
 }
 
 
+function generarContrato(id_mem) {
+    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_cp
+    window.open('./contrato.php?id_mem=' + id_mem, '_blank');
+}
+
 function agregar_grabar(){
     $("#operacion").val(1);
     grabar();
@@ -230,11 +235,17 @@ function grabar(){
         //if (operacion == '3' && $("#id_inscrip_f").val().trim() !== '') {
         id_inscrip = $("#id_inscrip_f").val();
         //}
-        console.log(id_inscrip);
         if(!validarCampos([
             {id:"#mem_fecha", nombre:"Fecha Inicio"},
             {id:"#mem_vence", nombre:"Fecha Vence"},
-            {id:"#id_cliente", nombre:"Cliente"}])){return;}
+            {id:"#id_cliente", nombre:"Cliente"},
+            {id:"#mem_observacion", nombre:"Observaciones"}])){return;}
+            console.log(id_inscrip);
+            console.log(id_mem);
+            console.log(mem_fecha);
+            console.log(mem_vence);
+            console.log(mem_observacion);
+            console.log(id_cliente);
     }
     if(operacion == '5'){
         id_mem = $("#id_mem").val();
@@ -251,6 +262,10 @@ function grabar(){
         id_plan_servi = $("#modificar_id_plan_servi").val();
         dias = $("#modificar_dias").val();
         precio = $().val("#modificar_precio");
+        if(!validarCampos([
+            {id:"#modificar_id_plan_servi", nombre:"Plan Servicio"},
+            {id:"#modificar_dias", nombre:"Días"},
+            {id:"#modificar_precio", nombre:"Precio"}])){return;}
     }
     if(operacion == '7'){
         id_mem = $("#id_mem").val();
@@ -266,6 +281,10 @@ function grabar(){
         id_plan_servi = $("#modificar_id_plan_servi").val();
         dias = $("#modificar_dias").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id:"#modificar_id_plan_servi", nombre:"Plan Servicio"},
+            {id:"#modificar_dias", nombre:"Días"},
+            {id:"#modificar_precio", nombre:"Precio"}])){return;}
 
     }
     if(operacion == '10'){

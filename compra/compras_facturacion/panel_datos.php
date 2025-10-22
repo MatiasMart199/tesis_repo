@@ -144,7 +144,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 
     }
     $compras_detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_detalles WHERE id_cc = $id_cc ORDER BY item_descrip, mar_descrip;"));
-    $compras_ordenes = pg_fetch_all(pg_query($conn, "SELECT * FROM v_compras_orden_factu where id_cc = $id_cc ORDER BY  item_descrip, mar_descrip;"));
+    $compras_ordenes = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item, mar_descrip) * FROM v_compras_orden_factu where id_cc = $id_cc ORDER BY  id_item, mar_descrip;"));
     $disabled = 'disabled';
     if ($compras[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
@@ -186,18 +186,19 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
+            <?php if($compras[0]['estado'] == 'PENDIENTE'){ ?>
             <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
                     class="fas fa-plus-circle"></i> Ordenes</button>
             <button class="btn btn-primary text-white"
                 onclick="modalConsolidacion(<?= $compras[0]['id_cc']; ?>);" id="btn-modal-secund-cerrar"><i
                     class="fas fa fa-object-group"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="generarInforme(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
+            <!-- <button class="btn btn-danger text-white" onclick="generarInforme(<?= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
+                    class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button> -->
             <!-- <button class="btn btn-success" onclick="modalLibro(<?//= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa fa-book"></i>libro de Compras</button>
             <button class="btn btn-success" onclick="modalCuenta(<?//= $compras[0]['id_cc']; ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa fa-book"></i>Cuenta a Pagar</button> -->
-
+            <?php } ?>
         </div>
     </div>
 
@@ -382,7 +383,7 @@ if ($id_cc == '-1') { //CUANDO SE RESETEA
         </div>
         <?php if ($compras[0]['estado'] == 'PENDIENTE') {
             $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"));
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_detalles WHERE id_cc = " . $compras[0]['id_cc'] . ") AND id_tip_item NOT IN (7) ORDER BY id_item;"));
             $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->

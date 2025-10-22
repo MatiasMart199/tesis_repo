@@ -30,7 +30,7 @@ $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_ajustes_cab WHERE
             <td><?php echo $p['estado'];?></td>
             <td>
                 <button class="btn btn-primary" onclick="datos(<?php echo $p['id_caju']; ?>);"><i class="fa fa-list-alt"></i></button>
-                <button class="btn btn-success" onclick="generarInforme(<?php echo $p['id_caju']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i></button>
+                <!-- <button class="btn btn-success" onclick="generarInforme(<?php //echo $p['id_caju']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i></button> -->
                 <?php if($p['estado'] == 'PENDIENTE'){ ?>
                 <button class="btn btn-success" onclick="datos(<?php echo $p['id_caju']; ?>);"><i class="fa fa-check-circle"></i></button>
                 <button class="btn btn-warning text-white" onclick="datos(<?php echo $p['id_caju']; ?>);"><i class="fa fa-edit"></i></button>

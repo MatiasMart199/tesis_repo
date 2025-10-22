@@ -123,6 +123,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_vac = '0';
@@ -147,6 +167,19 @@ function grabar(){
         vac_monto_ape = $("#vac_monto_ape").val();
         vac_monto_cie = $("#vac_monto_cie").val();
         id_caja = $("#id_caja").val();
+        if(!validarCampos([
+            {id: '#vac_fecha_ape', nombre: 'Fecha Apertura'},
+            {id: '#vac_fecha_cie', nombre: 'Fecha Cierre'},
+            {id: '#vac_monto_efec', nombre: 'Monto Efectivo'},
+            {id: '#vac_monto_cheq', nombre: 'Monto Cheque'},
+            {id: '#vac_monto_tarj', nombre: 'Monto Tarjeta'},
+            {id: '#vac_monto_tranf', nombre: 'Monto Transferencia'},
+            {id: '#vac_monto_ape', nombre: 'Monto Apertura'},
+            {id: '#vac_monto_cie', nombre: 'Monto Cierre'},
+            {id: '#id_caja', nombre: 'Caja'}
+        ])){
+            return;
+        }
     }
     if(operacion == '5'){
         id_varq = $("#id_varq").val();
@@ -161,6 +194,18 @@ function grabar(){
         vac_monto_cie = $("#vac_monto_cie").val();
         id_caja = $("#id_caja").val();
         id_fun_solicitante = $("#id_fun_solicitante").val();
+        if(!validarCampos([
+            {id: '#arq_monto_efec', nombre: 'Monto Efectivo'},
+            {id: '#arq_monto_cheq', nombre: 'Monto Cheque'},
+            {id: '#arq_monto_tarj', nombre: 'Monto Tarjeta'},
+            {id: '#arq_monto_tranf', nombre: 'Monto Transferencia'},
+            {id: '#id_fun_solicitante', nombre: 'Funcionario Solicitante'},
+            {id: '#id_caja', nombre: 'Caja'},
+            {id: '#vac_monto_ape', nombre: 'Monto Apertura'},
+            {id: '#vac_monto_cie', nombre: 'Monto Cierre'}
+        ])){
+            return;
+        }
     }
     if(operacion == '6'){
         //id_varq = $("#id_varq").val();

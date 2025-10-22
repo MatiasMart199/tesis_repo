@@ -82,9 +82,7 @@ function datos(id_vc) {
 }
 
 function generarInforme(id_vc) {
-    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_cp
-    //window.open('./reporte.php?id_cp=' + id_cp, '_blank');
-    window.open('reporte.php?id_vc=' + id_vc, '_blank');
+    window.open('factura.php?id_vc=' + id_vc, '_blank');
 }
 
 function agregar() {
@@ -353,6 +351,12 @@ console.log("cliente " + id_cliente);
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: '#modificar_cantidad', nombre: 'Cantidad'},
+            {id: '#modificar_precio', nombre: 'Precio'}
+        ])){
+            return;
+        }
     }
     if (operacion == '7') {
         id_vc = $("#id_vc").val();
@@ -368,6 +372,12 @@ console.log("cliente " + id_cliente);
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: '#modificar_cantidad', nombre: 'Cantidad'},
+            {id: '#modificar_precio', nombre: 'Precio'}
+        ])){
+            return;
+        }
     }
     if (operacion == '10') {
         id_vc = $("#id_vc").val();
@@ -479,7 +489,7 @@ $(document).ready(function() {
         llenarPrecio();
     });
 });
-
+ 
 function autoNroFactura() {  
     const select = document.getElementById('id_tim');
     let option = select.options[select.selectedIndex];

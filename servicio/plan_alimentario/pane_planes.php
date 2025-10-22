@@ -20,8 +20,8 @@ $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_alimentacione
             <th>Fecha Fin</th>
             <th>Cliente</th>
             <th>Genero</th>
-            <th>Nutriologo</th>
-            <th>Servicio</th>
+            <!-- <th>Nutriologo</th> -->
+            <th>Objetivo</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
@@ -37,8 +37,8 @@ $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_alimentacione
             <td><?php echo $p['fecha_fin'];?></td>
             <td><?php echo $p['cliente'];?></td>
             <td><?php echo $p['gen_descrip'];?></td>
-            <td><?php echo $p['nutriologo'];?></td>
-            <td><?php echo $p['ps_descrip'];?></td>
+            <!-- <td><?//= $p['nutriologo'];?></td> -->
+            <td><?= $p['ali_objetivo'];?></td>
             <td><?php echo $p['estado'];?></td>
             <td>
                 <button class="btn btn-primary" onclick="datos(<?php echo $p['id_ali']; ?>);"><i class="fa fa-list-alt"></i></button>
@@ -46,6 +46,8 @@ $presupuestos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_alimentacione
                 <button class="btn btn-success" onclick="datos(<?php echo $p['id_ali']; ?>);"><i class="fa fa-check-circle"></i></button>
                 <button class="btn btn-warning text-white" onclick="datos(<?php echo $p['id_ali']; ?>);"><i class="fa fa-edit"></i></button>
                 <button class="btn btn-danger" onclick="datos(<?php echo $p['id_ali']; ?>);"><i class="fa fa-minus-circle"></i></button>
+                <?php }elseif($p['estado'] == 'CONFIRMADO'){ ?>
+                <button class="btn btn-success" onclick="generarInformes(<?php echo $p['id_ali']; ?>);"><i class="fa fa-file-pdf"></i></button>
                 <?php } ?>
             </td>
         </tr>

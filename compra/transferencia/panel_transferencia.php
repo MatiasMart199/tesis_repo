@@ -4,7 +4,7 @@ include '../../session.php';
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 $id_sucursal = $_SESSION['id_sucursal'];
-$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_transfers_cab WHERE id_sucursal = $id_sucursal ORDER BY id_tra;"));
+$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_transfers_cab ORDER BY id_tra;"));
 ?>
 <button class="btn btn-success" onclick="agregar();"><i class="fa fa-plus-circle"></i> Agregar</button>
 <table width="100%" class="table table-bordered" id="tabla_panel_transferencia">
@@ -32,7 +32,7 @@ $pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_transfers_cab WHER
             <td><?php echo $p['estado'];?></td>
             <td>
                 <button class="btn btn-primary" onclick="datos(<?php echo $p['id_tra']; ?>);"><i class="fa fa-list-alt"></i></button>
-                <button class="btn btn-success" onclick="generarInforme(<?php echo $p['id_tra']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i></button>
+                <!-- <button class="btn btn-success" onclick="generarInforme(<?php //echo $p['id_tra']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i></button> -->
                 <?php if($p['estado'] == 'PENDIENTE' || $p['estado'] == 'ENVIADO'){ ?>
                 <button class="btn btn-success" onclick="datos(<?php echo $p['id_tra']; ?>);"><i class="fa fa-check-circle"></i></button>
                 <button class="btn btn-warning text-white" onclick="datos(<?php echo $p['id_tra']; ?>);"><i class="fa fa-edit"></i></button>

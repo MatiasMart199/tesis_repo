@@ -59,9 +59,7 @@ function datos(id_not){
 }
 
 function generarInforme(id_not) {
-    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_not
-    //window.open('./reporte.php?id_not=' + id_not, '_blank');
-    window.open('../../reportes/compra/reporte.php?id_not=' + id_not, '_blank');
+    window.open('nota_docu.php?id_not=' + id_not, '_blank');
 }
 
 

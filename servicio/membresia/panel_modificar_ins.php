@@ -19,13 +19,13 @@ $datos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_inscripciones_membre
                     <input type="text" disabled="" value="<?php echo $datos[0]['ps_descrip']; ?>" class="form-control">
                     <input type="hidden" id="modificar_id_plan_servi" value="<?php echo $datos[0]['id_plan_servi']; ?>">
                 </div>
-                <div class="form-group">
+                <div class="form-group" hidden>
                     <label>Dias</label>
                     <input type="number" class="form-control" value="<?php echo $datos[0]['dias']; ?>" id="modificar_dias">
                 </div>
                 <div class="form-group">
                     <label>Precio</label>
-                    <input type="number" class="form-control" disabled value="<?= $datos[0]['precio']; ?>" id="modificar_precio">
+                    <input type="number" class="form-control" value="<?= $datos[0]['precio']; ?>" id="modificar_precio">
                 </div> 
             </div>
             <div class="modal-footer justify-content-between">

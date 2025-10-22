@@ -26,6 +26,10 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
                 <?php }; ?>
             </select>
         </div>
+        <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" value="<?= date('Y-m-d') ?>" class="form-control" id="vped_fecha" disabled>
+            </div>
         <div class="form-group" hidden>
             <label>Fecha de Aprobacion</label>
             <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="vped_aprobacion">
@@ -64,18 +68,23 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
             <div>
             <label>Cliente</label>
             <select class="select2" id="id_cliente">
+                <option value="<?= $pedidos[0]['id_cliente'];?>" selected><?php echo $pedidos[0]['cliente'] ?></option>
                 <?php foreach($cliente as $cl){ ?>
                 <option value="<?php echo $cl['id_cliente'];?>"><?php echo $cl['cliente']." ". $cl['per_ruc']; ?></option>
                 <?php }; ?>
             </select>
         </div>
+        <div class="form-group">
+                <label>Fecha</label>
+                <input type="date" value="<?= $pedidos[0]['vped_fecha'] ?>" class="form-control" id="vped_fecha" disabled>
+            </div>
         <div class="form-group" hidden>
             <label>Fecha de Aprobacion</label>
             <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" id="vped_aprobacion">
         </div>
         <div class="form-group">
             <label>Observacón</label>
-            <textarea class="form-control" id="vped_observacion"></textarea>
+            <textarea class="form-control" id="vped_observacion"><?= $pedidos[0]['vped_observacion'] ?></textarea>
         </div>
             <div class="form-group">
                 <button class="btn btn-danger" onclick="cancelar();"><i class="fa fa-ban"></i> Cancelar</button>
@@ -133,7 +142,9 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
         </div>
     </div>
         <?php if($pedidos[0]['estado'] == 'PENDIENTE'){
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from ventas_pedidos_detalle WHERE id_vped = ".$pedidos[0]['id_vped'].") ORDER BY item_descrip;"))
+            //$articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT(id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from ventas_pedidos_detalle WHERE id_vped = ".$pedidos[0]['id_vped'].") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
+            $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from ventas_pedidos_detalle WHERE id_vped = ".$pedidos[0]['id_vped'].") AND id_tip_item NOT IN (7) ORDER BY id_item;"))
             ?>
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">
@@ -143,19 +154,28 @@ if($id_vped == '-1'){ //CUANDO SE RESETEA
                     <?php if(!empty($articulos)){ ?>
                         <div class="form-group">
                             <label>Producto</label>
-                            <select class="select2" id="agregar_id_item">
+                            <select class="select2" id="agregar_id_item" onchange="stock_actual();">
                                 <?php foreach($articulos as $a){ ?>
                                 <option value="<?php echo $a['id_item']; ?>"><?php echo $a['item_descrip']." - ".$a['mar_descrip']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="row">
+                        <div class="form-group col-6">
+                            <label>Stock</label>
+                            <input type="text" value="0" class="form-control" id="stock_actual" disabled>
+                        </div>
+                        <div class="form-group col-6">
                             <label>Cantidad</label>
                             <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                        </div>
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
                         </div>
+                        <script>
+                            const stock = <?php echo json_encode($stock); ?>; 
+                        </script>
                     <?php }else{ ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos disponibles...</label>
                     <?php } ?>

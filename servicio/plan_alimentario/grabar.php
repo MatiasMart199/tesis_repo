@@ -17,7 +17,7 @@ $id_nutriologo = $_POST['id_nutriologo'];
 $id_sucursal = $_SESSION['id_sucursal'];
 $id_funcionario = $_SESSION['id_funcionario'];
 $id_act = $_POST['id_act'];
-$alimento = $_POST['alimento'];
+$id_res = $_POST['id_res'];
 $cantidad = $_POST['cantidad'];
 $calorias = $_POST['calorias'];
 $carbohidratos = $_POST['carbohidratos'];
@@ -36,7 +36,7 @@ $grabar = pg_query($conn, "SELECT sp_alimentaciones ($id_ali,
                                                 $id_sucursal,
                                                 $id_funcionario ,
                                                 $id_act,
-                                                '$alimento',
+                                                $id_res,
                                                 $cantidad,
                                                 $calorias,
                                                 $carbohidratos,

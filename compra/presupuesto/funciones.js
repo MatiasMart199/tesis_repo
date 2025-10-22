@@ -126,6 +126,10 @@ function modalConsolidacion(id_cpre){
     });
 }
 
+function generarInforme(id_cpre) {
+    window.open('documento.php?id_cpre=' + id_cpre, '_blank');
+}
+
 function agregar_presupuesto_pedido(id_cp){
     $("#id_cp").val(id_cp);
     $("#operacion").val(8);
@@ -260,10 +264,14 @@ function grabar(){
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
-        // console.log("id_cpre "+id_cpre);
-        // console.log("id_item "+ id_item);
-        // console.log("cantidad "+cantidad);
-        // console.log("precio "+precio);
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '7'){
         id_cpre = $("#id_cpre").val();
@@ -279,6 +287,14 @@ function grabar(){
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
         
     }
     if(operacion == '10'){
@@ -354,5 +370,19 @@ function llenarPrecio() {
 $(document).ready(function() {
     $(document).on('change', '#agregar_id_item', function() {
         llenarPrecio();
+        stock_actual();
     });
 });
+
+function stock_actual(){
+    const item = document.getElementById('agregar_id_item');
+    const stockInput = document.getElementById('stock_actual');
+    const selectedItemId = parseInt(item.value);
+    const itemStock = stock.find(s => parseInt(s.id_item) === selectedItemId);
+    if (itemStock) {
+        stockInput.value = itemStock.stock_cantidad;
+    } else {
+        stockInput.value = '0';
+    }
+ }
+ 

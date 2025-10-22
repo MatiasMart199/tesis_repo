@@ -116,6 +116,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_vped = '0';
@@ -129,18 +149,36 @@ function grabar(){
         id_cliente = $('#id_cliente').val();
         vped_aprobacion = $("#vped_aprobacion").val();
         vped_observacion = $('#vped_observacion').val();
+        if(!validarCampos([
+            {id: '#vped_aprobacion', nombre: 'Fecha de Aprobación'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#vped_observacion', nombre: 'Observaciones'}
+        ])){
+            return;
+        }
 
     }
     if(operacion == '5'){
         id_vped = $("#id_vped").val();
         id_item = $("#agregar_id_item").val();
         cantidad = $("#agregar_cantidad").val();
-        //item_precio = 0;$("#agregar_precio").val();
+        if(!validarCampos([
+            {id: '#agregar_id_item', nombre: 'Ítem'},
+            {id: '#agregar_cantidad', nombre: 'Cantidad'}
+        ])){
+            return;
+        }
+        console.log("ID Ítem:", id_item, "Cantidad:", cantidad);
     }
     if(operacion == '6'){
         id_vped = $("#id_vped").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
+        if(!validarCampos([
+            {id: '#modificar_cantidad', nombre: 'Cantidad'}
+        ])){
+            return;
+        }
     }
     if(operacion == '7'){
         id_vped = $("#id_vped").val();
@@ -184,3 +222,16 @@ function postgrabar(operacion){
         $("#btn-panel-pedidos").click();
     }
 }
+
+function stock_actual(){
+    const item = document.getElementById('agregar_id_item');
+    const stockInput = document.getElementById('stock_actual');
+    const selectedItemId = parseInt(item.value);
+    const itemStock = stock.find(s => parseInt(s.id_item) === selectedItemId);
+    if (itemStock) {
+        stockInput.value = itemStock.stock_cantidad;
+    } else {
+        stockInput.value = '0';
+    }
+ }
+ 

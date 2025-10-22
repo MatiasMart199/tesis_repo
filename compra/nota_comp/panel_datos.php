@@ -161,7 +161,7 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                     <div class="form-group col-md-4">
                         <label>Tipo de Nota</label>
                         <select class="select2" id="not_tipo_nota">
-                            <option value="<?= $cabecera[0]['not_tipo_nota']; ?>" selected="true" disabled="disabled"><?= $cabecera[0]['not_tipo_nota']; ?></option>
+                            <option value="<?= $cabecera[0]['not_tipo_nota']; ?>" selected="true"><?= $cabecera[0]['not_tipo_nota']; ?></option>
                             <option value="CREDITO">CRÉDITO</option>
                             <option value="DEBITO">DEBITO</option>
                             <option value="REMISION">REMISION</option>

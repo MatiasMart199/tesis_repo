@@ -152,6 +152,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_evo = '0';
@@ -175,19 +195,39 @@ function grabar(){
         id_cliente = $("#id_cliente").val();
         id_personal = $("#id_personal").val();
         id_med = $("#id_med").val();
+        if(!validarCampos([
+            {id: '#evo_fecha', nombre: 'Fecha'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#id_personal', nombre: 'Personal Trainer'},
+            {id: '#id_med', nombre: 'Medición'},
+            {id: '#evo_edad', nombre: 'Edad'},
+            {id: '#evo_imc', nombre: 'IMC'},
+            {id: '#evo_pgc', nombre: 'Porcentaje de Grasa Corporal'},
+            {id: '#evo_observacion', nombre: 'Observaciones'}
+        ])){
+            return;
+        }
     }
     if(operacion == '5'){
         id_evo = $("#id_evo").val();
         id_act = $("#agregar_id_act").val();
         valor = $("#agregar_valor").val();
-        // console.log(id_evo);
-        // console.log(id_act);
-        // console.log(valor);
+        if(!validarCampos([
+            {id: '#agregar_id_act', nombre: 'Tipo de Medición'},
+            {id: '#agregar_valor', nombre: 'Valor'}
+        ])){
+            return;
+        }
     }
     if(operacion == '6'){
         id_evo = $("#id_evo").val();
         id_act = $("#id_act").val();
         valor = $("#modificar_valor").val();
+        if(!validarCampos([
+            {id: '#modificar_valor', nombre: 'Valor'}
+        ])){
+            return;
+        }
     }
     if(operacion == '7'){
         id_evo = $("#id_evo").val();

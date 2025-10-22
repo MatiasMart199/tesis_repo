@@ -101,9 +101,10 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Inscripciones</button>
+            <!-- <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Inscripciones</button> -->
+             <?php if($membresias[0]['estado'] == 'PENDIENTE') {?>
             <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $membresias[0]['id_mem']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
+            <?php } ?>
 
         </div>
     </div>
@@ -153,6 +154,8 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <!-- <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button> -->
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
+                    <?php }elseif ($membresias[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-success" onclick="generarContrato(<?= $membresias[0]['id_mem']; ?>);"><i class="fa fa-file-contract"></i> Generar Indicación</button>
                     <?php } ?>
                 </div>
             </div>
@@ -288,7 +291,7 @@ if ($id_mem == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($membresias[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white" onclick="modificar_detalle_ins(<?= $d['id_mem']; ?>, <?= $d['id_plan_servi']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
-                                            <button class="btn btn-danger" onclick="eliminar_membresia_inscripcion(<?= $d['id_plan_servi'] ?>);"><i class="fa fa-minus-circle"></i></button>
+                                            <!-- <button class="btn btn-danger" onclick="eliminar_membresia_inscripcion(<?//= $d['id_plan_servi'] ?>);"><i class="fa fa-minus-circle"></i></button> -->
                                             <!-- <button class="btn btn-danger" onclick="eliminar_detalle(<?php //echo $d['id_item']; ?>);"><i class="fa fa-minus-circle"></i></button> -->
                                         <?php } ?>
                                     </td>

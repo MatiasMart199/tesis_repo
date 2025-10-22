@@ -60,9 +60,7 @@ function datos(id_cob) {
 }
 
 function generarInforme(id_cob) {
-    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_cob
-    //window.open('./reporte.php?id_cob=' + id_cob, '_blank');
-    window.open('../../reportes/compra/reporte.php?id_cob=' + id_cob, '_blank');
+    window.open('recibo.php?id_cob=' + id_cob, '_blank');
 }
 
 
@@ -410,6 +408,12 @@ function grabar() {
         id_cue = $("#id_cue").val();
         id_fc = $("#modificar_id_fc").val();
         cob_monto_efe = $("#modificar_cob_monto_efe").val(); // ya corregido
+        if(!validarCampos([
+            {id: '#modificar_id_fc', nombre: 'Forma de Cobro'},
+            {id: '#modificar_cob_monto_efe', nombre: 'Monto Efectivo'}
+        ])){
+            return;
+        }
     }
     if (operacion == '7') {
         id_cob = $("#id_cob").val();

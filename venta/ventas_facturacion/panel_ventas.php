@@ -16,9 +16,9 @@ $compras = pg_fetch_all($query);
             <th>#</th>
             <!-- <th>Funcionario</th>
             <th>Empresa</th> -->
+            <th>Tip. Operacion</th>
             <th>Sucursal</th>
             <th>Fecha</th>
-            <th>Intervalo</th>
             <th>Cliente</th>
             <th>Cuota</th>
             <th>Tip. Factura</th>
@@ -32,9 +32,9 @@ $compras = pg_fetch_all($query);
             <td><?php echo $p['id_vc'];?></td>
             <!-- <td><?php //echo $p['funcionario'];?></td>
             <td><?php //echo $p['emp_denominacion'];?></td> -->
+            <td><?php echo $p['tm_descrip'];?></td>
             <td><?php echo $p['suc_nombre'];?></td>
             <td><?php echo $p['fecha'];?></td>
-            <td><?php echo $p['vc_intervalo'];?></td>
             <td><?php echo $p['cliente'];?></td>
             <td><?php echo $p['vc_cuota'];?></td>
             <td><?php echo $p['vc_tipo_factura'];?></td>
@@ -45,6 +45,8 @@ $compras = pg_fetch_all($query);
                 <button class="btn btn-success" onclick="datos(<?php echo $p['id_vc']; ?>);"><i class="fa fa-check-circle"></i></button>
                 <button class="btn btn-warning text-white" onclick="datos(<?php echo $p['id_vc']; ?>);"><i class="fa fa-edit"></i></button>
                 <button class="btn btn-danger" onclick="datos(<?php echo $p['id_vc']; ?>);"><i class="fa fa-minus-circle"></i></button>
+                <?php }elseif($p['estado'] == 'CONFIRMADO'){ ?>
+                    <button class="btn btn-success" onclick="generarInforme(<?php echo $p['id_vc']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i></button>
                 <?php } ?>
             </td>
         </tr>

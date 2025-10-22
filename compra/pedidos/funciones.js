@@ -176,6 +176,13 @@ function grabar(){
         id_cp = $("#id_cp").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
     }
     if(operacion == '7'){
         id_cp = $("#id_cp").val();

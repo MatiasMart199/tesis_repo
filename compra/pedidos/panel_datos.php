@@ -125,7 +125,7 @@ if($id_cp == '-1'){ //CUANDO SE RESETEA
     </div>
         <?php if($pedidos[0]['estado'] == 'PENDIENTE'){
             $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from compras_pedidos_detalles WHERE id_cp = ".$pedidos[0]['id_cp'].") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (item_descrip) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from compras_pedidos_detalles WHERE id_cp = ".$pedidos[0]['id_cp'].") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
             ?>
             <div class="card card-primary col-4">
                 <div class="card-header text-center elevation-3">

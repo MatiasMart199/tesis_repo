@@ -56,9 +56,7 @@ function datos(id_not){
 }
 
 function generarInforme(id_not) {
-    // Abre una nueva ventana del navegador con la URL que incluye el parámetro id_not
-    //window.open('./reporte.php?id_not=' + id_not, '_blank');
-    window.open('../../reportes/compra/reporte.php?id_not=' + id_not, '_blank');
+    window.open('nota_docu.php?id_not=' + id_not, '_blank');
 }
 
 
@@ -175,23 +173,25 @@ function grabar(){
         id_chofer = $("#id_chofer").val();
         id_tim = $("#id_tim").val();
         id_cliente = $("#id_cliente").val();
-console.log("codigo "+id_not);
-console.log("fecha emision "+not_fecha_emis);
-console.log("fecha elaboracion "+not_fecha_elab);
-console.log("tipo nota "+not_tipo_nota);
-console.log("observacion "+not_observacion);
-console.log("nro documento "+not_nro_documento);
-console.log("id venta "+id_vc);
-console.log("id vehiculo "+id_vehiculo);
-console.log("id chofer "+id_chofer);
-console.log("id tim "+id_tim);
-console.log("id cliente "+id_cliente);
+// console.log("codigo "+id_not);
+// console.log("fecha emision "+not_fecha_emis);
+// console.log("fecha elaboracion "+not_fecha_elab);
+// console.log("tipo nota "+not_tipo_nota);
+// console.log("observacion "+not_observacion);
+// console.log("nro documento "+not_nro_documento);
+// console.log("id venta "+id_vc);
+// console.log("id vehiculo "+id_vehiculo);
+// console.log("id chofer "+id_chofer);
+// console.log("id tim "+id_tim);
+// console.log("id cliente "+id_cliente);
 
         if(!validarCampos([
             {id: "#not_fecha_elab", nombre: "Fecha de Emisión"},
             {id: "#not_fecha_emis", nombre: "Fecha de Salida"},
             {id: "#id_vc", nombre: "Factura"},
-            {id: "#id_cliente", nombre: "Cliente"}
+            {id: "#id_cliente", nombre: "Cliente"},
+            //{id: "#id_tim", nombre: "Timbrado"},
+            {id: "#not_nro_documento", nombre: "Nro. Documento"}
         ])){
             return;
         }

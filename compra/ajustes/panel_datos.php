@@ -52,7 +52,7 @@ if ($id_caju == '-1') { //CUANDO SE RESETEA
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
         $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_ajustes_cab WHERE id_caju = $id_caju;"));
     }
-    $detalle = pg_fetch_all(pg_query($conn, "SELECT * FROM v_comp_ajustes_det WHERE id_caju = " . $cabecera[0]['id_caju'] . " ORDER BY item_descrip, mar_descrip;"));
+    $detalle = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_comp_ajustes_det WHERE id_caju = " . $cabecera[0]['id_caju'] . " ORDER BY id_item;"));
     $disabled = 'disabled';
     if ($cabecera[0]['estado'] == 'PENDIENTE') {
         $disabled = '';

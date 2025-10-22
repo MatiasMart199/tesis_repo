@@ -152,6 +152,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_rut = '0';
@@ -173,12 +193,15 @@ function grabar(){
         rut_observacion = $("#rut_observacion").val();
         id_cliente = $("#id_cliente").val();
         id_personal = $("#id_personal").val();
-        console.log(id_rut);
-        console.log(rut_fecha);
-        console.log(rut_edad);
-        console.log(rut_observacion);
-        console.log(id_cliente);
-        console.log(id_personal);
+        if(!validarCampos([
+            {id: '#rut_fecha', nombre: 'Fecha'},
+            {id: '#rut_edad', nombre: 'Edad'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#id_personal', nombre: 'Personal Trainer'},
+            {id: '#rut_observacion', nombre: 'Observaciones'}
+        ])){
+            return;
+        }
     }
     if(operacion == '5'){
         id_rut = $("#id_rut").val();
@@ -187,7 +210,15 @@ function grabar(){
         repeticion = $("#agregar_repeticion").val();
         peso = $("#agregar_peso").val();
         ejercicio = $("#agregar_ejercicio").val();
-
+        if(!validarCampos([
+            {id: '#agregar_id_act', nombre: 'Actividad'},
+            {id: '#agregar_serie', nombre: 'Serie'},
+            {id: '#agregar_repeticion', nombre: 'Repetición'},
+            {id: '#agregar_peso', nombre: 'Peso'},
+            {id: '#agregar_ejercicio', nombre: 'Ejercicio'}
+        ])){
+            return;
+        }
     }
     if(operacion == '6'){
         id_rut = $("#id_rut").val();
@@ -195,11 +226,13 @@ function grabar(){
         serie = $("#modificar_serie").val();
         repeticion = $("#modificar_repeticion").val();
         peso = $("#modificar_peso").val();
-        // console.log(id_rut);
-        // console.log(id_act);
-        // console.log(serie);
-        // console.log(repeticion);
-        // console.log(peso);
+        if(!validarCampos([
+            {id: '#modificar_serie', nombre: 'Serie'},
+            {id: '#modificar_repeticion', nombre: 'Repetición'},
+            {id: '#modificar_peso', nombre: 'Peso'}
+        ])){
+            return;
+        }
     }
     if(operacion == '7'){
         id_rut = $("#id_rut").val();

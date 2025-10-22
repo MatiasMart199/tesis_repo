@@ -354,37 +354,38 @@ function grabar() {
         precio = $("#agregar_precio").val();
         id_deposito = $("#ag_id_deposito").val();
 
-        // if (!validarCampos([
-        //     {id: "#agregar_id_item", nombre: "Item"},
-        //     {id: "#agregar_cantidad", nombre: "Cantidad"},
-        //     {id: "#agregar_precio", nombre: "Precio"},
-        //     {id: "#ag_id_deposito", nombre: "Depósito"}
-        // ]))
-        // {
-        //     return; // ❌ corta si falta un campo
-        // }
-        console.log("id_cc",id_cc);
-        console.log("id_item",id_item);
-        console.log("Cantidad: ",cantidad);
-        console.log("Precio: ",precio);
-        console.log("Deposito: ",id_deposito);
+        if (!validarCampos([
+            {id: "#agregar_id_item", nombre: "Item"},
+            {id: "#agregar_cantidad", nombre: "Cantidad"},
+            {id: "#agregar_precio", nombre: "Precio"},
+            {id: "#ag_id_deposito", nombre: "Depósito"}
+        ]))
+        {
+            return; // ❌ corta si falta un campo
+        }
+        // console.log("id_cc",id_cc);
+        // console.log("id_item",id_item);
+        // console.log("Cantidad: ",cantidad);
+        // console.log("Precio: ",precio);
+        // console.log("Deposito: ",id_deposito);
     }
     if (operacion == '6') {
         id_cc = $("#id_cc").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
-        console.log(id_cc);
-        console.log(id_item);
-        console.log(cantidad);
-        console.log(precio);
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ])) {
+            return; // ❌ corta si falta un campo
+        } 
     }
     if (operacion == '7') {
         id_cc = $("#id_cc").val();
         id_item = $("#eliminar_id_item").val();
-        console.log(id_cc);
-        console.log(id_item);
-        console.log(id_corden);
+
     }
     if (operacion == '8') {
         id_cc = $("#id_cc").val();
@@ -397,6 +398,13 @@ function grabar() {
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
         precio = $("#modificar_precio").val();
+        if(!validarCampos([
+            {id: "#modificar_id_item", nombre: "Item"},
+            {id: "#modificar_cantidad", nombre: "Cantidad"},
+            {id: "#modificar_precio", nombre: "Precio"}
+        ])) {
+            return; // ❌ corta si falta un campo
+        }
     }
     if (operacion == '10') {
         id_cc = $("#id_cc").val();

@@ -206,6 +206,12 @@ function grabar() {
         id_tra = $("#id_tra").val();
         id_item = $("#modificar_id_item").val();
         cantidad = $("#modificar_cantidad").val();
+        if (!validarCampos([
+            { id: "#modificar_id_item", nombre: "Item" },
+            { id: "#modificar_cantidad", nombre: "Cantidad" }
+        ])) {
+            return; // ❌ corta si falta un campo
+        }
     }
     if (operacion == '7') {
         id_tra = $("#id_tra").val();
@@ -230,8 +236,8 @@ function grabar() {
             cantidad: cantidad,
             operacion: operacion
         }
-    }).done(function(resultado){
-        if(verificar_mensaje(resultado)){
+    }).done(function (resultado) {
+        if (verificar_mensaje(resultado)) {
             postgrabar(operacion);
         }
         //postgrabar(operacion);
@@ -300,7 +306,7 @@ function postgrabar(operacion) {
 //     }
 // }
 
-function llenarStock() { 
+function llenarStock() {
     // Obtener el ID del producto seleccionado
     const articuloId = document.getElementById('agregar_id_item').value;
 
@@ -322,7 +328,7 @@ function autoSucursal1() {
 
     // Buscar la factura correspondiente en el objeto datosCompras
     const depositoSeleccionada = datoDeposito.find(d => d.id_sucursal === idDeposito);
-    
+
 
     if (depositoSeleccionada) {
 
@@ -330,7 +336,7 @@ function autoSucursal1() {
         const sucursalSelect = document.getElementById('id_sucursal_ori');
         sucursalSelect.innerHTML = ''; // Limpiar opciones previas
         const option = document.createElement('option');
-        
+
         console.log(option);
         option.value = depositoSeleccionada.id_sucursal;
         option.textContent = depositoSeleccionada.suc_nombre;
@@ -357,6 +363,28 @@ function autoSucursal2() {
         option.selected = true; // Seleccionar automáticamente
         sucursalSelect.appendChild(option);
     }
+}
+
+function deshabilitarBotones() {
+    $(document).ready(function () {
+        $('#tra_estado').change(function () {
+            const estado = document.getElementById('tra_estado').value;
+
+            const btnEnviar = document.querySelector('button[onclick="enviar();"]');
+            const btnConfirmar = document.querySelector('button[onclick="confirmar();"]');
+
+            if (estado === 'PENDIENTE') {
+                btnEnviar.disabled = false;
+                btnConfirmar.disabled = true;
+            } else if (estado === 'ENVIADO') {
+                btnEnviar.disabled = true;
+                btnConfirmar.disabled = false;
+            } else {
+                btnEnviar.disabled = true;
+                btnConfirmar.disabled = true;
+            }
+        });
+    });
 }
 
 

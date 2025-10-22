@@ -203,6 +203,8 @@ if ($id_not == '-1') { //CUANDO SE RESETEA
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
+                    <?php }elseif ($cabecera[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-success" onclick="generarInforme(<?= $cabecera[0]['id_not']; ?>);"><i class="fas fa-file-pdf" id="btn-reporte"></i> Generar Nota</button>
                     <?php } ?>
                 </div>
             </div>

@@ -142,16 +142,6 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
         $disabled = '';
     }
 ?>
-    <div class="card">
-        <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Pedidos</button>
-            <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $cabecera[0]['id_ali']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-
-        </div>
-    </div>
-
-
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
@@ -251,6 +241,8 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
+                    <?php }elseif($cabecera[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-success" onclick="generarInformes(<?= $cabecera[0]['id_ali']; ?>);"><i class="fa fa-file-pdf"></i> Generar Documento</button>
                     <?php } ?>
                 </div>
             </div>
@@ -275,10 +267,10 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                             </tr>
                         </thead>
                         <tbody>
-                            <?php 
+                            <?php
                             $totalCal = 0;
                             $totalCarb = 0;
-                            $totalProt = 0;    
+                            $totalProt = 0;
                             foreach ($detalles as $d) {
                                 $totalCal += $d['calorias'];
                                 $totalCarb += $d['carbohidratos'];
@@ -286,7 +278,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                             ?>
                                 <tr>
                                     <td><?php echo $d['act_descrip']; ?></td>
-                                    <td><?php echo $d['alimento']; ?></td>
+                                    <td><?php echo $d['res_descrip']; ?></td>
                                     <td><?php echo $d['cantidad']; ?></td>
                                     <td><?php echo $d['calorias']; ?></td>
                                     <td><?php echo $d['carbohidratos']; ?></td>
@@ -305,8 +297,8 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
                                 <th colspan="3">Total Calorias:</th>
                                 <th> <?= number_format($totalCal, 1, ',', '.')  ?></th>
                                 <th></th>
-                                <th></th> 
-                                <th></th> 
+                                <th></th>
+                                <th></th>
                             </tr>
                             <tr>
                                 <th colspan="4">Total Carbohidratos:</th>
@@ -328,7 +320,8 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($cabecera[0]['estado'] == 'PENDIENTE') {
-            $actividades = pg_fetch_all(pg_query($conn, "SELECT * FROM actividades WHERE estado = 'ACTIVO' AND act_tipo = 'COMIDA' AND id_act NOT IN (select id_act from serv_alimentaciones_det WHERE id_ali = " . $cabecera[0]['id_ali'] . ") ORDER BY act_descrip;"))
+            $actividades = pg_fetch_all(pg_query($conn, "SELECT * FROM actividades WHERE estado = 'ACTIVO' AND act_tipo = 'COMIDA' AND id_act NOT IN (select id_act from serv_alimentaciones_det WHERE id_ali = " . $cabecera[0]['id_ali'] . ") ORDER BY act_descrip;"));
+            $recetas = pg_fetch_all(pg_query($conn, "SELECT * FROM recetas WHERE id_res NOT IN (select id_res from serv_alimentaciones_det WHERE id_ali = " . $cabecera[0]['id_ali'] . ") ORDER BY res_descrip;"));
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -349,18 +342,23 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
 
                         <div class="form-group">
                             <label>Comida</label>
-                            <input type="text" value="" class="form-control" id="agregar_alimento">
+                            <select class="select2" id="agregar_id_res">
+                                <option selected="true" disabled>Seleccione...</option>
+                                <?php foreach ($recetas as $r) { ?>
+                                    <option value="<?= $r['id_res']; ?>"><?= $r['res_descrip']; ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
 
                         <div class="row">
                             <div class="col-md-3">
-                            <div class="form-group">
+                                <div class="form-group">
                                     <label>Unidad</label>
                                     <input type="text" value="" class="form-control" id="unidad" disabled>
                                 </div>
                             </div>
                             <div class="col-md-9">
-                            <div class="form-group">
+                                <div class="form-group">
                                     <label>Cantidad</label>
                                     <input type="number" value="" class="form-control" id="agregar_cantidad">
                                 </div>
@@ -399,6 +397,7 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
             </div>
             <script>
                 const datoAct = <?= json_encode($actividades) ?>;
+                const datoRes = <?= json_encode($recetas) ?>;
             </script>
         <?php } ?>
 
@@ -409,7 +408,6 @@ if ($id_ali == '-1') { //CUANDO SE RESETEA
 <?php } ?>
 <script>
     const datoCliente = <?= json_encode($cliente) ?>;
-    
 </script>
 
 <?php

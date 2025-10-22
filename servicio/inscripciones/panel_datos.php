@@ -163,7 +163,7 @@ if ($id_inscrip == '-1') { //CUANDO SE RESETEA
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
                     <?php } 
                     if ($movimientos[0]['estado'] == 'CONFIRMADO') { ?>
-                        <button class="btn btn-primary text-white" onclick="generarContrato(<?= $movimientos[0]['id_inscrip']; ?>);"><i class="fa fa-file-pdf"></i> Generar Contrato</button>
+                        <button class="btn btn-success" onclick="generarContrato(<?= $movimientos[0]['id_inscrip']; ?>);"><i class="fa fa-file-pdf"></i> Generar Contrato</button>
                     <?php } ?>
                 </div>
             </div>

@@ -133,13 +133,6 @@ if ($id_med == '-1') { //CUANDO SE RESETEA
         $disabled = '';
     }
 ?>
-    <div class="card">
-        <div class="card-body">
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-        </div>
-    </div>
-
-
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">

@@ -151,6 +151,25 @@ function cancelar(){
     $("#btn-panel-membresia").click();
     mensaje("CANCELADO","error");
 }
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
 
 function grabar(){
     var operacion = $("#operacion").val();
@@ -169,19 +188,36 @@ function grabar(){
         med_observacion = $("#med_observacion").val();
         id_cliente = $("#id_cliente").val();
         id_personal = $("#id_personal").val();
+        if(!validarCampos([
+            {id: '#med_fecha', nombre: 'Fecha de Medición'},
+            {id: '#med_edad', nombre: 'Edad'},
+            {id: '#med_observacion', nombre: 'Observaciones'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#id_personal', nombre: 'Personal Trainer'}
+        ])){
+            return;
+        }
     }
     if(operacion == '5'){
         id_med = $("#id_med").val();
         id_tip_med = $("#agregar_id_tip_med").val();
         valor = $("#agregar_valor").val();
-        // console.log(id_med);
-        // console.log(id_tip_med);
-        // console.log(valor);
+        if(!validarCampos([
+            {id: '#agregar_id_tip_med', nombre: 'Tipo de Medición'},
+            {id: '#agregar_valor', nombre: 'Valor'}
+        ])){
+            return;
+        }
     }
     if(operacion == '6'){
         id_med = $("#id_med").val();
         id_tip_med = $("#id_act").val();
         valor = $("#modificar_valor").val();
+        if(!validarCampos([
+            {id: '#modificar_valor', nombre: 'Valor'}
+        ])){
+            return;
+        }
     }
     if(operacion == '7'){
         id_med = $("#id_med").val();

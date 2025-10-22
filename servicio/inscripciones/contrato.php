@@ -21,20 +21,14 @@ $pdf->SetKeywords('Inscripción, Servicios, PDF');
 
 // set default monospaced font
 $pdf->setDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
 // set margins
 $pdf->setMargins(5, 5, 5);
-
 // set auto page breaks
 $pdf->setAutoPageBreak(true, 5);
-
-
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
 // Agregar una página
 $pdf->AddPage();
-
 // Agregar un encabezado con una imagen
 $imageFile = 'ruta/a/tu/imagen/logo.png'; // Cambia la ruta a tu imagen de encabezado
 $pdf->Image($imageFile, 10, 10, 50);

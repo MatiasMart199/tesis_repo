@@ -215,15 +215,13 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <?php if ($ventas[0]['id_tm'] == 4) { ?>
+            <?php if ($ventas[0]['id_tm'] == 4 || $ventas[0]['estado'] == 'PENDIENTE') { ?>
                 <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
                         class="fas fa-plus-circle"></i> Pedidos</button>
                 <button class="btn btn-primary text-white"
                     onclick="modalConsolidacion(<?= $ventas[0]['id_vc']; ?>);" id="btn-modal-secund-cerrar"><i
                         class="fas fa fa-object-group"></i> Consolidacion</button>
             <?php } ?>
-            <button class="btn btn-danger text-white" onclick="generarInforme(<?= $ventas[0]['id_vc']; ?>)" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
             <!-- <button class="btn btn-success" onclick="modalLibro(<? //= $ventas[0]['id_vc']; 
                                                                         ?>)" id="btn-modal-secund-cerrar"><i
                     class="fas fa-regular fa fa-book"></i>libro de Compras</button>
@@ -271,7 +269,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                         <div class="form-group">
                             <label>Tipo de Movimiento</label>
                             <select class="form-control" id="id_tm" disabled>
-                                    <option value="<?php echo $ventas[0]['id_tm']; ?>" selected><?= $ventas[0]['tm_descrip']; ?></option>
+                                <option value="<?php echo $ventas[0]['id_tm']; ?>" selected><?= $ventas[0]['tm_descrip']; ?></option>
                             </select>
                         </div>
                     </div>
@@ -346,6 +344,9 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                                 class="fa fa-edit"></i>Modificar</button>
                         <button class="btn btn-success" onclick="confirmar();"><i
                                 class="fa fa-check-circle"></i>Confirmar</button>
+                    <?php } elseif ($ventas[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-success" onclick="generarInforme(<?= $ventas[0]['id_vc']; ?>)"><i
+                                class="fas fa-regular fa-file-pdf"></i> Gr. Factura</button>
                     <?php } ?>
                 </div>
             </div>
@@ -472,7 +473,7 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($ventas[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_ventas_det WHERE id_vc = " . $ventas[0]['id_vc'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"));
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON(id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_ventas_det WHERE id_vc = " . $ventas[0]['id_vc'] . ") AND id_tip_item NOT IN (7) ORDER BY id_item;"));
             $depositos = pg_fetch_all(pg_query($conn, "SELECT * FROM deposito WHERE estado = 'ACTIVO'"));
 
 
@@ -533,6 +534,9 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                         <?php } ?>
                     </div>
                 </div>
+                <script>
+                    const artuculos = <?= json_encode($articulos); ?>;
+                </script>
         <?php }
         } ?>
 
@@ -603,6 +607,13 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
                                 </tr>
                             </tfoot>
                         </table>
+                        <script>
+                            validarTipoFactura();
+                            //const artuculos = JSON.parse('<?php //echo json_encode($articulos); ?>');
+                            //const timbrados = <?php //echo json_encode($timbrados); 
+                                                ?>;
+                            //console.log(timbrados);
+                        </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se registraron detalles...</label>
                     <?php } ?>
@@ -618,11 +629,4 @@ if ($id_vc == '-1') { //CUANDO SE RESETEA
 
 }
 ?>
-<script>
-    validarTipoFactura();
-    const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
-    //const timbrados = <?php //echo json_encode($timbrados); 
-                        ?>;
-    //console.log(timbrados);
-</script>
 <?php pg_close($conn) ?>

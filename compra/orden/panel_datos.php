@@ -76,7 +76,9 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
     </div>
-<script>validarTipoFactura();</script>
+    <script>
+        validarTipoFactura();
+    </script>
 <?php
 } else { //O SE TRATA DE UN PEDIDO DEFINIDO O SE TRATA DEL ULTIMO PEDIDO
     if ($id_corden == '-2') { //SE TRATA DEL ULTIMO PEDIDO
@@ -96,14 +98,13 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-plus-circle"></i> Presupuestos</button>
-            <button class="btn btn-primary text-white"
-                onclick="modalConsolidacion(<?php echo $ordenes[0]['id_corden']; ?>);" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-table-tree"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i
-                    class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-
+            <?php if ($ordenes[0]['estado'] == 'PENDIENTE') { ?>
+                <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i
+                        class="fas fa-plus-circle"></i> Presupuestos</button>
+                <button class="btn btn-primary text-white"
+                    onclick="modalConsolidacion(<?php echo $ordenes[0]['id_corden']; ?>);" id="btn-modal-secund-cerrar"><i
+                        class="fas fa-table-tree"></i> Consolidacion</button>
+            <?php } ?>
         </div>
     </div>
 
@@ -183,12 +184,16 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                     class="fa fa-edit"></i>Modificar</button>
                             <button class="btn btn-success" onclick="confirmar();"><i
                                     class="fa fa-check-circle"></i>Confirmar</button>
+                        <?php } elseif ($ordenes[0]['estado'] == 'CONFIRMADO') { ?>
+                            <button class="btn btn-success" onclick="generarInforme(<?php echo $ordenes[0]['id_corden']; ?>);"><i class="fa fa-file-pdf"></i> Generar Informe</button>
                         <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
-        <script>validarTipoFactura();</script>
+        <script>
+            validarTipoFactura();
+        </script>
         <!-- TABLA DE PRESUPUESTO -->
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">
@@ -226,7 +231,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle(<?= $d['id_corden']?>, <?= $d['id_item']?>)"
+                                                onclick="modificar_detalle(<?= $d['id_corden'] ?>, <?= $d['id_item'] ?>)"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_item']; ?>);"><i
                                                     class="fa fa-minus-circle"></i></button>
@@ -254,7 +259,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
         </div>
         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') {
             $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_orden_detalles WHERE id_corden = " . $ordenes[0]['id_corden'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_orden_detalles WHERE id_corden = " . $ordenes[0]['id_corden'] . ") AND id_tip_item NOT IN (7) ORDER BY id_item;"))
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -292,9 +297,9 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                 Agregar</button>
                         </div>
                         <!-- ALMACENA Y OBTIENE ARTICULOS -->
-                        <script> 
-                        const artuculos = <?= json_encode($articulos); ?>; 
-                        const stock = <?= json_encode($stock); ?>;
+                        <script>
+                            const artuculos = <?= json_encode($articulos); ?>;
+                            const stock = <?= json_encode($stock); ?>;
                         </script>
                     <?php } else { ?>
                         <label class="text-danger"><i class="fa fa-exclamation-circle"></i> No se encuentran productos
@@ -341,7 +346,7 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
                                     <td>
                                         <?php if ($ordenes[0]['estado'] == 'PENDIENTE') { ?>
                                             <button class="btn btn-warning text-white"
-                                                onclick="modificar_detalle_pre(<?= $d['id_corden']?>, <?= $d['id_item']?>);"
+                                                onclick="modificar_detalle_pre(<?= $d['id_corden'] ?>, <?= $d['id_item'] ?>);"
                                                 id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger"
                                                 onclick="eliminar_presupuesto_pedido(<?php echo $d['id_item']; ?>);"><i
@@ -378,4 +383,5 @@ if ($id_corden == '-1') { //CUANDO SE RESETEA
 
 
 <?php
-} pg_close($conn)?>
+}
+pg_close($conn) ?>

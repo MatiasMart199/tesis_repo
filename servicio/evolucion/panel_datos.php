@@ -123,22 +123,15 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
         $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_evoluciones_cab WHERE id_evo = (select max(id_evo) from serv_evoluciones_cab where  id_sucursal = $id_sucursal);"));
         //$pedidos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_pedidos_compra WHERE id_cp = (select max(id_cp) from compras_pedidos_cabecera where id_sucursal = $id_sucursal);"));
     } else { //SE TRATA DE UN PEDIDO DEFINIDO
-        $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_evoluciones_cab WHERE id_evo = $id_evo;"));
+        $cabecera = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_evoluciones_cab WHERE id_evo = ". $id_evo .";"));
     }
-    $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_evoluciones_det WHERE id_evo = $id_evo ORDER BY id_evo;"));
-    $footer = pg_fetch_all(pg_query($conn, "SELECT imc, grasa_corporal, peso_anterior, diferencia_peso, estado_peso FROM v_serv_evoluciones_foot WHERE id_evo = $id_evo ORDER BY id_evo;"));
+    $detalles = pg_fetch_all(pg_query($conn, "SELECT * FROM v_serv_evoluciones_det WHERE id_evo = ". $cabecera[0]['id_evo'] ." ORDER BY id_evo;"));
+    $footer = pg_fetch_all(pg_query($conn, "SELECT imc, grasa_corporal, peso_anterior, diferencia_peso, estado_peso FROM v_serv_evoluciones_foot WHERE id_evo = ". $cabecera[0]['id_evo'] .";"));
     $disabled = 'disabled';
     if ($cabecera[0]['estado'] == 'PENDIENTE') {
         $disabled = '';
     }
 ?>
-    <div class="card">
-        <div class="card-body">
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-        </div>
-    </div>
-
-
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
@@ -260,7 +253,7 @@ if ($id_evo == '-1') { //CUANDO SE RESETEA
                                     <td><?php echo $d['act_unidad']; ?></td>
                                     <td><?php echo $d['valor']; ?></td>
                                     <td>
-                                        <?php if ($cabecera[0]['estado'] == 'PENDIENTE') { ?>
+                                        <?php if ($cabecera[0]['estado'] == 'PENDIENTE' && $d['id_act'] != 4) { ?>
                                             <button class="btn btn-warning text-white" onclick="modificar_detalle(<?php echo $d['id_act']; ?>);" id="btn-panel-modificar-cerrar"><i class="fa fa-edit"></i></button>
                                             <button class="btn btn-danger" onclick="eliminar_detalle(<?php echo $d['id_act']; ?>);"><i class="fa fa-minus-circle"></i></button>
                                         <?php } ?>

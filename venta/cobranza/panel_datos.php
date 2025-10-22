@@ -6,7 +6,7 @@ $id_sucursal = $_SESSION['id_sucursal'];
 $conexion = new Conexion();
 $conn = $conexion->getConexion();
 $apertura = pg_fetch_all(pg_query($conn, "SELECT * FROM v_vent_aperturas_cierres WHERE id_funcionario = " . $_SESSION['id_funcionario'] . " AND estado = 'ABIERTO';"));
-$ventas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab WHERE estado = 'CONFIRMADO';"));
+$ventas = pg_fetch_all(pg_query($conn, "SELECT * FROM v_ventas_cab WHERE estado = 'CONFIRMADO' ORDER BY vc_nro_factura ASC;"));
 
 
 if ($id_cob == '-1') { //CUANDO SE RESETEA
@@ -209,8 +209,14 @@ if ($id_cob == '-1') { //CUANDO SE RESETEA
 
         <div class="card col-12 card-info">
             <div class="card-body">
+                <?php if ($cabeceras[0]['estado'] == 'PENDIENTE') { ?>              
                 <button class="btn btn-success" onclick="cuentas(<?= $cabeceras[0]['id_vc'] ?>, <?= $cabeceras[0]['id_cob'] ?>)" id="btn-panel-cuenta-cerrar"><i
                         class="fas fa-regular fa fa-book"></i> Agregar Cuentas</button>
+                <?php }else if ($cabeceras[0]['estado'] == 'CONFIRMADO'){ ?>
+                    <button class="btn btn-success" onclick="generarInforme(<?= $cabeceras[0]['id_cob'] ?>)" id="btn-panel-cuenta-cerrar"><i
+                        class="fas fa-regular fa fa-book"></i> Recibo</button>
+                <?php } ?>
+
             </div>
         </div>
 

@@ -21,7 +21,8 @@ $_SESSION['mensaje'] = ''; // Limpiar mensaje después de mostrarlo
     <link rel="stylesheet" href="/tesis/estilo/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="/tesis/estilo/plugins/sweetalert2/sweetalert2.min.css">
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -40,6 +41,9 @@ $_SESSION['mensaje'] = ''; // Limpiar mensaje después de mostrarlo
 </head>
 
 <body class="hold-transition login-page">
+    <a href="/../tesis/logout.php" class="btn btn-danger position-absolute" style="top: 10px; right: 10px;" title="Cerrar Sesión">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+    </a>
     <div class="fondo">
         <div class="login-box card-primary text-center">
             <div class="card-header">

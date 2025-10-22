@@ -76,10 +76,11 @@ if ($id_cpre == '-1') { //CUANDO SE RESETEA
 ?>
     <div class="card">
         <div class="card-body">
+            <?php if($presupuestos[0]['estado'] == 'PENDIENTE') {?>
             <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Pedidos</button>
             <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $presupuestos[0]['id_cpre']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-
+            <!-- <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button> -->
+            <?php } ?>
         </div>
     </div>
 
@@ -131,6 +132,8 @@ if ($id_cpre == '-1') { //CUANDO SE RESETEA
                         <button class="btn btn-danger" onclick="anular();"><i class="fa fa-minus-circle"></i> Anular</button>
                         <button class="btn btn-warning text-white" onclick="modificar();"><i class="fa fa-edit"></i> Modificar</button>
                         <button class="btn btn-success" onclick="confirmar();"><i class="fa fa-check-circle"></i> Confirmar</button>
+                    <?php }elseif($presupuestos[0]['estado'] == 'CONFIRMADO') { ?>
+                        <button class="btn btn-success" onclick="generarInforme(<?php echo $presupuestos[0]['id_cpre']; ?>);"><i class="fa fa-file-pdf"></i> Generar Informe</button>
                     <?php } ?>
                 </div>
             </div>
@@ -186,7 +189,8 @@ if ($id_cpre == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
         <?php if ($presupuestos[0]['estado'] == 'PENDIENTE') {
-            $articulos = pg_fetch_all(pg_query($conn, "SELECT * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_presupuestos_detalles WHERE id_cpre = " . $presupuestos[0]['id_cpre'] . ") AND id_tip_item NOT IN (7) ORDER BY item_descrip;"))
+            $stock = pg_fetch_all(pg_query($conn, "SELECT id_item, stock_cantidad FROM v_stocks WHERE estado = 'ACTIVO'"));
+            $articulos = pg_fetch_all(pg_query($conn, "SELECT DISTINCT ON (id_item) * FROM v_items WHERE estado = 'ACTIVO' AND id_item NOT IN (select id_item from v_compras_presupuestos_detalles WHERE id_cpre = " . $presupuestos[0]['id_cpre'] . ") AND id_tip_item NOT IN (7) ORDER BY id_item;"))
         ?>
             <!-- PARA AGREGAR PRESUPUESTO DETALLE -->
             <div class="card card-primary col-4">
@@ -203,13 +207,19 @@ if ($id_cpre == '-1') { //CUANDO SE RESETEA
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Cantidad</label>
-                            <input type="number" value="" class="form-control" id="agregar_cantidad">
+                        <div class="row">
+                        <div class="form-group col-6">
+                            <label>Stock</label>
+                            <input type="text" value="0" class="form-control" id="stock_actual" disabled>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group col-6">
+                            <label>Cantidad</label>
+                            <input type="number" value="1" class="form-control" id="agregar_cantidad">
+                        </div>
+                        </div>
+                        <div class="form-group col-12">
                             <label>Precio</label>
-                            <input type="number" step="0.1" inputmode="decimal" value="0" class="form-control" id="agregar_precio">
+                            <input type="number" value="" class="form-control" id="agregar_precio">
                         </div>
                         <div class="form-group">
                             <button class="btn btn-success" onclick="agregar_detalles();"><i class="fa fa-plus-circle"></i> Agregar</button>
@@ -278,7 +288,8 @@ if ($id_cpre == '-1') { //CUANDO SE RESETEA
 
         <!-- MONTOS TOTALES DE PEDIDOS Y PRESUPUESTO -->
         <script>
-            const artuculos = JSON.parse('<?php echo json_encode($articulos); ?>');
+            const stock = <?php echo json_encode($stock); ?>;
+            const artuculos = <?php echo json_encode($articulos); ?>;
         </script>
 
     </div>

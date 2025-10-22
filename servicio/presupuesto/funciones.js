@@ -152,6 +152,26 @@ function cancelar(){
     mensaje("CANCELADO","error");
 }
 
+function validarCampos(campos) {
+    for (let i = 0; i < campos.length; i++) {
+        let valor = $(campos[i].id).val();
+        if (valor === "" || valor === null || valor === undefined) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                type: 'error',
+                title: "El campo '" + campos[i].nombre + "' está vacío",
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true
+            });
+            $(campos[i].id).focus();
+            return false;
+        }
+    }
+    return true;
+}
+
 function grabar(){
     var operacion = $("#operacion").val();
     var id_pre = '0';
@@ -168,22 +188,37 @@ function grabar(){
         pre_observacion = $("#pre_observacion").val();
         id_cliente = $("#id_cliente").val();
         id_personal = $("#id_personal").val();
+        if(!validarCampos([
+            {id: '#pre_fecha', nombre: 'Fecha'},
+            {id: '#id_cliente', nombre: 'Cliente'},
+            {id: '#id_personal', nombre: 'Personal Trainer'},
+            {id: '#pre_observacion', nombre: 'Observaciones'}
+        ])){
+            return;
+        }
     }
     if(operacion == '5'){
         id_pre = $("#id_pre").val();
         id_act = $("#agregar_id_act").val();
         descrip = $("#agregar_descrip").val();
         costo = $("#agregar_costo").val();
-        // console.log(id_pre);
-        // console.log(id_act);
-        // console.log(descrip);
-        // console.log(costo);
+        if(!validarCampos([
+            {id: '#agregar_id_act', nombre: 'Actividad'},
+            {id: '#agregar_costo', nombre: 'Costo'}
+        ])){
+            return;
+        }
     }
     if(operacion == '6'){
         id_pre = $("#id_pre").val();
         id_act = $("#id_act").val();
         //descrip = $("#modificar_descrip").val();
         costo = $("#modificar_costo").val();
+        if(!validarCampos([
+            {id: '#modificar_costo', nombre: 'Costo'}
+        ])){
+            return;
+        }
     }
     if(operacion == '7'){
         id_pre = $("#id_pre").val();

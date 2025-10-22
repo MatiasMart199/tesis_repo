@@ -164,6 +164,7 @@ function grabar() {
         // console.log(nombre);
         // console.log(id_mem);
         // console.log(operacion);
+        
     }
     $.ajax({
         url: "grabar.php",

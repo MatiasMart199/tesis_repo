@@ -158,6 +158,7 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
             <div class="card-body">
                 <input type="hidden" value="<?= $cabecera[0]['id_tra']; ?>" id="id_tra">
                 <input type="hidden" value="0" id="eliminar_id_item">
+                <input type="hidden" value="<?= $cabecera[0]['estado']; ?>" id="tra_estado">
 
                 <div class="col-md-2">
                     <div class="form-group">
@@ -275,7 +276,10 @@ if ($id_tra == '-1') { //CUANDO SE RESETEA
             </div>
         </div>
 
-        <script>const datoDeposito = <?= json_encode($deposito); ?>;</script>
+        <script>
+            deshabilitarBotones();
+        const datoDeposito = <?= json_encode($deposito); ?>;
+        </script>
 
         <div class="card card-primary col-8">
             <div class="card-header text-center elevation-3">

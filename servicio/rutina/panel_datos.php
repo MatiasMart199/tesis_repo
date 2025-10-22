@@ -120,16 +120,6 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
         $disabled = '';
     }
 ?>
-    <div class="card">
-        <div class="card-body">
-            <button class="btn btn-primary text-white" onclick="modalSecund();" id="btn-modal-secund-cerrar"><i class="fas fa-plus-circle"></i> Pedidos</button>
-            <button class="btn btn-primary text-white" onclick="modalConsolidacion(<?php echo $cabecera[0]['id_rut']; ?>);" id="btn-modal-secund-cerrar"><i class="fas fa-table-tree"></i> Consolidacion</button>
-            <button class="btn btn-danger text-white" onclick="" id="btn-modal-secund-cerrar"><i class="fas fa-regular fa-file-pdf"></i> Reportes</button>
-
-        </div>
-    </div>
-
-
     <div class="row">
         <div class="card card-primary col-12">
             <div class="card-header text-center elevation-3">
@@ -233,8 +223,12 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                         </thead>
                         <tbody>
                             <?php $totalVol = 0;
+                            $totalSer = 0;
+                            $totalRep = 0;
                             foreach ($detalles as $d) {
                                 $totalVol += $d['serie'] * $d['repeticion'] * $d['peso'];
+                                $totalSer += $d['serie'];
+                                $totalRep += $d['repeticion'];
                             ?>
                                 <tr>
                                     <td><?php echo $d['act_descrip']; ?></td>
@@ -252,6 +246,19 @@ if ($id_rut == '-1') { //CUANDO SE RESETEA
                             <?php } ?>
                         </tbody>
                         <tfoot>
+                            <tr>
+                                <th colspan="2">Total Series:</th>
+                                <th> <?= number_format($totalSer, 0, ',', '.')  ?></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th colspan="3">Total Repeticiones:</th>
+                                <th> <?= number_format($totalRep, 0, ',', '.')  ?></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
                             <tr>
                                 <th colspan="4">Volumen total de entrenamiento (kg):</th>
                                 <th> <?= number_format($totalVol, 0, ',', '.')  ?></th>
